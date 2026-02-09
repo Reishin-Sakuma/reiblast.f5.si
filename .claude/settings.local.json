@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo view:*)",
+      "Bash(gh repo list:*)",
+      "Bash(gh auth:*)",
+      "Bash(npm create astro@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(gh api:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx wrangler pages deploy:*)",
+      "Bash(npx wrangler pages project list:*)",
+      "Bash(npx wrangler pages project create:*)",
+      "Bash(npx wrangler pages deployment list:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git push:*)",
+      "Bash(gh issue create --repo Reishin-Sakuma/reiblast.f5.si --title \"OGP（Open Graph Protocol）メタタグの追加\" --body \"$\\(cat <<''EOF''\n## 概要\nSNSでシェアされたときの見た目を改善するため、OGPメタタグを追加する必要があります。\n\n## 実装内容\n- `og:title` - サイトタイトル\n- `og:description` - サイト説明\n- `og:image` - サムネイル画像（1200x630px推奨）\n- `og:url` - ページURL\n- `og:type` - website\n- Twitter Card用のメタタグ\n\n## 優先度\nMedium\n\n## 参考\n- https://ogp.me/\nEOF\n\\)\")",
+      "Bash(gh issue create:*)",
+      "Bash(magick:*)",
+      "Bash(convert:*)",
+      "Bash(node scripts/generate-favicons.js:*)",
+      "Bash(node scripts/generate-ico.js:*)"
+    ]
+  }
+}

@@ -11,5 +11,9 @@
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
     "astro": "^5.17.1"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "to-ico": "^1.1.5"
   }
 }
