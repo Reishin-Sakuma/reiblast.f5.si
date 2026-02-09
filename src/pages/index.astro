@@ -1,17 +1,443 @@
 ---
+import Layout from '../layouts/Layout.astro';
 
+const mainProjects = [
+  {
+    id: 'shakeeper',
+    name: 'Shakeeper',
+    description: '車検管理PWA - 車検満了日を忘れない',
+    longDescription: '車検の満了日を管理するプログレッシブウェブアプリケーション。複数の車両を登録し、車検満了日までの残り日数を一目で確認できます。',
+    tech: ['TypeScript', 'Next.js', 'Supabase', 'PWA', 'Tailwind CSS'],
+    url: 'https://shakeeper.vercel.app',
+    github: 'https://github.com/Reishin-Sakuma/shakeeper',
+    features: [
+      'ユーザー認証（Supabase）',
+      '車両管理（CRUD）',
+      '車検満了日までの残り日数を色分けで表示',
+      'PWA対応（オフライン動作）',
+      '日本車300種以上に対応'
+    ]
+  },
+  {
+    id: 'milpon',
+    name: 'milpon（ミルポン）',
+    description: 'ポンと押すだけ。赤ちゃんの育児記録アプリ',
+    longDescription: '赤ちゃんの育児記録（ミルク・睡眠・おむつ・体調）をワンタップで記録できるPWA。家族間でリアルタイムにデータを共有でき、育児の負担を軽減します。',
+    tech: ['Svelte', 'SvelteKit', 'TypeScript', 'Supabase', 'PWA', 'Chart.js'],
+    url: 'https://milpon.reiblast.f5.si',
+    github: 'https://github.com/Reishin-Sakuma/milpon',
+    features: [
+      'ワンタップ記録（「ポンする」体験）',
+      'Googleログインによる家族間共有',
+      'リアルタイム同期（Supabase Realtime）',
+      '複数の赤ちゃん管理',
+      '週間・月間グラフ表示',
+      'CSVエクスポート機能'
+    ]
+  }
+];
+
+const comingSoonProjects = [
+  {
+    name: 'RCScheduler',
+    description: 'RobocopyをGUIで簡単に設定しよう',
+    tech: ['HTML', 'JavaScript']
+  },
+  {
+    name: 'car-buddy',
+    description: '喋る車載コンピュータをつくろう',
+    tech: ['C', 'Raspberry Pi']
+  },
+  {
+    name: 'Chrona',
+    description: 'Ubuntuを情報表示ダッシュボードスクリーンにする',
+    tech: ['TypeScript', 'Electron']
+  },
+  {
+    name: 'ILCollector',
+    description: 'インフラ関連のログを簡単に取得できるツール',
+    tech: ['Python']
+  }
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Reishin Sakuma - Portfolio">
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1 class="hero-title">Reishin Sakuma</h1>
+        <p class="hero-subtitle">Software Developer</p>
+        <p class="hero-description">
+          実用的なWebアプリケーションの開発を行っています。<br />
+          PWA・フルスタック開発・UI/UXデザインに注力しています。
+        </p>
+        <div class="hero-links">
+          <a href="https://github.com/Reishin-Sakuma" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Projects -->
+    <section class="projects">
+      <div class="container">
+        <h2 class="section-title">Projects</h2>
+        <div class="projects-grid">
+          {mainProjects.map((project) => (
+            <article class="project-card">
+              <div class="project-header">
+                <h3 class="project-name">{project.name}</h3>
+                <p class="project-description">{project.description}</p>
+              </div>
+              <p class="project-long-description">{project.longDescription}</p>
+
+              <div class="project-features">
+                <h4>主な機能</h4>
+                <ul>
+                  {project.features.map((feature) => (
+                    <li>{feature}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="project-tech">
+                {project.tech.map((tech) => (
+                  <span class="tech-badge">{tech}</span>
+                ))}
+              </div>
+
+              <div class="project-links">
+                <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V11H19L18.9999 6.413L11.2071 14.2071L9.79289 12.7929L17.5849 5H13V3H21Z"/>
+                  </svg>
+                  公式サイト
+                </a>
+                <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                  GitHub
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Coming Soon -->
+    <section class="coming-soon">
+      <div class="container">
+        <h2 class="section-title">Coming Soon</h2>
+        <div class="coming-soon-grid">
+          {comingSoonProjects.map((project) => (
+            <div class="coming-soon-card">
+              <h3 class="coming-soon-name">{project.name}</h3>
+              <p class="coming-soon-description">{project.description}</p>
+              <div class="project-tech">
+                {project.tech.map((tech) => (
+                  <span class="tech-badge tech-badge-secondary">{tech}</span>
+                ))}
+              </div>
+              <div class="coming-soon-badge">Coming Soon</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2026 Reishin Sakuma. All rights reserved.</p>
+      </div>
+    </footer>
+  </main>
+
+  <style>
+    /* Hero Section */
+    .hero {
+      padding: 6rem 0 4rem;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Sections */
+    .projects,
+    .coming-soon {
+      padding: 4rem 0;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      color: var(--text);
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .project-header {
+      margin-bottom: 1rem;
+    }
+
+    .project-name {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .project-description {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .project-long-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .project-features {
+      margin-bottom: 1.5rem;
+    }
+
+    .project-features h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .project-features ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .project-features li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .project-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-badge {
+      padding: 0.375rem 0.75rem;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .tech-badge-secondary {
+      background: rgba(100, 116, 139, 0.1);
+      color: var(--secondary);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Coming Soon Grid */
+    .coming-soon {
+      background: var(--surface);
+    }
+
+    .coming-soon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .coming-soon-card {
+      background: var(--background);
+      border: 2px dashed var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .coming-soon-card:hover {
+      border-color: var(--secondary);
+    }
+
+    .coming-soon-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .coming-soon-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.9375rem;
+    }
+
+    .coming-soon-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 1rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 2rem 0;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.25rem;
+      }
+
+      .hero-description {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 1.75rem;
+      }
+
+      .project-name {
+        font-size: 1.5rem;
+      }
+
+      .project-card {
+        padding: 1.5rem;
+      }
+
+      .coming-soon-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Layout>

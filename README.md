@@ -1,43 +1,92 @@
-# Astro Starter Kit: Minimal
+# Reishin Sakuma - Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
+プロジェクトをまとめたポートフォリオサイト
+
+## 掲載プロジェクト
+
+### メインプロジェクト
+
+- **Shakeeper** - 車検管理PWA
+- **milpon（ミルポン）** - 赤ちゃんの育児記録アプリ
+
+### Coming Soon
+
+- RCScheduler
+- car-buddy
+- Chrona
+- ILCollector
+
+## 技術スタック
+
+- **フレームワーク**: Astro
+- **ホスティング**: Cloudflare Pages
+- **デプロイツール**: Wrangler
+
+## 開発
+
+### セットアップ
+
+```bash
+npm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### 開発サーバーの起動
 
-## 🚀 Project Structure
+```bash
+npm run dev
+```
 
-Inside of your Astro project, you'll see the following folders and files:
+ブラウザで [http://localhost:4321](http://localhost:4321) を開く
 
-```text
-/
-├── public/
+### ビルド
+
+```bash
+npm run build
+```
+
+ビルドされたファイルは `dist/` ディレクトリに出力されます。
+
+### プレビュー
+
+```bash
+npm run preview
+```
+
+## デプロイ
+
+### Cloudflare Pages へのデプロイ
+
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name=reiblast-portfolio
+```
+
+または
+
+```bash
+npm run build
+npx wrangler pages deploy
+```
+
+### カスタムドメイン
+
+Cloudflare Pages のダッシュボードでカスタムドメイン `reiblast.f5.si` を設定してください。
+
+## プロジェクト構成
+
+```
+.
 ├── src/
+│   ├── layouts/
+│   │   └── Layout.astro         # 共通レイアウト
 │   └── pages/
-│       └── index.astro
+│       └── index.astro           # トップページ
+├── public/                       # 静的ファイル
+├── astro.config.mjs              # Astro設定
+├── wrangler.toml                 # Cloudflare Pages設定
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## ライセンス
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+All rights reserved.
