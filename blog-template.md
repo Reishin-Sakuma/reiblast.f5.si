@@ -9,6 +9,11 @@ description: "この記事の説明を1-2文で簡潔に書きます。検索結
 # 例: 2026-02-10T12:00:00（2026年2月10日 12時00分）
 pubDate: 2026-02-10T12:00:00
 
+# URLスラグ（必須）- 記事のURLを決定します
+# 記事フォルダ名と同じ値を設定してください
+# 例: フォルダが "my-article" なら slug: my-article
+slug: your-article-slug
+
 # 著者名（オプション）- デフォルトは "reiblast1123"
 author: reiblast1123
 
@@ -17,7 +22,8 @@ author: reiblast1123
 tags: ["タグ1", "タグ2", "タグ3"]
 
 # アイキャッチ画像（オプション）
-# image: "/images/post-cover.jpg"
+# 記事フォルダ内の画像を参照する場合:
+# image: "/images/blog/2026/02/10/your-article-slug/cover.png"
 
 # 下書きフラグ（オプション）- trueにすると非公開（ビルドから除外）
 draft: false
