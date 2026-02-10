@@ -239,7 +239,7 @@ title: "記事タイトル"
 ...
 ---
 
-import { Note } from '../../../../components/blog/index.ts';
+import Note from '@/components/blog/Note.astro';
 
 <Note type="info">
   ここに情報を書きます。
@@ -270,7 +270,7 @@ import { Note } from '../../../../components/blog/index.ts';
 ### Detailsコンポーネント（折りたたみ）
 
 ```mdx
-import { Details } from '../../../../components/blog/index.ts';
+import Details from '@/components/blog/Details.astro';
 
 <Details summary="詳細を見る">
   折りたたまれた内容をここに書きます。
