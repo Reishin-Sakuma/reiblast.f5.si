@@ -236,7 +236,7 @@ gh pr create --title "Add new blog post" --body "新しいブログ記事を追�
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name=reiblast-portfolio --branch=main
+npx wrangler pages deploy dist --project-name=reiblast-f5-si --branch=main
 ```
 
 ## 📋 公開までの流れ
