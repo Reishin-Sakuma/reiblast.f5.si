@@ -181,31 +181,63 @@ npm run build
 
 ### デプロイ
 
-#### 方法1: 手動デプロイ（プレビュー環境）
+このプロジェクトは **GitHub連携による自動デプロイ** が設定されています。
+
+#### 自動デプロイの動作
+
+- ✅ **mainブランチへのプッシュ** → 自動的に本番環境（https://reiblast.f5.si）にデプロイ
+- ✅ **他のブランチへのプッシュ** → 自動的にプレビュー環境を作成
+- ✅ **Pull Request作成** → プレビューURLをPRコメントに自動投稿
+
+#### 記事を公開する手順
 
 ```bash
-# ビルド
-npm run build
+# 1. 記事を作成・編集
+# src/content/blog/your-article.md
 
-# Cloudflare Pagesにデプロイ
-npx wrangler pages deploy dist --project-name=reiblast-portfolio --branch=feature/blog-implementation
-```
+# 2. ローカルで確認
+npm run dev
 
-#### 方法2: GitHubにプッシュ（本番環境）
-
-```bash
-# 変更をコミット
+# 3. 変更をコミット
 git add .
-git commit -m "Add new blog post: 記事タイトル"
+git commit -m "Add new blog post: 記事タイトル
 
-# GitHubにプッシュ
-git push origin feature/blog-implementation
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
-# プルリクエストを作成してマージ
-gh pr create --title "Add new blog post" --body "新しいブログ記事を追加"
+# 4. GitHubにプッシュ
+git push origin main
+
+# → Cloudflare Pagesが自動的にビルド＆デプロイします
 ```
 
-mainブランチにマージされると、Cloudflare Pagesが自動的に本番環境にデプロイします。
+#### プレビュー環境で確認してから公開
+
+```bash
+# 1. feature/new-post ブランチを作成
+git checkout -b feature/new-post
+
+# 2. 記事を作成・編集
+
+# 3. コミット＆プッシュ
+git add .
+git commit -m "Draft: New blog post"
+git push origin feature/new-post
+
+# → プレビュー環境が自動作成されます
+
+# 4. プレビュー環境で確認後、mainにマージ
+gh pr create --title "Add new blog post" --body "新しいブログ記事を追加"
+# PRをマージすると本番環境に自動デプロイされます
+```
+
+#### 手動デプロイ（非推奨）
+
+通常は不要ですが、必要な場合は以下のコマンドでデプロイできます：
+
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name=reiblast-portfolio --branch=main
+```
 
 ## 📋 公開までの流れ
 
