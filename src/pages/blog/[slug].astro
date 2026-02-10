@@ -262,7 +262,23 @@ function formatDate(date: Date): string {
     }
 
     .post-content :global(h1) { font-size: 2rem; }
-    .post-content :global(h2) { font-size: 1.75rem; }
+
+    .post-content :global(h2) {
+      font-size: 1.75rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+
+    .post-content :global(h2::after) {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 2.5rem;
+      height: 3px;
+      background: linear-gradient(to right, var(--text) 50%, var(--text-secondary) 50%);
+    }
+
     .post-content :global(h3) { font-size: 1.5rem; }
     .post-content :global(h4) { font-size: 1.25rem; }
 
