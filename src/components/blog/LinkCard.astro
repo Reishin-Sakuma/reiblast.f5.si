@@ -1,0 +1,169 @@
+---
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+
+let title = url;
+let description = '';
+let image = '';
+let hostname = url;
+
+try {
+  hostname = new URL(url).hostname;
+} catch {}
+
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+function getMeta(html: string, attr: string, value: string): string {
+  const re1 = new RegExp(`<meta[^>]+${attr}=["']${value}["'][^>]+content=["']([^"']*)["']`, 'i');
+  const re2 = new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]+${attr}=["']${value}["']`, 'i');
+  return decodeEntities(html.match(re1)?.[1] ?? html.match(re2)?.[1] ?? '');
+}
+
+try {
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; AstroBot/1.0)' },
+    signal: AbortSignal.timeout(8000),
+  });
+  const html = await res.text();
+
+  const ogTitle = getMeta(html, 'property', 'og:title');
+  const pageTitle = decodeEntities(html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim() ?? '');
+  title = ogTitle || pageTitle || url;
+
+  description = getMeta(html, 'property', 'og:description')
+    || getMeta(html, 'name', 'description');
+  if (description.length > 120) description = description.slice(0, 120) + '…';
+
+  const rawImage = getMeta(html, 'property', 'og:image');
+  if (rawImage) {
+    image = rawImage.startsWith('http') ? rawImage : new URL(rawImage, url).href;
+  }
+} catch {
+  // fallback: show URL as title
+}
+---
+
+<a href={url} target="_blank" rel="noopener noreferrer" class="link-card">
+  <div class="link-card-body">
+    <div class="link-card-text">
+      <p class="link-card-title">{title}</p>
+      {description && <p class="link-card-desc">{description}</p>}
+      <p class="link-card-url">
+        <svg class="link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/>
+        </svg>
+        {hostname}
+      </p>
+    </div>
+    {image && (
+      <div class="link-card-image">
+        <img src={image} alt={title} loading="lazy" decoding="async" />
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  .link-card {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 0.625rem;
+    overflow: hidden;
+    text-decoration: none;
+    margin: 1.5rem 0;
+    background: var(--surface);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .link-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .link-card-body {
+    display: flex;
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  .link-card-text {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+  }
+
+  .link-card-title {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .link-card-desc {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .link-card-url {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .link-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .link-card-image {
+    width: 130px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .link-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  @media (max-width: 480px) {
+    .link-card-image {
+      width: 100px;
+    }
+  }
+</style>
