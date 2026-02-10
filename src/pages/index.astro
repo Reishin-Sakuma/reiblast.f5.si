@@ -118,11 +118,26 @@ const comingSoonProjects = [
     <!-- Tabs -->
     <div class="tabs-root">
       <nav class="tab-nav" role="tablist">
-        <button class="tab-btn active" data-tab="top" role="tab" aria-selected="true" aria-controls="tab-top">Top</button>
-        <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">愛車管理アプリ - Shakeeper</button>
-        <button class="tab-btn" data-tab="milpon" role="tab" aria-selected="false" aria-controls="tab-milpon">赤ちゃん記録アプリ - MilPon</button>
-        <button class="tab-btn" data-tab="other" role="tab" aria-selected="false" aria-controls="tab-other">Other Projects</button>
-        <button class="tab-btn" data-tab="blog" role="tab" aria-selected="false" aria-controls="tab-blog">Blog</button>
+        <button class="tab-btn active" data-tab="top" role="tab" aria-selected="true" aria-controls="tab-top">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+          Top
+        </button>
+        <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">
+          <img class="tab-icon tab-favicon" src="https://shakeeper.vercel.app/favicon.ico" width="16" height="16" alt="" loading="lazy" />
+          愛車管理アプリ - Shakeeper
+        </button>
+        <button class="tab-btn" data-tab="milpon" role="tab" aria-selected="false" aria-controls="tab-milpon">
+          <img class="tab-icon tab-favicon" src="https://milpon.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
+          赤ちゃん記録アプリ - MilPon
+        </button>
+        <button class="tab-btn" data-tab="other" role="tab" aria-selected="false" aria-controls="tab-other">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"/></svg>
+          Other Projects
+        </button>
+        <button class="tab-btn" data-tab="blog" role="tab" aria-selected="false" aria-controls="tab-blog">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
+          Blog
+        </button>
       </nav>
 
       <!-- Top Tab -->
@@ -460,6 +475,18 @@ const comingSoonProjects = [
       text-decoration: none;
       display: inline-flex;
       align-items: center;
+      gap: 0.4rem;
+    }
+
+    .tab-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .tab-favicon {
+      border-radius: 3px;
+      object-fit: contain;
     }
 
     .tab-btn:hover {
