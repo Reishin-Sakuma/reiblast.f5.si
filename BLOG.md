@@ -205,8 +205,102 @@ console.log(greeting);
 ```markdown
 **太字**
 *斜体*
+~~取り消し線~~
 `インラインコード`
 ```
+
+### テーブル
+
+```markdown
+| 列1 | 列2 | 列3 |
+|-----|-----|-----|
+| A   | B   | C   |
+| D   | E   | F   |
+```
+
+## 🎨 リッチコンテンツ（MDXコンポーネント）
+
+`.mdx` 拡張子で記事を作成すると、カスタムコンポーネントが使えます。
+
+### ファイルを .mdx にする
+
+```bash
+# .md の代わりに .mdx を使用
+src/content/blog/2026/02/10/my-article/index.mdx
+```
+
+### Noteコンポーネント（情報ボックス）
+
+コンポーネントをインポートして使用します：
+
+```mdx
+---
+title: "記事タイトル"
+...
+---
+
+import Note from '@/components/blog/Note.astro';
+
+<Note type="info">
+  ここに情報を書きます。
+</Note>
+
+<Note type="warning" title="カスタムタイトル">
+  注意が必要な内容をここに。
+</Note>
+
+<Note type="tip">
+  便利なヒントをここに。
+</Note>
+
+<Note type="danger">
+  危険な操作についての警告。
+</Note>
+```
+
+**typeの種類:**
+
+| type | 見た目 | 用途 |
+|------|--------|------|
+| `info` | 青 | 補足情報 |
+| `warning` | 黄 | 注意事項 |
+| `tip` | 緑 | ヒント・Tips |
+| `danger` | 赤 | 危険・禁止事項 |
+
+### Detailsコンポーネント（折りたたみ）
+
+```mdx
+import Details from '@/components/blog/Details.astro';
+
+<Details summary="詳細を見る">
+  折りたたまれた内容をここに書きます。
+  長い説明や補足情報に便利です。
+</Details>
+```
+
+### シンタックスハイライト
+
+コードブロックに言語を指定すると自動でハイライトされます（`.md` でも有効）：
+
+````markdown
+```javascript
+const greeting = "Hello, World!";
+console.log(greeting);
+```
+
+```python
+def hello():
+    print("Hello, World!")
+```
+
+```bash
+npm run build
+```
+````
+
+### 目次（TOC）
+
+記事内の見出し（H2・H3）から自動生成されます。見出しが1つ以上あれば右サイドバーに表示されます。特別な設定は不要です。
 
 ## 🚀 ビルドとデプロイ
 

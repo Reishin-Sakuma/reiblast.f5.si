@@ -1,0 +1,95 @@
+---
+interface Props {
+  summary: string;
+}
+
+const { summary } = Astro.props;
+---
+
+<details class="details-block">
+  <summary class="details-summary">{summary}</summary>
+  <div class="details-body">
+    <div class="details-inner">
+      <slot />
+    </div>
+  </div>
+</details>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.details-block').forEach((el) => {
+    const summary = el.querySelector('summary')!;
+    const body = el.querySelector<HTMLElement>('.details-body')!;
+
+    summary.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      if (el.classList.contains('is-open')) {
+        // 閉じるアニメーション
+        el.classList.remove('is-open');
+        body.addEventListener('transitionend', () => {
+          el.removeAttribute('open');
+        }, { once: true });
+      } else {
+        // 開くアニメーション
+        el.setAttribute('open', '');
+        requestAnimationFrame(() => {
+          el.classList.add('is-open');
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  .details-block {
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+    overflow: hidden;
+  }
+
+  .details-summary {
+    padding: 0.875rem 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--surface);
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .details-summary::before {
+    content: '▶';
+    font-size: 0.75rem;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .details-block.is-open .details-summary::before {
+    transform: rotate(90deg);
+  }
+
+  /* grid-template-rows アニメーション（height: auto の代わり） */
+  .details-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+
+  .details-block.is-open .details-body {
+    grid-template-rows: 1fr;
+  }
+
+  .details-inner {
+    overflow: hidden;
+    min-height: 0;
+    border-top: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+  }
+
+  .details-inner :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

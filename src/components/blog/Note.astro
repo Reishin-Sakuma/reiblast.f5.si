@@ -1,0 +1,86 @@
+---
+interface Props {
+  type?: 'info' | 'warning' | 'tip' | 'danger';
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+
+const icons = {
+  info: 'ℹ️',
+  warning: '⚠️',
+  tip: '💡',
+  danger: '🚨',
+};
+
+const defaultTitles = {
+  info: '情報',
+  warning: '注意',
+  tip: 'ヒント',
+  danger: '警告',
+};
+---
+
+<div class={`note note-${type}`}>
+  <div class="note-header">
+    <span class="note-icon">{icons[type]}</span>
+    <span class="note-title">{title ?? defaultTitles[type]}</span>
+  </div>
+  <div class="note-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .note {
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+  }
+
+  .note-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .note-title {
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+
+  .note-body {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .note-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .note-info {
+    background: rgba(37, 99, 235, 0.06);
+    border-color: #2563eb;
+  }
+  .note-info .note-title { color: #1d4ed8; }
+
+  .note-warning {
+    background: rgba(234, 179, 8, 0.08);
+    border-color: #eab308;
+  }
+  .note-warning .note-title { color: #a16207; }
+
+  .note-tip {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: #22c55e;
+  }
+  .note-tip .note-title { color: #15803d; }
+
+  .note-danger {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: #ef4444;
+  }
+  .note-danger .note-title { color: #b91c1c; }
+</style>
