@@ -21,7 +21,9 @@
       "Bash(magick:*)",
       "Bash(convert:*)",
       "Bash(node scripts/generate-favicons.js:*)",
-      "Bash(node scripts/generate-ico.js:*)"
+      "Bash(node scripts/generate-ico.js:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

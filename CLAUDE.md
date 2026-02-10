@@ -107,17 +107,31 @@ npx wrangler pages deploy dist --project-name=reiblast-portfolio --branch=main
 
 ### Cloudflare Pages
 
-- **プロジェクト名**: `reiblast-portfolio`
-- **本番URL**: https://reiblast-portfolio.pages.dev
-- **カスタムドメイン**: https://reiblast.f5.si ✅ 設定済み（2026-02-09）
+- **プロジェクト名**: `reiblast-f5-si`
+- **本番URL**: https://reiblast-f5-si.pages.dev
+- **カスタムドメイン**: https://reiblast.f5.si ✅ 設定済み（2026-02-10）
+- **デプロイ方式**: GitHub連携による自動デプロイ ✅
 - **ビルドコマンド**: `npm run build`
 - **出力ディレクトリ**: `dist/`
 
-### デプロイコマンド
+### 自動デプロイ
+
+mainブランチへのプッシュで自動的に本番環境にデプロイされます。
+
+```bash
+# 変更をコミット＆プッシュするだけでOK
+git add .
+git commit -m "Update content"
+git push origin main
+```
+
+### 手動デプロイ（非推奨）
+
+通常は不要ですが、必要な場合：
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name=reiblast-portfolio --branch=main --commit-dirty=true
+npx wrangler pages deploy dist --project-name=reiblast-f5-si --branch=main
 ```
 
 ## 今後の改善予定
