@@ -35,6 +35,11 @@ function formatDate(date: Date): string {
     <!-- Blog Posts -->
     <section class="blog-posts">
       <div class="container">
+        <nav class="breadcrumb">
+          <a href="/">ホーム</a>
+          <span class="sep">/</span>
+          <span class="current">Blog</span>
+        </nav>
         {sortedPosts.length === 0 ? (
           <p class="no-posts">まだ記事がありません。</p>
         ) : (
@@ -92,7 +97,30 @@ function formatDate(date: Date): string {
 
     /* Blog Posts */
     .blog-posts {
-      padding: 4rem 0;
+      padding: 3rem 0 4rem;
+    }
+
+    .breadcrumb {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb .sep {
+      margin: 0 0.5rem;
+    }
+
+    .breadcrumb .current {
+      color: var(--text);
     }
 
     .no-posts {
