@@ -6,25 +6,48 @@
 
 ### 1. 新しい記事ファイルを作成
 
-`src/content/blog/` ディレクトリに新しいMarkdownファイルを作成します。
+`src/content/blog/` ディレクトリに日付ベースのフォルダ構造で記事を作成します。
 
 ```bash
-# ファイル名の例
-src/content/blog/my-new-post.md
-src/content/blog/react-hooks-tutorial.md
+# フォルダ構造の例
+src/content/blog/2026/02/10/my-new-post/index.md
+src/content/blog/2026/02/15/react-hooks-tutorial/index.md
 ```
 
-**ファイル名のルール:**
-- 小文字とハイフンを使用（例: `my-article-title.md`）
+**フォルダ構造のルール:**
+- `年/月/日/記事名/index.md` の形式で作成
+- 記事名は小文字とハイフンを使用（例: `my-article-title`）
 - 日本語は避け、英数字とハイフン `-` のみ使用
-- このファイル名がURLの一部になります（例: `/blog/my-article-title`）
+- **画像は記事と同じフォルダに配置できます**（例: `image1.png`, `screenshot.jpg`）
+
+**フォルダ構造の例:**
+```
+src/content/blog/
+└── 2026/
+    └── 02/
+        ├── 10/
+        │   └── my-new-post/
+        │       ├── index.md      # 記事本文
+        │       ├── cover.png     # アイキャッチ画像
+        │       └── screenshot.jpg # 本文中の画像
+        └── 15/
+            └── react-tutorial/
+                └── index.md
+```
 
 ### 2. テンプレートを使用
 
 プロジェクトルートにある `blog-template.md` をコピーして使うと便利です。
 
 ```bash
-cp blog-template.md src/content/blog/your-article-name.md
+# 記事フォルダを作成
+mkdir -p "src/content/blog/2026/02/10/your-article-name"
+
+# テンプレートをコピー
+cp blog-template.md "src/content/blog/2026/02/10/your-article-name/index.md"
+
+# 編集
+# src/content/blog/2026/02/10/your-article-name/index.md
 ```
 
 ### 3. Frontmatter（メタデータ）を記入
@@ -38,6 +61,7 @@ description: "記事の説明文（SEO用）"
 pubDate: 2026-02-10T12:00:00
 author: reiblast1123
 tags: ["タグ1", "タグ2", "タグ3"]
+slug: my-article-slug
 draft: false
 ---
 ```
@@ -49,11 +73,17 @@ draft: false
 | `title` | ✅ | 記事のタイトル | `"TypeScriptの型推論入門"` |
 | `description` | ✅ | 記事の説明（SEO、OGP用） | `"TypeScriptの型推論について基礎から解説します"` |
 | `pubDate` | ✅ | 公開日時（ISO 8601形式） | `2026-02-10T12:00:00` |
+| `slug` | ✅ | URLに使用するスラグ（記事フォルダ名と同じ） | `"my-article-slug"` |
 | `author` | ❌ | 著者名（デフォルト: `reiblast1123`） | `"reiblast1123"` |
 | `tags` | ❌ | タグの配列 | `["TypeScript", "Web開発"]` |
-| `image` | ❌ | アイキャッチ画像のパス | `"/images/post-cover.jpg"` |
+| `image` | ❌ | アイキャッチ画像のパス | `"/images/blog/2026/02/10/my-article/cover.png"` |
 | `draft` | ❌ | 下書きフラグ（`true`で非公開） | `false` |
 | `updatedDate` | ❌ | 更新日時 | `2026-02-11T10:00:00` |
+
+**重要:** `slug` は記事のURLを決定します。フォルダ名と同じ値を設定してください。
+- フォルダ: `src/content/blog/2026/02/10/my-article-slug/index.md`
+- Slug: `my-article-slug`
+- URL: `/blog/my-article-slug`
 
 ### 4. 公開日時の指定
 
@@ -131,9 +161,28 @@ Frontmatterの後に、Markdown形式で記事本文を書きます。
 
 ### 画像
 
-```markdown
-![代替テキスト](/images/screenshot.png)
+記事フォルダ内に画像を配置できます。ビルド時に自動的に `public/images/blog/` にコピーされます。
+
+**画像の配置:**
 ```
+src/content/blog/2026/02/10/my-article/
+├── index.md
+├── cover.png        # アイキャッチ画像
+└── screenshot.jpg   # 本文中の画像
+```
+
+**Markdownでの参照:**
+```markdown
+# 同じフォルダの画像を参照（ビルド後のパスを指定）
+![スクリーンショット](/images/blog/2026/02/10/my-article/screenshot.jpg)
+
+# アイキャッチ画像（frontmatterで指定）
+---
+image: "/images/blog/2026/02/10/my-article/cover.png"
+---
+```
+
+**対応画像形式:** `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.webp`, `.avif`
 
 ### コードブロック
 
@@ -193,9 +242,9 @@ npm run build
 
 ```bash
 # 1. 記事を作成・編集
-# src/content/blog/your-article.md
+# src/content/blog/2026/02/10/your-article/index.md
 
-# 2. ローカルで確認
+# 2. ローカルで確認（画像も自動コピーされます）
 npm run dev
 
 # 3. 変更をコミット

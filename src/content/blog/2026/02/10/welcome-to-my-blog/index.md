@@ -4,6 +4,7 @@ description: "reiblast1123のポートフォリオサイトにブログ機能を
 pubDate: 2026-02-10T00:00:00
 author: reiblast1123
 tags: ["お知らせ", "ブログ"]
+slug: welcome-to-my-blog
 ---
 
 # ブログを開設しました

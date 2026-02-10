@@ -4,6 +4,7 @@ description: "静的サイトジェネレーターAstroを使ってポートフ�
 pubDate: 2026-02-08T10:00:00
 author: reiblast1123
 tags: ["Astro", "Web開発", "ポートフォリオ"]
+slug: building-portfolio-with-astro
 ---
 
 # Astroでポートフォリオサイトを構築した話

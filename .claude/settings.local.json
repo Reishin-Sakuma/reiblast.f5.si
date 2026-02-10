@@ -23,7 +23,9 @@
       "Bash(node scripts/generate-favicons.js:*)",
       "Bash(node scripts/generate-ico.js:*)",
       "Bash(git checkout:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git pull:*)",
+      "Bash(npm run copy-images:*)"
     ]
   }
 }
