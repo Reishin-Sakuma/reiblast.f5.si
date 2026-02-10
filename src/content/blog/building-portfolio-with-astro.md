@@ -1,7 +1,7 @@
 ---
 title: "Astroでポートフォリオサイトを構築した話"
 description: "静的サイトジェネレーターAstroを使ってポートフォリオサイトを構築した経験をシェアします。"
-pubDate: 2026-02-09
+pubDate: 2026-02-08T10:00:00
 author: reiblast1123
 tags: ["Astro", "Web開発", "ポートフォリオ"]
 ---
