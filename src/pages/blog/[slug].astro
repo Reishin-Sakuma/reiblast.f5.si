@@ -15,7 +15,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
+
+const tocHeadings = headings.filter((h) => h.depth <= 3);
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('ja-JP', {
@@ -50,6 +52,12 @@ function formatDate(date: Date): string {
             </time>
             <span class="separator">·</span>
             <span class="author">{post.data.author}</span>
+            {post.data.updatedDate && (
+              <>
+                <span class="separator">·</span>
+                <span class="updated">更新: {formatDate(post.data.updatedDate)}</span>
+              </>
+            )}
           </div>
           {post.data.tags && post.data.tags.length > 0 && (
             <div class="post-tags">
@@ -60,9 +68,29 @@ function formatDate(date: Date): string {
           )}
         </header>
 
-        <!-- Post Content -->
-        <div class="post-content">
-          <Content />
+        <div class="post-layout">
+          <!-- Post Content -->
+          <div class="post-content">
+            <Content />
+          </div>
+
+          <!-- Table of Contents -->
+          {tocHeadings.length > 0 && (
+            <aside class="toc">
+              <div class="toc-inner">
+                <p class="toc-title">目次</p>
+                <nav>
+                  <ul class="toc-list">
+                    {tocHeadings.map((heading) => (
+                      <li class={`toc-item toc-h${heading.depth}`}>
+                        <a href={`#${heading.slug}`}>{heading.text}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+            </aside>
+          )}
         </div>
 
         <!-- Post Footer -->
@@ -79,7 +107,7 @@ function formatDate(date: Date): string {
     }
 
     .container {
-      max-width: 800px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 1.5rem;
     }
@@ -113,6 +141,7 @@ function formatDate(date: Date): string {
       margin-bottom: 3rem;
       padding-bottom: 2rem;
       border-bottom: 2px solid var(--border);
+      max-width: 800px;
     }
 
     .post-title {
@@ -126,6 +155,7 @@ function formatDate(date: Date): string {
     .post-meta {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 0.5rem;
       color: var(--text-secondary);
       font-size: 0.9375rem;
@@ -151,11 +181,73 @@ function formatDate(date: Date): string {
       font-weight: 500;
     }
 
+    /* Layout */
+    .post-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* Table of Contents */
+    .toc {
+      position: sticky;
+      top: 2rem;
+    }
+
+    .toc-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-item {
+      margin-bottom: 0.375rem;
+      line-height: 1.4;
+    }
+
+    .toc-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.15s;
+      display: block;
+    }
+
+    .toc-item a:hover {
+      color: var(--primary);
+    }
+
+    .toc-h2 {
+      padding-left: 0;
+    }
+
+    .toc-h3 {
+      padding-left: 1rem;
+    }
+
     /* Post Content */
     .post-content {
       font-size: 1.0625rem;
       line-height: 1.8;
       color: var(--text);
+      min-width: 0;
     }
 
     .post-content :global(h1),
@@ -169,21 +261,10 @@ function formatDate(date: Date): string {
       color: var(--text);
     }
 
-    .post-content :global(h1) {
-      font-size: 2rem;
-    }
-
-    .post-content :global(h2) {
-      font-size: 1.75rem;
-    }
-
-    .post-content :global(h3) {
-      font-size: 1.5rem;
-    }
-
-    .post-content :global(h4) {
-      font-size: 1.25rem;
-    }
+    .post-content :global(h1) { font-size: 2rem; }
+    .post-content :global(h2) { font-size: 1.75rem; }
+    .post-content :global(h3) { font-size: 1.5rem; }
+    .post-content :global(h4) { font-size: 1.25rem; }
 
     .post-content :global(p) {
       margin-bottom: 1.5rem;
@@ -208,27 +289,29 @@ function formatDate(date: Date): string {
       margin-bottom: 0.5rem;
     }
 
-    .post-content :global(code) {
-      background: rgba(0, 0, 0, 0.05);
+    /* Inline code */
+    .post-content :global(code:not(pre code)) {
+      background: rgba(0, 0, 0, 0.07);
       padding: 0.2rem 0.4rem;
       border-radius: 0.25rem;
       font-family: 'Courier New', Courier, monospace;
       font-size: 0.9em;
     }
 
+    /* Shiki code blocks */
     .post-content :global(pre) {
-      background: #1e1e1e;
-      color: #d4d4d4;
-      padding: 1.5rem;
       border-radius: 0.5rem;
       overflow-x: auto;
       margin-bottom: 1.5rem;
+      padding: 1.5rem !important;
+      font-size: 0.9rem;
+      line-height: 1.7;
     }
 
     .post-content :global(pre code) {
       background: none;
       padding: 0;
-      color: inherit;
+      font-size: inherit;
     }
 
     .post-content :global(blockquote) {
@@ -243,6 +326,31 @@ function formatDate(date: Date): string {
       max-width: 100%;
       height: auto;
       border-radius: 0.5rem;
+      margin: 2rem 0;
+    }
+
+    .post-content :global(table) {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .post-content :global(th),
+    .post-content :global(td) {
+      border: 1px solid var(--border);
+      padding: 0.625rem 0.875rem;
+      text-align: left;
+    }
+
+    .post-content :global(th) {
+      background: var(--surface);
+      font-weight: 600;
+    }
+
+    .post-content :global(hr) {
+      border: none;
+      border-top: 2px solid var(--border);
       margin: 2rem 0;
     }
 
@@ -266,6 +374,17 @@ function formatDate(date: Date): string {
       color: var(--primary-dark);
     }
 
+    @media (max-width: 900px) {
+      .post-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        order: -1;
+        position: static;
+      }
+    }
+
     @media (max-width: 768px) {
       .post-title {
         font-size: 2rem;
@@ -275,17 +394,9 @@ function formatDate(date: Date): string {
         font-size: 1rem;
       }
 
-      .post-content :global(h1) {
-        font-size: 1.75rem;
-      }
-
-      .post-content :global(h2) {
-        font-size: 1.5rem;
-      }
-
-      .post-content :global(h3) {
-        font-size: 1.25rem;
-      }
+      .post-content :global(h1) { font-size: 1.75rem; }
+      .post-content :global(h2) { font-size: 1.5rem; }
+      .post-content :global(h3) { font-size: 1.25rem; }
     }
   </style>
 </Layout>
