@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+
+const profileEntry = await getEntry('profile', 'index');
+const { Content: ProfileContent } = await profileEntry.render();
 
 const allPosts = await getCollection('blog', ({ data }) => data.draft !== true);
 const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -87,9 +90,11 @@ const comingSoonProjects = [
       <div class="hero-streak hero-streak-8" aria-hidden="true"></div>
       <div class="container">
         <h1 class="hero-title">reiblast1123</h1>
-        <p class="hero-subtitle">Software Developer</p>
+        <p class="hero-subtitle">IT Infrastructure Engineer / Software Developer</p>
         <p class="hero-description">
-          実用的なWebアプリケーションの開発を行っています。<br />
+          本業ではSIerでITインフラエンジニアに従事しながら、<br />
+          個人で実用的なWebアプリケーションの開発を行っています。<br />
+          【誰でも使える・いつでも使える】をモットーに、<br />
           PWA・フルスタック開発・UI/UXデザインに注力しています。
         </p>
         <div class="hero-links">
@@ -140,9 +145,90 @@ const comingSoonProjects = [
         </button>
       </nav>
 
-      <!-- Top Tab -->
+      <!-- Top Tab (Profile) -->
       <div id="tab-top" class="tab-panel active" role="tabpanel">
         <div class="container">
+          <!-- 基本情報 -->
+          <section class="profile-section">
+            <h2 class="profile-section-title">基本情報</h2>
+            <div class="profile-header">
+              <img
+                class="profile-avatar"
+                src="https://github.com/Reishin-Sakuma.png"
+                alt="reiblast1123"
+                width="96"
+                height="96"
+                loading="lazy"
+              />
+              <div class="profile-grid">
+              <div class="profile-row">
+                <span class="profile-label">ハンドルネーム</span>
+                <span class="profile-value">{profileEntry.data.handle}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">生年月日</span>
+                <span class="profile-value">{profileEntry.data.birthdate}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">出身</span>
+                <span class="profile-value">{profileEntry.data.location}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">学歴</span>
+                <span class="profile-value">{profileEntry.data.education}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">趣味</span>
+                <span class="profile-value">
+                  {profileEntry.data.hobbies.join(' / ')}
+                </span>
+              </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 資格 -->
+          <section class="profile-section">
+            <h2 class="profile-section-title">資格</h2>
+            <div class="project-tech">
+              {profileEntry.data.certifications.map((cert) => (
+                <span class="tech-badge">{cert}</span>
+              ))}
+            </div>
+          </section>
+
+          <!-- 入社するまで / 業務経歴 (Markdown) -->
+          <div class="profile-content">
+            <ProfileContent />
+          </div>
+        </div>
+      </div>
+
+      <!-- Shakeeper Tab -->
+      <div id="tab-shakeeper" class="tab-panel tab-panel-frame" role="tabpanel" hidden>
+        <iframe
+          class="project-frame"
+          data-src="https://shakeeper.reiblast.f5.si"
+          title="Shakeeper - 愛車管理アプリ"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <!-- MilPon Tab -->
+      <div id="tab-milpon" class="tab-panel tab-panel-frame" role="tabpanel" hidden>
+        <iframe
+          class="project-frame"
+          data-src="https://milpon.reiblast.f5.si"
+          title="MilPon - 赤ちゃん記録アプリ"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <!-- Other Projects Tab -->
+      <div id="tab-other" class="tab-panel" role="tabpanel" hidden>
+        <div class="container">
+          <!-- 主要プロジェクト -->
+          <h2 class="other-section-title">主要プロジェクト</h2>
           <div class="projects-grid">
             {mainProjects.map((project) => (
               <article class="project-card">
@@ -184,32 +270,9 @@ const comingSoonProjects = [
               </article>
             ))}
           </div>
-        </div>
-      </div>
 
-      <!-- Shakeeper Tab -->
-      <div id="tab-shakeeper" class="tab-panel tab-panel-frame" role="tabpanel" hidden>
-        <iframe
-          class="project-frame"
-          data-src="https://shakeeper.reiblast.f5.si"
-          title="Shakeeper - 愛車管理アプリ"
-          allowfullscreen
-        ></iframe>
-      </div>
-
-      <!-- MilPon Tab -->
-      <div id="tab-milpon" class="tab-panel tab-panel-frame" role="tabpanel" hidden>
-        <iframe
-          class="project-frame"
-          data-src="https://milpon.reiblast.f5.si"
-          title="MilPon - 赤ちゃん記録アプリ"
-          allowfullscreen
-        ></iframe>
-      </div>
-
-      <!-- Other Projects Tab -->
-      <div id="tab-other" class="tab-panel" role="tabpanel" hidden>
-        <div class="container">
+          <!-- Coming Soon -->
+          <h2 class="other-section-title other-section-title-gap">開発予定</h2>
           <div class="coming-soon-grid">
             {comingSoonProjects.map((project) => (
               <div class="coming-soon-card">
@@ -829,6 +892,125 @@ const comingSoonProjects = [
       margin-top: auto;
     }
 
+    /* Profile Tab */
+    .profile-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .profile-section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 3px solid var(--border);
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    .profile-row {
+      display: grid;
+      grid-template-columns: 9rem 1fr;
+      gap: 1rem;
+      align-items: baseline;
+    }
+
+    .profile-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .profile-value {
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .profile-content {
+      background: var(--surface);
+      border-radius: 0.75rem;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .profile-content :global(h2) {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-content :global(h2:first-child) {
+      margin-top: 0;
+    }
+
+    .profile-content :global(ul) {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .profile-content :global(li) {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.6rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .profile-content :global(li::before) {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 0.875rem;
+    }
+
+    .profile-content :global(strong) {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .profile-content :global(p) {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Other Projects section titles */
+    .other-section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .other-section-title-gap {
+      margin-top: 3rem;
+    }
+
     /* Footer */
     .footer {
       padding: 2rem 0;
@@ -869,6 +1051,23 @@ const comingSoonProjects = [
 
       .project-card {
         padding: 1.5rem;
+      }
+
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .profile-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+
+      .profile-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
 
       .coming-soon-grid {
