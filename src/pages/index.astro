@@ -149,7 +149,16 @@ const comingSoonProjects = [
           <!-- 基本情報 -->
           <section class="profile-section">
             <h2 class="profile-section-title">基本情報</h2>
-            <div class="profile-grid">
+            <div class="profile-header">
+              <img
+                class="profile-avatar"
+                src="https://github.com/Reishin-Sakuma.png"
+                alt="reiblast1123"
+                width="96"
+                height="96"
+                loading="lazy"
+              />
+              <div class="profile-grid">
               <div class="profile-row">
                 <span class="profile-label">ハンドルネーム</span>
                 <span class="profile-value">{profileEntry.data.handle}</span>
@@ -171,6 +180,7 @@ const comingSoonProjects = [
                 <span class="profile-value">
                   {profileEntry.data.hobbies.join(' / ')}
                 </span>
+              </div>
               </div>
             </div>
           </section>
@@ -894,9 +904,25 @@ const comingSoonProjects = [
       border-bottom: 2px solid var(--border);
     }
 
+    .profile-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 3px solid var(--border);
+    }
+
     .profile-grid {
       display: grid;
       gap: 0.75rem;
+      flex: 1;
     }
 
     .profile-row {
@@ -1023,6 +1049,23 @@ const comingSoonProjects = [
 
       .project-card {
         padding: 1.5rem;
+      }
+
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .profile-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+
+      .profile-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
 
       .coming-soon-grid {
