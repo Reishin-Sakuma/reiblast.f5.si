@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://reiblast.f5.si/sitemap-index.xml

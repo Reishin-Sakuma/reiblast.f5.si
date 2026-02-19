@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -10,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   output: 'static',
   site: 'https://reiblast.f5.si',
-  integrations: [mdx()],
+  integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
       theme: 'one-dark-pro',
