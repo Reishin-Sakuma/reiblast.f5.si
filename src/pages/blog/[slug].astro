@@ -17,6 +17,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
 
+// Google AdSense
+// 環境変数 PUBLIC_ADSENSE_CLIENT_ID と PUBLIC_ADSENSE_SLOT_ARTICLE が設定されていると広告が表示されます
+const adsenseClientId = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID;
+// 記事内広告スロットID（AdSense管理画面で「記事内広告」または「ディスプレイ広告」を作成し、スロットIDを設定）
+const adsenseSlotArticle = import.meta.env.PUBLIC_ADSENSE_SLOT_ARTICLE;
+const showAds = adsenseClientId && adsenseSlotArticle;
+
 const tocHeadings = headings.filter((h) => h.depth <= 3);
 
 function formatDate(date: Date): string {
@@ -68,15 +75,30 @@ function formatDate(date: Date): string {
           )}
         </header>
 
+        <!-- 広告: 記事ヘッダー直下（高収益ポジション） -->
+        {showAds && (
+          <div class="ad-unit ad-unit-header">
+            <ins
+              class="adsbygoogle"
+              style="display:block"
+              data-ad-client={adsenseClientId}
+              data-ad-slot={adsenseSlotArticle}
+              data-ad-format="auto"
+              data-full-width-responsive="true"
+            ></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+        )}
+
         <div class="post-layout">
           <!-- Post Content -->
           <div class="post-content">
             <Content />
           </div>
 
-          <!-- Table of Contents -->
-          {tocHeadings.length > 0 && (
-            <aside class="toc">
+          <!-- Table of Contents + サイドバー広告 -->
+          <aside class="toc">
+            {tocHeadings.length > 0 && (
               <div class="toc-inner">
                 <p class="toc-title">目次</p>
                 <nav>
@@ -89,9 +111,38 @@ function formatDate(date: Date): string {
                   </ul>
                 </nav>
               </div>
-            </aside>
-          )}
+            )}
+            <!-- 広告: サイドバー（スクロール中に継続表示） -->
+            {showAds && (
+              <div class="ad-unit ad-unit-sidebar">
+                <ins
+                  class="adsbygoogle"
+                  style="display:block"
+                  data-ad-client={adsenseClientId}
+                  data-ad-slot={adsenseSlotArticle}
+                  data-ad-format="auto"
+                  data-full-width-responsive="true"
+                ></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+              </div>
+            )}
+          </aside>
         </div>
+
+        <!-- 広告: 記事末尾（読了後の高収益ポジション） -->
+        {showAds && (
+          <div class="ad-unit ad-unit-footer">
+            <ins
+              class="adsbygoogle"
+              style="display:block"
+              data-ad-client={adsenseClientId}
+              data-ad-slot={adsenseSlotArticle}
+              data-ad-format="auto"
+              data-full-width-responsive="true"
+            ></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+        )}
 
         <!-- Post Footer -->
         <footer class="post-footer">
@@ -368,6 +419,27 @@ function formatDate(date: Date): string {
       border: none;
       border-top: 2px solid var(--border);
       margin: 2rem 0;
+    }
+
+    /* Ad Units */
+    .ad-unit {
+      overflow: hidden;
+    }
+
+    .ad-unit-header {
+      margin-bottom: 2.5rem;
+      min-height: 90px;
+    }
+
+    .ad-unit-sidebar {
+      margin-top: 1.5rem;
+      min-height: 250px;
+    }
+
+    .ad-unit-footer {
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      min-height: 90px;
     }
 
     /* Post Footer */

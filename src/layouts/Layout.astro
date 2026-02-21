@@ -6,6 +6,11 @@ interface Props {
 }
 
 const { title, description = 'reiblast1123 のプロジェクトポートフォリオサイト', ogImage } = Astro.props;
+
+// Google AdSense
+// AdSense承認後、Cloudflare Pages の環境変数 PUBLIC_ADSENSE_CLIENT_ID に
+// 発行者ID（ca-pub-XXXXXXXXXXXXXXXXX）を設定してください
+const adsenseClientId = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site).toString() : new URL('/icon-512x512.png', Astro.site).toString();
 
@@ -52,6 +57,15 @@ const websiteJsonLd = {
     <link rel="manifest" href="/manifest.json" />
 
     <title>{title}</title>
+
+    <!-- Google AdSense: 環境変数 PUBLIC_ADSENSE_CLIENT_ID が設定されている場合のみ読み込む -->
+    {adsenseClientId && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
     <style>
       :root {
         --primary: #2563eb;
