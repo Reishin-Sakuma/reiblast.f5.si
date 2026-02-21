@@ -1,3 +1,1 @@
-# Google AdSense
-# AdSense承認後、以下の行の XXXXXXXXXXXXXXXXX を実際の発行者IDに置き換えてください
-# google.com, pub-XXXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-3205175348715640, DIRECT, f08c47fec0942fa0
