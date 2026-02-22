@@ -1,5 +1,5 @@
 ---
-title: "ChatGPTより、Claudeのほうが信頼できた、という話"
+title: "24歳から見た「Claudeの世界」とは"
 description: "昨日の記事で2回『Claudeメインです』と書いておいてちゃんと語っていなかったので、改めて書きます。ツールレビューではなく、なぜ惚れたかの話。"
 pubDate: 2026-02-23T19:00:00
 slug: 24sai-kara-mita-claude-no-sekai
@@ -8,7 +8,7 @@ tags: ["生成AI", "Claude", "Anthropic", "インフラエンジニア", "IT"]
 draft: false
 ---
 
-# ChatGPTより、Claudeのほうが信頼できた、という話
+# 24歳から見た「Claudeの世界」とは
 
 <u>「嘘をつかないように設計されているAIに、なぜか人間味を感じた。」</u>
 
