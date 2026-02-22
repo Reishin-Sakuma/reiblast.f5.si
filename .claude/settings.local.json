@@ -26,7 +26,20 @@
       "Bash(npm run dev:*)",
       "Bash(git pull:*)",
       "Bash(npm run copy-images:*)",
-      "WebFetch(domain:ameblo.jp)"
+      "WebFetch(domain:ameblo.jp)",
+      "WebFetch(domain:charin.reiblast.f5.si)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git branch:*)",
+      "WebFetch(domain:shakeeper.reiblast.f5.si)",
+      "Bash(git -C /home/ubuntu/GitRepo/reiblast.f5.si checkout -b feature/blog-hajimemashite)",
+      "Bash(git -C /home/ubuntu/GitRepo/reiblast.f5.si add src/content/blog/2020/10/06/hajimemashite-no-go-aisatsu/index.md)",
+      "Bash(git -C:*)",
+      "Bash(git rebase:*)",
+      "Bash(git stash:*)",
+      "Bash(git stash pop:*)",
+      "Bash(xargs -r git branch -d:*)",
+      "Bash(xargs -r git branch -D:*)"
     ]
   }
 }
