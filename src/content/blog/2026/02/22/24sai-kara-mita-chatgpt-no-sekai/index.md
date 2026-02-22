@@ -184,6 +184,6 @@ ChatGPTは生成AIへの「入口」として最高だと思うので、まず�
 
 給料もちょっと上がった。ちょっとだけね。。。。
 
-次は「[Perplexity](https://ja.wikipedia.org/wiki/Perplexity_AI)」についても書こうと思ってます。ChatGPTだけが生成AIじゃないからね。
+次は「[Claude](https://en.wikipedia.org/wiki/Claude_(language_model))」とか「[GitHub Copilot](https://ja.wikipedia.org/wiki/GitHub_Copilot)」についても書けたらいいなぁと思ってます。ChatGPTだけが生成AIじゃないからね。
 
 それでは。
