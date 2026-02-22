@@ -20,7 +20,7 @@ draft: false
 
 ---
 
-さて今回は「**生成AI**」、その中でも特に**ChatGPT**について書きたいと思います。
+さて今回は「**生成AI**」、その中でも特に**[ChatGPT](https://ja.wikipedia.org/wiki/ChatGPT)**について書きたいと思います。
 
 もう世の中的にはだいぶ浸透してきましたが、「結局なんなの？」「仕事で使えるの？」っていうところを改めて書いてみようと思います。
 
@@ -34,7 +34,7 @@ draft: false
 
 「ChatGPT知らない人いないでしょ」って思う方もいるかもしれないですけど、このブログの通例なんで書きます。（20歳の仕事の記事で「そこから？」って言われたやつの再来です）
 
-ChatGPTとは、**OpenAI**というアメリカの企業が作った「**AIチャットボット**」です。
+ChatGPTとは、**[OpenAI](https://ja.wikipedia.org/wiki/OpenAI)**というアメリカの企業が作った「**[AIチャットボット](https://ja.wikipedia.org/wiki/%E3%83%81%E3%83%A3%E3%83%83%E3%83%88%E3%83%9C%E3%83%83%E3%83%88)**」です。
 
 チャットボットというと、昔あった「よくある質問に自動で答えてくれる機械的なやつ」をイメージするかもしれないですが、ChatGPTはその比じゃないです。
 
@@ -42,13 +42,13 @@ ChatGPTとは、**OpenAI**というアメリカの企業が作った「**AIチ�
 
 みたいな感じです。
 
-「Pythonのコードを書いて」と言えば書いてくれるし、「このメールの文章おかしくない？」と聞けば直してくれるし、「〇〇について教えて」と言えばわかりやすく教えてくれます。
+「[Python](https://ja.wikipedia.org/wiki/Python)のコードを書いて」と言えば書いてくれるし、「このメールの文章おかしくない？」と聞けば直してくれるし、「〇〇について教えて」と言えばわかりやすく教えてくれます。
 
 しかも、普通の会話のように自然な文章で答えてくれる。
 
 ### 「生成AI」ってなんやねん
 
-ChatGPTは「**生成AI（Generative AI）**」と呼ばれる種類のAIです。
+ChatGPTは「**[生成AI（Generative AI）](https://ja.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E7%9A%84%E4%BA%BA%E5%B7%A5%E7%9F%A5%E8%83%BD)**」と呼ばれる種類のAIです。
 
 「生成」という言葉の通り、**何か新しいものを「作り出す」AIのこと**です。
 
@@ -68,7 +68,7 @@ ChatGPTは「**生成AI（Generative AI）**」と呼ばれる種類のAIです�
 
 詳細は深みにはまると論文読む羽目になるので今日は省きます。笑
 
-（興味ある人は「大規模言語モデル（LLM）」「Transformer」あたりで調べてみてください）
+（興味ある人は「[大規模言語モデル（LLM）](https://ja.wikipedia.org/wiki/%E5%A4%A7%E8%A6%8F%E6%A8%A1%E8%A8%80%E8%AA%9E%E3%83%A2%E3%83%87%E3%83%AB)」「[Transformer](https://ja.wikipedia.org/wiki/Transformer_(%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%E3%83%A2%E3%83%87%E3%83%AB))」あたりで調べてみてください）
 
 ## インフラエンジニア、ChatGPT使ってみた
 
@@ -78,9 +78,9 @@ ChatGPTは「**生成AI（Generative AI）**」と呼ばれる種類のAIです�
 
 まず、**一番使うのはコードやスクリプトの作成**です。
 
-例えば、サーバの構成情報を一括で取ってきてCSVに出力するPowerShellスクリプトを書きたい、みたいなとき。
+例えば、サーバの構成情報を一括で取ってきてCSVに出力する[PowerShell](https://ja.wikipedia.org/wiki/PowerShell)スクリプトを書きたい、みたいなとき。
 
-以前なら公式ドキュメント漁ったり、Qiitaとかで似たコードを探したりして、それを組み合わせて試行錯誤...みたいな感じでした。
+以前なら公式ドキュメント漁ったり、[Qiita](https://ja.wikipedia.org/wiki/Qiita)とかで似たコードを探したりして、それを組み合わせて試行錯誤...みたいな感じでした。
 
 それがChatGPTに「こういう処理をするPowerShellスクリプトを書いてほしい」と伝えるだけで、ある程度動くものが出てくる。
 
@@ -122,6 +122,6 @@ ChatGPTは「**生成AI（Generative AI）**」と呼ばれる種類のAIです�
 
 ちなみに、このブログサイト自体も最近Amebaブログから移設してきたんですが、その作業にもAI使いまくってます。便利な時代になったもんだ。
 
-次は「Claude」とか「Copilot」についても書けたらいいなぁと思ってます。ChatGPTだけが生成AIじゃないからね。
+次は「[Claude](https://ja.wikipedia.org/wiki/Claude_(%E8%A8%80%E8%AA%9E%E3%83%A2%E3%83%87%E3%83%AB))」とか「[GitHub Copilot](https://ja.wikipedia.org/wiki/GitHub_Copilot)」についても書けたらいいなぁと思ってます。ChatGPTだけが生成AIじゃないからね。
 
 それでは。
