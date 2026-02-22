@@ -1,0 +1,47 @@
+name: Post to X on new blog post
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/content/blog/**/*.md'
+
+jobs:
+  post-to-x:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Find new blog posts
+        id: find-post
+        run: |
+          NEW_POST=$(git diff --name-only --diff-filter=A HEAD~1 HEAD | grep 'src/content/blog/.*\.md$' | head -1)
+          if [ -z "$NEW_POST" ]; then
+            echo "No new blog post found"
+            echo "has_post=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found new post: $NEW_POST"
+            echo "has_post=true" >> $GITHUB_OUTPUT
+            echo "post_file=$NEW_POST" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.find-post.outputs.has_post == 'true'
+        with:
+          node-version: '20'
+
+      - name: Post to X
+        if: steps.find-post.outputs.has_post == 'true'
+        run: |
+          cd .github/scripts
+          npm install
+          node post-to-x.js
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          POST_FILE: ${{ steps.find-post.outputs.post_file }}
