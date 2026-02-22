@@ -39,7 +39,10 @@
       "Bash(git stash:*)",
       "Bash(git stash pop:*)",
       "Bash(xargs -r git branch -d:*)",
-      "Bash(xargs -r git branch -D:*)"
+      "Bash(xargs -r git branch -D:*)",
+      "WebFetch(domain:help.openai.com)",
+      "WebFetch(domain:ja.wikipedia.org)",
+      "Bash(curl:*)"
     ]
   }
 }

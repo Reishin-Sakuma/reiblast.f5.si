@@ -20,7 +20,7 @@ draft: false
 
 ---
 
-さて今回は「**生成AI**」、その中でも特に**[ChatGPT](https://ja.wikipedia.org/wiki/ChatGPT)**について書きたいと思います。
+さて今回は「**生成AI**」、その中でも特に<strong>[ChatGPT](https://ja.wikipedia.org/wiki/ChatGPT)</strong>について書きたいと思います。
 
 もう世の中的にはだいぶ浸透してきましたが、「結局なんなの？」「仕事で使えるの？」っていうところを改めて書いてみようと思います。
 
@@ -64,7 +64,7 @@ ChatGPTは「**[生成AI（Generative AI）](https://ja.wikipedia.org/wiki/%E7%9
 
 そう思いますよね。実際僕も最初そう思ってた。
 
-でも技術的にはちょっと違って、学習したデータをもとに**「次にくる確率が高い単語・文章」を予測して組み合わせている**んです。
+でも技術的にはちょっと違って、学習したデータをもとに<strong>「次にくる確率が高い単語・文章」を予測して組み合わせている</strong>んです。
 
 詳細は深みにはまると論文読む羽目になるので今日は省きます。笑
 
@@ -156,7 +156,7 @@ ChatGPTには学習データの期限があるので、最新のソフトウェ�
 
 （実際にそういう話を業界で聞いたりします。ほんと怖い。）
 
-なので、ChatGPTはあくまで**「優秀な補佐」**であって、「主役」になれるわけじゃない、というのが今の認識です。
+なので、ChatGPTはあくまで<strong>「優秀な補佐」</strong>であって、「主役」になれるわけじゃない、というのが今の認識です。
 
 ## じゃあエンジニアとしてどう向き合う？
 
@@ -184,6 +184,6 @@ ChatGPTには学習データの期限があるので、最新のソフトウェ�
 
 給料もちょっと上がった。ちょっとだけね。。。。
 
-次は「[Claude](https://ja.wikipedia.org/wiki/Claude_(%E8%A8%80%E8%AA%9E%E3%83%A2%E3%83%87%E3%83%AB))」とか「[GitHub Copilot](https://ja.wikipedia.org/wiki/GitHub_Copilot)」についても書けたらいいなぁと思ってます。ChatGPTだけが生成AIじゃないからね。
+次は「[Claude](https://en.wikipedia.org/wiki/Claude_(language_model))」とか「[GitHub Copilot](https://ja.wikipedia.org/wiki/GitHub_Copilot)」についても書けたらいいなぁと思ってます。ChatGPTだけが生成AIじゃないからね。
 
 それでは。
