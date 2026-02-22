@@ -1,7 +1,7 @@
 ---
 title: "24歳から見た「ChatGPTの世界」とは"
 description: "エンジニア歴5年目の24歳レイが、今さら語るChatGPTの話。使ってみた正直な感想、エンジニアの仕事への影響、そして「AIに仕事を取られる？」という素朴な疑問に向き合います。"
-pubDate: 2025-11-20T22:30:00
+pubDate: 2026-02-22T15:30:00
 slug: 24sai-kara-mita-chatgpt-no-sekai
 author: reiblast1123
 tags: ["生成AI", "ChatGPT", "インフラエンジニア", "IT"]
