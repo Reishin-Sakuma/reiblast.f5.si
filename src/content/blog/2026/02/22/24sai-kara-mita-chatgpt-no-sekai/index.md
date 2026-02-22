@@ -1,7 +1,7 @@
 ---
 title: "24歳から見た「ChatGPTの世界」とは"
 description: "エンジニア歴6年目の24歳レイが語るChatGPT入門。今はClaudeメインだけど、生成AI入口としてのChatGPTの強み・弱み・ユースケースを正直にまとめます。"
-pubDate: 2026-02-22T22:30:00
+pubDate: 2026-02-22T19:00:00
 slug: 24sai-kara-mita-chatgpt-no-sekai
 author: reiblast1123
 tags: ["生成AI", "ChatGPT", "インフラエンジニア", "IT"]
@@ -184,6 +184,6 @@ ChatGPTは生成AIへの「入口」として最高だと思うので、まず�
 
 給料もちょっと上がった。ちょっとだけね。。。。
 
-次は「[Claude](https://en.wikipedia.org/wiki/Claude_(language_model))」とか「[GitHub Copilot](https://ja.wikipedia.org/wiki/GitHub_Copilot)」についても書けたらいいなぁと思ってます。ChatGPTだけが生成AIじゃないからね。
+次は「[Perplexity](https://ja.wikipedia.org/wiki/Perplexity_AI)」についても書こうと思ってます。ChatGPTだけが生成AIじゃないからね。
 
 それでは。

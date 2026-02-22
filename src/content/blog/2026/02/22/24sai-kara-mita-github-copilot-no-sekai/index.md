@@ -1,7 +1,7 @@
 ---
 title: "24歳から見た「GitHub Copilotの世界」とは"
 description: "エンジニア歴6年目の24歳レイが語るGitHub Copilot。ChatGPTとは何が違う？インフラエンジニアでも使えるの？強み・弱み・ユースケースを実感ベースでまとめます。"
-pubDate: 2026-02-22T23:30:00
+pubDate: 2026-02-22T20:30:00
 slug: 24sai-kara-mita-github-copilot-no-sekai
 author: reiblast1123
 tags: ["生成AI", "GitHub Copilot", "インフラエンジニア", "IT"]
@@ -147,7 +147,7 @@ ChatGPTとGitHub Copilotは、生成AIという共通点はあるけど、**使�
 
 使ってみたい人は試してみてください。合う合わないが結構ある気がするので。
 
-僕はまあ、しばらくChatGPTでいいかな、という感じです。笑
+僕はまあ、しばらくClaudeでいいかな、という感じです。笑
 
 ### おわりに
 
@@ -155,6 +155,6 @@ ChatGPTとGitHub Copilotは、生成AIという共通点はあるけど、**使�
 
 いや、内容はちゃんと書いたよ？ただ集中力が持たないだけで。
 
-次は「Claude」についても書こうと思ってますが、今日はもう無理。また今度。
+次は「[Perplexity](https://ja.wikipedia.org/wiki/Perplexity_AI)」について書こうと思ってます。また今度。
 
 ではでは！
