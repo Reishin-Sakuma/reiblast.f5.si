@@ -13,6 +13,7 @@ const { title, description = 'reiblast1123 のプロジェクトポートフォ�
 const adsenseClientId = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site).toString() : new URL('/icon-512x512.png', Astro.site).toString();
+const isProduction = Astro.url.origin === Astro.site?.origin;
 
 const websiteJsonLd = {
   '@context': 'https://schema.org',
@@ -31,6 +32,7 @@ const websiteJsonLd = {
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalURL} />
+    {!isProduction && <meta name="robots" content="noindex" />}
 
     <!-- OGP -->
     <meta property="og:type" content="website" />
