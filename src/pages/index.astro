@@ -161,7 +161,7 @@ const comingSoonProjects = [
         </button>
         <button class="tab-btn" data-tab="blog" role="tab" aria-selected="false" aria-controls="tab-blog">
           <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
-          Blog
+          Blog - 沖縄でエンジニアしてて思ったこと。
         </button>
       </nav>
 
@@ -323,6 +323,16 @@ const comingSoonProjects = [
       </div>
       <!-- Blog Tab -->
       <div id="tab-blog" class="tab-panel" role="tabpanel" hidden>
+        <div class="blog-tab-hero">
+          <div class="blog-tab-hero-inner">
+            <h2 class="blog-tab-title">沖縄でエンジニアしてて思ったこと。</h2>
+            <p class="blog-tab-desc">
+              インフラエンジニアの24歳男子が仕事、趣味、クルマ、社会に対して思ったことを書いてくとこ。<br>
+              新入社員が「なるほど、わからん」なところをゆるく解説します。<br>
+              ※このブログの内容を実践してあなたに降り掛かったいかなる不都合も不幸も怒号も悪夢も僕は責任を取りません。
+            </p>
+          </div>
+        </div>
         <div class="container">
           {sortedPosts.length === 0 ? (
             <p class="no-posts">まだ記事がありません。</p>
@@ -844,6 +854,32 @@ const comingSoonProjects = [
       background: #1a1a1a;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Blog Tab Hero */
+    .blog-tab-hero {
+      padding: 2rem 0 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .blog-tab-hero-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .blog-tab-title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+
+    .blog-tab-desc {
+      font-size: 0.9375rem;
+      opacity: 0.9;
+      line-height: 1.7;
     }
 
     /* Blog Tab */
