@@ -14,10 +14,28 @@ Blog Editor - Flask server
 import os
 import re
 from datetime import datetime
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 from bs4 import BeautifulSoup, NavigableString, Tag
 
 app = Flask(__name__)
+
+# ── Basic 認証 ─────────────────────────────────────────────────────────────
+# 環境変数で設定。BLOG_EDITOR_PASS が空なら認証スキップ（ローカル専用起動時）
+EDITOR_USER = os.environ.get("BLOG_EDITOR_USER", "admin")
+EDITOR_PASS = os.environ.get("BLOG_EDITOR_PASS", "")
+
+@app.before_request
+def require_auth():
+    if not EDITOR_PASS:  # パスワード未設定 → 認証不要
+        return
+    auth = request.authorization
+    if auth and auth.username == EDITOR_USER and auth.password == EDITOR_PASS:
+        return  # 認証OK
+    return Response(
+        "Blog Editor へのアクセスには認証が必要です",
+        401,
+        {"WWW-Authenticate": 'Basic realm="Blog Editor"'},
+    )
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 BLOG_DIR = os.path.join(PROJECT_ROOT, "src/content/blog")
@@ -482,4 +500,4 @@ def delete_post():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, host="0.0.0.0")
+    app.run(debug=False, port=5000, host="0.0.0.0")

@@ -6,17 +6,79 @@
 
 ## 🖥️ GUIエディタで書く（推奨）
 
-`tools/blog-editor/` にローカル WYSIWYG エディタがあります。Ameba ブログのような感覚でブログを書いて、`src/content/blog/` に直接保存できます。VS Code Remote SSH 環境でもポートフォワードが自動で行われるため、そのまま使えます。
+`tools/blog-editor/` にローカル WYSIWYG エディタがあります。Ameba ブログのような感覚でブログを書いて、`src/content/blog/` に直接保存できます。
 
-### 起動方法
+**systemd user service として常時起動済み**のため、ブラウザで開くだけで使えます。
+
+### アクセス
+
+| アクセス方法 | URL |
+|---|---|
+| VS Code Remote SSH（ポートフォワード） | http://localhost:5000 |
+| サーバーの直 IP からアクセス | http://10.0.0.117:5000 |
+
+認証が必要です（ユーザー名 / パスワードは `~/.config/systemd/user/blog-editor.service` で設定）。
+
+### サービス管理
 
 ```bash
 cd tools/blog-editor
-source .venv/bin/activate   # 初回のみ: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
-python server.py
+
+./manage.sh status    # 動作確認
+./manage.sh restart   # 再起動
+./manage.sh log       # リアルタイムログ
+./manage.sh stop      # 停止
+./manage.sh start     # 起動
+./manage.sh passwd    # パスワード変更（service ファイルを開く）
 ```
 
-ブラウザで **http://localhost:5000** を開く。
+### パスワード変更手順
+
+```bash
+# service ファイルを直接編集
+vi ~/.config/systemd/user/blog-editor.service
+# Environment="BLOG_EDITOR_PASS=新しいパスワード" を書き換える
+
+# 反映
+systemctl --user daemon-reload
+./manage.sh restart
+```
+
+### 初回セットアップ（再構築時）
+
+```bash
+cd tools/blog-editor
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+
+mkdir -p ~/.config/systemd/user/
+# ~/.config/systemd/user/blog-editor.service を作成（下記テンプレート参照）
+systemctl --user daemon-reload
+systemctl --user enable blog-editor
+systemctl --user start blog-editor
+loginctl enable-linger $USER   # SSH ログアウト後も動かし続ける
+```
+
+service ファイルのテンプレート（`~/.config/systemd/user/blog-editor.service`）:
+
+```ini
+[Unit]
+Description=Blog Editor (Flask WYSIWYG)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ubuntu/GitRepo/reiblast.f5.si/tools/blog-editor
+ExecStart=/home/ubuntu/GitRepo/reiblast.f5.si/tools/blog-editor/.venv/bin/python server.py
+Restart=on-failure
+RestartSec=5
+Environment="BLOG_EDITOR_USER=rei"
+Environment="BLOG_EDITOR_PASS=パスワードをここに設定"
+
+[Install]
+WantedBy=default.target
+```
+
+> **⚠️ セキュリティ注意**: service ファイルにパスワードが含まれるため **git に追加しないこと**（`.gitignore` 対象外のホームディレクトリに配置しているので問題なし）。
 
 ### 主な機能
 
