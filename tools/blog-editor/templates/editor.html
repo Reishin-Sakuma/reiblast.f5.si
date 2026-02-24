@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>r&gt;_ Blog Editor</title>
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --surface2: #222;
+      --border: #2d2d2d;
+      --yellow: #ffd700;
+      --yellow-dim: #cca800;
+      --text: #e0e0e0;
+      --muted: #777;
+      --green: #7cd300;
+      --red: #ff4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--yellow);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: 17px;
+      color: var(--yellow);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+
+    .ext-toggle {
+      display: flex;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .ext-btn {
+      padding: 4px 14px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      transition: all 0.15s;
+    }
+
+    .ext-btn.active {
+      background: var(--yellow);
+      color: #000;
+      border-color: var(--yellow);
+      font-weight: bold;
+    }
+
+    /* ── Main layout ── */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .left-pane {
+      width: 55%;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .right-pane {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Frontmatter ── */
+    .fm-section {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+      flex-shrink: 0;
+    }
+
+    .fm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .fm-grid .span2 { grid-column: 1 / -1; }
+
+    .fm-field label {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .fm-field input[type="text"],
+    .fm-field input[type="datetime-local"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      transition: border-color 0.15s;
+    }
+
+    .fm-field input:focus {
+      outline: none;
+      border-color: var(--yellow);
+    }
+
+    .fm-bottom-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      align-items: center;
+    }
+
+    .fm-draft {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .fm-draft input[type="checkbox"] {
+      accent-color: var(--yellow);
+    }
+
+    /* ── MDX Imports ── */
+    #imports-section {
+      display: none;
+      padding: 6px 14px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #imports-section.visible { display: block; }
+
+    #imports-section label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    #fm-imports {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--green);
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      resize: vertical;
+      min-height: 52px;
+    }
+
+    #fm-imports:focus {
+      outline: none;
+      border-color: var(--yellow);
+    }
+
+    /* ── Color presets ── */
+    .color-presets {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .color-presets .preset-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-right: 2px;
+    }
+
+    .color-dot {
+      width: 17px;
+      height: 17px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.1s, border-color 0.1s;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.25);
+      border-color: #fff;
+    }
+
+    .color-dot.clear {
+      background: none;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--muted);
+      width: auto;
+      padding: 0 5px;
+    }
+
+    .preset-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+      margin: 0 3px;
+      flex-shrink: 0;
+    }
+
+    /* ── Quill editor area ── */
+    .editor-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ql-toolbar.ql-snow {
+      background: var(--surface);
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 5px 8px;
+      flex-shrink: 0;
+    }
+
+    .ql-container.ql-snow {
+      flex: 1;
+      border: none;
+      background: var(--bg);
+      overflow: auto;
+    }
+
+    .ql-editor {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.85;
+      min-height: 100%;
+      padding: 20px 24px;
+    }
+
+    .ql-editor.ql-blank::before {
+      color: var(--muted);
+      font-style: normal;
+      font-size: 14px;
+    }
+
+    /* Quill toolbar icon colors */
+    .ql-snow .ql-stroke { stroke: #999; }
+    .ql-snow .ql-fill { fill: #999; }
+    .ql-snow .ql-picker { color: #999; }
+    .ql-snow .ql-picker-options {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+    .ql-snow .ql-picker-item { color: var(--text); }
+    .ql-snow .ql-picker-item:hover,
+    .ql-snow .ql-picker-item.ql-selected { color: var(--yellow); }
+    .ql-snow .ql-picker-label:hover,
+    .ql-snow .ql-picker-label.ql-active { color: var(--yellow); }
+    .ql-toolbar.ql-snow button:hover .ql-stroke,
+    .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: var(--yellow); }
+    .ql-toolbar.ql-snow button:hover .ql-fill,
+    .ql-toolbar.ql-snow button.ql-active .ql-fill { fill: var(--yellow); }
+
+    /* Editor content styles */
+    .ql-editor u { text-decoration: underline; }
+    .ql-editor s { text-decoration: line-through; }
+    .ql-editor blockquote {
+      border-left: 3px solid var(--yellow);
+      padding-left: 12px;
+      color: var(--muted);
+    }
+    .ql-editor pre.ql-syntax {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--green);
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    .ql-editor a { color: var(--yellow); }
+
+    /* ── Preview pane ── */
+    .preview-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .preview-header h2 {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .refresh-btn {
+      padding: 3px 10px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.15s;
+    }
+
+    .refresh-btn:hover {
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+
+    #preview {
+      flex: 1;
+      overflow: auto;
+      padding: 16px 18px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #8ab8a0;
+    }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      background: var(--surface);
+      border-top: 2px solid var(--border);
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .save-btn {
+      padding: 7px 26px;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+
+    .save-btn:hover { background: var(--yellow-dim); }
+    .save-btn:active { transform: scale(0.97); }
+
+    #save-path {
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      color: var(--muted);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #status {
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    #status.success { color: var(--green); }
+    #status.error { color: var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <h1>r&gt;_ Blog Editor</h1>
+  <div class="ext-toggle">
+    <button class="ext-btn active" data-ext="md" onclick="setExt('md')">index.md</button>
+    <button class="ext-btn" data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- ── Left: Editor ── -->
+  <div class="left-pane">
+
+    <!-- Frontmatter フォーム -->
+    <div class="fm-section">
+      <div class="fm-grid">
+        <div class="fm-field span2">
+          <label>タイトル</label>
+          <input type="text" id="fm-title" placeholder='24歳から見た「○○の世界」とは'>
+        </div>
+        <div class="fm-field span2">
+          <label>説明文 (description)</label>
+          <input type="text" id="fm-desc" placeholder="記事の説明文">
+        </div>
+        <div class="fm-field">
+          <label>slug</label>
+          <input type="text" id="fm-slug" placeholder="24sai-kara-mita-xxx">
+        </div>
+        <div class="fm-field">
+          <label>pubDate</label>
+          <input type="datetime-local" id="fm-date">
+        </div>
+        <div class="fm-field span2">
+          <label>タグ（カンマ区切り）</label>
+          <input type="text" id="fm-tags" placeholder="技術, 日記, インフラ">
+        </div>
+      </div>
+      <div class="fm-bottom-row">
+        <div class="fm-draft">
+          <input type="checkbox" id="fm-draft">
+          <label for="fm-draft">下書き (draft)</label>
+        </div>
+        <div class="fm-field" style="flex:0 0 200px; margin-left:auto;">
+          <label>updatedDate（任意）</label>
+          <input type="datetime-local" id="fm-updated">
+        </div>
+      </div>
+    </div>
+
+    <!-- MDX imports（.mdx 選択時のみ表示） -->
+    <div id="imports-section">
+      <label>MDX Imports</label>
+      <textarea id="fm-imports" placeholder="import Note from '@/components/blog/Note.astro';&#10;import LinkCard from '@/components/blog/LinkCard.astro';"></textarea>
+    </div>
+
+    <!-- クイックカラープリセット -->
+    <div class="color-presets">
+      <span class="preset-label">文字色</span>
+      <div class="color-dot" style="background:#ff0000" title="赤 #ff0000"    onclick="applyColor('#ff0000')"></div>
+      <div class="color-dot" style="background:#0000ff" title="青 #0000ff"    onclick="applyColor('#0000ff')"></div>
+      <div class="color-dot" style="background:#8f20ff" title="紫 #8f20ff"    onclick="applyColor('#8f20ff')"></div>
+      <div class="color-dot" style="background:#ff7f00" title="オレンジ #ff7f00" onclick="applyColor('#ff7f00')"></div>
+      <div class="color-dot" style="background:#ffd700" title="黄 #ffd700"    onclick="applyColor('#ffd700')"></div>
+      <div class="color-dot" style="background:#ff007d" title="ピンク #ff007d" onclick="applyColor('#ff007d')"></div>
+      <div class="color-dot" style="background:#7cd300" title="黄緑 #7cd300"  onclick="applyColor('#7cd300')"></div>
+      <div class="color-dot" style="background:#ffffff" title="白 #ffffff"    onclick="applyColor('#ffffff')"></div>
+      <div class="color-dot clear" title="色なし" onclick="applyColor(false)">✕</div>
+      <div class="preset-sep"></div>
+      <span class="preset-label">背景</span>
+      <div class="color-dot" style="background:#ffcc00" title="黄ハイライト #ffcc00" onclick="applyBg('#ffcc00')"></div>
+      <div class="color-dot" style="background:#7cd300; opacity:0.7" title="緑ハイライト #7cd300" onclick="applyBg('#7cd300')"></div>
+      <div class="color-dot clear" title="背景なし" onclick="applyBg(false)">✕</div>
+    </div>
+
+    <!-- Quill エディタ -->
+    <div class="editor-wrap">
+      <div id="editor"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Right: Markdown プレビュー ── -->
+  <div class="right-pane">
+    <div class="preview-header">
+      <h2>Markdown プレビュー</h2>
+      <button class="refresh-btn" onclick="refreshPreview()">更新 ↻</button>
+    </div>
+    <pre id="preview">← 「更新 ↻」で Markdown を確認</pre>
+  </div>
+
+</div>
+
+<!-- ── Bottom bar ── -->
+<div class="bottom-bar">
+  <button class="save-btn" onclick="savePost()">保存</button>
+  <span id="save-path"></span>
+  <span id="status"></span>
+</div>
+
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+
+// ── Quill 初期化 ────────────────────────────────────────────────────────
+
+const PRESET_COLORS = [
+  '#ff0000', '#ff007d', '#ff7f00', '#ffd700', '#7cd300',
+  '#0000ff', '#8f20ff', '#00ccff', '#ffffff', '#e0e0e0',
+  '#888888', '#000000', '#ffcc00', '#ccff00',
+];
+
+const quill = new Quill('#editor', {
+  theme: 'snow',
+  placeholder: 'どうも、レイと申します。\n\n本文を書いてください...',
+  modules: {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ color: PRESET_COLORS }, { background: PRESET_COLORS }],
+      ['link', 'blockquote', 'code-block'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
+    ]
+  }
+});
+
+// ── ファイル形式切り替え ────────────────────────────────────────────────
+
+let currentExt = 'md';
+
+function setExt(ext) {
+  currentExt = ext;
+  document.querySelectorAll('.ext-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.ext === ext);
+  });
+  document.getElementById('imports-section').classList.toggle('visible', ext === 'mdx');
+}
+
+// ── クイックカラー ──────────────────────────────────────────────────────
+
+function applyColor(color) {
+  quill.format('color', color || false);
+}
+
+function applyBg(color) {
+  quill.format('background', color || false);
+}
+
+// ── デフォルト日時セット ────────────────────────────────────────────────
+
+(function setDefaultDate() {
+  const now = new Date();
+  // ローカル時刻を datetime-local フォーマットに変換
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
+})();
+
+// ── フロントマターのプレビュー文字列生成 ─────────────────────────────
+
+function buildFrontmatterText() {
+  const title      = document.getElementById('fm-title').value;
+  const desc       = document.getElementById('fm-desc').value;
+  const slug       = document.getElementById('fm-slug').value;
+  const dateVal    = document.getElementById('fm-date').value;
+  const tagsRaw    = document.getElementById('fm-tags').value;
+  const draft      = document.getElementById('fm-draft').checked;
+  const updatedVal = document.getElementById('fm-updated').value;
+
+  const tags    = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  const tagsStr = '[' + tags.map(t => `"${t}"`).join(', ') + ']';
+  const pubDate = dateVal ? dateVal + ':00' : '';
+
+  let fm = `---\ntitle: "${title}"\ndescription: "${desc}"\npubDate: ${pubDate}\nslug: ${slug}\nauthor: reiblast1123\ntags: ${tagsStr}\ndraft: ${draft}`;
+
+  if (updatedVal) {
+    fm += `\nupdatedDate: ${updatedVal}:00`;
+  }
+  fm += '\n---';
+
+  if (currentExt === 'mdx') {
+    const imports = document.getElementById('fm-imports').value.trim();
+    if (imports) fm += '\n\n' + imports;
+  }
+
+  return fm;
+}
+
+// ── プレビュー更新 ──────────────────────────────────────────────────────
+
+async function refreshPreview() {
+  const html = quill.root.innerHTML;
+  try {
+    const res  = await fetch('/api/convert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ html }),
+    });
+    const data = await res.json();
+    document.getElementById('preview').textContent =
+      buildFrontmatterText() + '\n\n' + data.markdown;
+  } catch (e) {
+    document.getElementById('preview').textContent = 'エラー: ' + e.message;
+  }
+}
+
+// ── 保存 ────────────────────────────────────────────────────────────────
+
+async function savePost() {
+  const title      = document.getElementById('fm-title').value.trim();
+  const slug       = document.getElementById('fm-slug').value.trim();
+  const desc       = document.getElementById('fm-desc').value.trim();
+  const dateVal    = document.getElementById('fm-date').value;
+  const tagsRaw    = document.getElementById('fm-tags').value;
+  const draft      = document.getElementById('fm-draft').checked;
+  const updatedVal = document.getElementById('fm-updated').value;
+  const imports    = document.getElementById('fm-imports').value;
+
+  if (!title) { setStatus('タイトルを入力してください', true); return; }
+  if (!slug)  { setStatus('slug を入力してください', true);   return; }
+
+  const tags    = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  const pubDate = dateVal ? dateVal + ':00' : new Date().toISOString().slice(0, 19);
+
+  setStatus('保存中...', false);
+
+  try {
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        description: desc,
+        slug,
+        pubDate,
+        tags,
+        draft,
+        updatedDate: updatedVal ? updatedVal + ':00' : '',
+        imports,
+        ext: currentExt,
+        body: quill.root.innerHTML,
+        author: 'reiblast1123',
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('save-path').textContent = '→ ' + data.path;
+      setStatus('保存しました ✓', false);
+      await refreshPreview();
+    } else {
+      setStatus('エラー: ' + (data.error || JSON.stringify(data)), true);
+    }
+  } catch (e) {
+    setStatus('エラー: ' + e.message, true);
+  }
+}
+
+// ── ステータス表示 ──────────────────────────────────────────────────────
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('status');
+  el.textContent  = msg;
+  el.className    = isError ? 'error' : 'success';
+}
+
+// ── Ctrl+S で保存 ───────────────────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    savePost();
+  }
+});
+
+</script>
+</body>
+</html>
