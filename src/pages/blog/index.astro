@@ -139,8 +139,10 @@ function formatDate(date: Date): string {
       opacity: 0.22;
       pointer-events: none;
       z-index: 0;
-      mask-image: linear-gradient(135deg, black 0%, transparent 20%);
-      -webkit-mask-image: linear-gradient(135deg, black 0%, transparent 20%);
+      mask-image: linear-gradient(135deg, black 0%, transparent 20%),
+                  linear-gradient(315deg, black 0%, transparent 20%);
+      -webkit-mask-image: linear-gradient(135deg, black 0%, transparent 20%),
+                          linear-gradient(315deg, black 0%, transparent 20%);
     }
 
     .minsa-overlay svg {
