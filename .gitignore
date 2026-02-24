@@ -31,3 +31,8 @@ pnpm-debug.log*
 .claude/settings.local.json
 
 XAPI.txt
+
+# Python venv
+.venv/
+__pycache__/
+*.pyc
