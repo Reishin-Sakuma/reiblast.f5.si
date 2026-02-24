@@ -570,24 +570,34 @@ async function savePost() {
 }
 
 // ── 新規 ───────────────────────────────────────────────────────────────────
-function newPost() {
+async function newPost() {
   if (quill.getText().trim() && !confirm('現在の内容を破棄して新規作成しますか？')) return;
-  document.getElementById('fm-title').value = '';
-  document.getElementById('fm-desc').value  = '';
-  document.getElementById('fm-slug').value  = '';
-  document.getElementById('fm-tags').value  = '';
+  document.getElementById('fm-title').value   = '';
+  document.getElementById('fm-desc').value    = '';
+  document.getElementById('fm-slug').value    = '';
+  document.getElementById('fm-tags').value    = '';
   document.getElementById('fm-draft').checked = false;
   document.getElementById('fm-updated').value = '';
   document.getElementById('fm-imports').value = '';
   const now = new Date();
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
   document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
-  quill.root.innerHTML = '';
   originalPath = '';
   document.getElementById('save-path').textContent = '';
-  document.getElementById('preview').textContent = '← 「更新 ↻」で Markdown を確認';
+  document.getElementById('preview').textContent   = '← 「更新 ↻」で Markdown を確認';
   setStatus('', false);
   setExt('md');
+  await loadTemplate();
+}
+
+async function loadTemplate() {
+  try {
+    const res  = await fetch('/api/template');
+    const data = await res.json();
+    quill.root.innerHTML = data.bodyHtml || '';
+  } catch (_) {
+    quill.root.innerHTML = '';
+  }
 }
 
 // ── ステータス表示 ─────────────────────────────────────────────────────────
@@ -734,6 +744,9 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); savePost(); }
   if (e.key === 'Escape') closeDrawer();
 });
+
+// ── 初期ロード時にテンプレートを展開 ────────────────────────────────────────
+loadTemplate();
 
 </script>
 </body>

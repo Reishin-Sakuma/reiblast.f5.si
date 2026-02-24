@@ -2,7 +2,52 @@
 
 このドキュメントでは、ポートフォリオサイトのブログ機能の使い方を説明します。
 
-## 📝 記事の作成
+---
+
+## 🖥️ GUIエディタで書く（推奨）
+
+`tools/blog-editor/` にローカル WYSIWYG エディタがあります。Ameba ブログのような感覚でブログを書いて、`src/content/blog/` に直接保存できます。VS Code Remote SSH 環境でもポートフォワードが自動で行われるため、そのまま使えます。
+
+### 起動方法
+
+```bash
+cd tools/blog-editor
+source .venv/bin/activate   # 初回のみ: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+python server.py
+```
+
+ブラウザで **http://localhost:5000** を開く。
+
+### 主な機能
+
+| 機能 | 操作 |
+|------|------|
+| 太字・斜体・下線・取り消し線 | ツールバーボタン or ショートカット |
+| 文字色・背景色 | 上部のカラードット（よく使う色をプリセット済み） |
+| 記事一覧・編集・削除 | ヘッダーの「📂 記事一覧」 |
+| .md / .mdx 切り替え | 右上のトグル |
+| MDXコンポーネント挿入 | .mdx モード時に表示されるプリセットボタン |
+| 保存 | 「保存」ボタン または `Ctrl+S` |
+| Markdownプレビュー | 「更新 ↻」で右ペインに表示 |
+
+### GUIエディタでの公開フロー
+
+```bash
+# 1. エディタで記事を書いて「保存」
+#    → src/content/blog/YYYY/MM/DD/<slug>/index.md に自動保存される
+
+# 2. ビルド確認
+npm run build
+
+# 3. コミット & プッシュ → Cloudflare Pages が自動デプロイ
+git add src/content/blog/
+git commit -m "Add new blog post: 記事タイトル"
+git push origin main
+```
+
+---
+
+## 📝 手動で記事を作成する
 
 ### 1. 新しい記事ファイルを作成
 

@@ -21,6 +21,7 @@ app = Flask(__name__)
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 BLOG_DIR = os.path.join(PROJECT_ROOT, "src/content/blog")
+TEMPLATE_PATH = os.path.join(PROJECT_ROOT, "blog-template.md")
 
 
 # ── HTML → Markdown 変換 ───────────────────────────────────────────────────
@@ -311,6 +312,22 @@ def parse_frontmatter(raw: str) -> tuple[dict, str]:
 @app.route("/")
 def index():
     return render_template("editor.html")
+
+
+@app.route("/api/template")
+def get_template():
+    """blog-template.md の本文を Quill HTML に変換して返す"""
+    if not os.path.exists(TEMPLATE_PATH):
+        return jsonify({"bodyHtml": "", "success": True})
+
+    with open(TEMPLATE_PATH, encoding="utf-8") as f:
+        raw = f.read()
+
+    _, body = parse_frontmatter(raw)
+    # HTML コメント除去（テンプレートの説明コメントは不要）
+    body = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
+    body_html = markdown_to_quill_html(body.strip())
+    return jsonify({"bodyHtml": body_html, "success": True})
 
 
 @app.route("/api/convert", methods=["POST"])
