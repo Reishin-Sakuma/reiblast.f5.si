@@ -7,6 +7,7 @@ const { Content: ProfileContent } = await profileEntry.render();
 
 const allPosts = await getCollection('blog', ({ data }) => data.draft !== true);
 const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags ?? []))];
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('ja-JP', {
@@ -431,9 +432,16 @@ const comingSoonProjects = [
           {sortedPosts.length === 0 ? (
             <p class="no-posts">まだ記事がありません。</p>
           ) : (
+            <>
+              <div class="blog-tag-filter">
+                <button class="blog-filter-btn active" data-tag="all">すべて</button>
+                {allTags.map(tag => (
+                  <button class="blog-filter-btn" data-tag={tag}>{tag}</button>
+                ))}
+              </div>
             <div class="blog-grid">
               {sortedPosts.map((post) => (
-                <article class="blog-card">
+                <article class="blog-card" data-tags={post.data.tags?.join(',') ?? ''}>
                   <a href={`/blog/${post.slug}`} class="blog-link">
                     <div class="blog-card-header">
                       <time class="blog-date" datetime={post.data.pubDate.toISOString()}>
@@ -454,6 +462,7 @@ const comingSoonProjects = [
                 </article>
               ))}
             </div>
+            </>
           )}
         </div>
       </div>
@@ -509,6 +518,19 @@ const comingSoonProjects = [
     if (hash && document.getElementById(`tab-${hash}`)) {
       activateTab(hash);
     }
+
+    // Blog tab tag filter
+    document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tag = btn.dataset.tag;
+        document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll<HTMLElement>('#tab-blog .blog-card').forEach(card => {
+          const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
+          card.style.display = (tag === 'all' || tags.includes(tag!)) ? '' : 'none';
+        });
+      });
+    });
   </script>
 
   <style>
@@ -1078,6 +1100,36 @@ const comingSoonProjects = [
       font-weight: 600;
       color: var(--primary);
       margin-top: auto;
+    }
+
+    .blog-tag-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .blog-filter-btn {
+      padding: 0.375rem 0.875rem;
+      border: 2px solid var(--border);
+      border-radius: 2rem;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .blog-filter-btn:hover {
+      border-color: #111111;
+      color: #111111;
+    }
+
+    .blog-filter-btn.active {
+      background: #111111;
+      border-color: #111111;
+      color: #FFD700;
     }
 
     /* Profile Tab */
