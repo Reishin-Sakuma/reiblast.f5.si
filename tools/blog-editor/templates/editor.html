@@ -14,13 +14,11 @@
       --yellow: #ffd700;
       --yellow-dim: #cca800;
       --text: #e0e0e0;
-      --muted: #777;
+      --muted: #666;
       --green: #7cd300;
       --red: #ff4444;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -35,392 +33,245 @@
     header {
       background: var(--surface);
       border-bottom: 2px solid var(--yellow);
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-shrink: 0;
-    }
-
-    header h1 {
-      font-size: 17px;
-      color: var(--yellow);
-      font-family: 'Courier New', monospace;
-      letter-spacing: 1px;
-    }
-
-    .ext-toggle {
-      display: flex;
-      gap: 4px;
-      margin-left: auto;
-    }
-
-    .ext-btn {
-      padding: 4px 14px;
-      border: 1px solid var(--border);
-      background: none;
-      color: var(--muted);
-      cursor: pointer;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      transition: all 0.15s;
-    }
-
-    .ext-btn.active {
-      background: var(--yellow);
-      color: #000;
-      border-color: var(--yellow);
-      font-weight: bold;
-    }
-
-    /* ── Main layout ── */
-    .main {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .left-pane {
-      width: 55%;
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .right-pane {
-      width: 45%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* ── Frontmatter ── */
-    .fm-section {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 14px;
-      flex-shrink: 0;
-    }
-
-    .fm-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .fm-grid .span2 { grid-column: 1 / -1; }
-
-    .fm-field label {
-      display: block;
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 2px;
-    }
-
-    .fm-field input[type="text"],
-    .fm-field input[type="datetime-local"] {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 5px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-family: 'Courier New', monospace;
-      transition: border-color 0.15s;
-    }
-
-    .fm-field input:focus {
-      outline: none;
-      border-color: var(--yellow);
-    }
-
-    .fm-bottom-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
-      align-items: center;
-    }
-
-    .fm-draft {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      color: var(--muted);
-      flex-shrink: 0;
-    }
-
-    .fm-draft input[type="checkbox"] {
-      accent-color: var(--yellow);
-    }
-
-    /* ── MDX Imports ── */
-    #imports-section {
-      display: none;
-      padding: 6px 14px;
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    #imports-section.visible { display: block; }
-
-    #imports-section label {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    #fm-imports {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--green);
-      padding: 5px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-family: 'Courier New', monospace;
-      resize: vertical;
-      min-height: 52px;
-    }
-
-    #fm-imports:focus {
-      outline: none;
-      border-color: var(--yellow);
-    }
-
-    /* ── Color presets ── */
-    .color-presets {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 5px 14px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      flex-wrap: wrap;
-    }
-
-    .color-presets .preset-label {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-right: 2px;
-    }
-
-    .color-dot {
-      width: 17px;
-      height: 17px;
-      border-radius: 3px;
-      border: 1px solid rgba(255,255,255,0.15);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: transform 0.1s, border-color 0.1s;
-    }
-
-    .color-dot:hover {
-      transform: scale(1.25);
-      border-color: #fff;
-    }
-
-    .color-dot.clear {
-      background: none;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: var(--muted);
-      width: auto;
-      padding: 0 5px;
-    }
-
-    .preset-sep {
-      width: 1px;
-      height: 14px;
-      background: var(--border);
-      margin: 0 3px;
-      flex-shrink: 0;
-    }
-
-    /* ── Quill editor area ── */
-    .editor-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    #editor {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .ql-toolbar.ql-snow {
-      background: var(--surface);
-      border: none;
-      border-bottom: 1px solid var(--border);
-      padding: 5px 8px;
-      flex-shrink: 0;
-    }
-
-    .ql-container.ql-snow {
-      flex: 1;
-      border: none;
-      background: var(--bg);
-      overflow: auto;
-    }
-
-    .ql-editor {
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.85;
-      min-height: 100%;
-      padding: 20px 24px;
-    }
-
-    .ql-editor.ql-blank::before {
-      color: var(--muted);
-      font-style: normal;
-      font-size: 14px;
-    }
-
-    /* Quill toolbar icon colors */
-    .ql-snow .ql-stroke { stroke: #999; }
-    .ql-snow .ql-fill { fill: #999; }
-    .ql-snow .ql-picker { color: #999; }
-    .ql-snow .ql-picker-options {
-      background: var(--surface);
-      border-color: var(--border);
-    }
-    .ql-snow .ql-picker-item { color: var(--text); }
-    .ql-snow .ql-picker-item:hover,
-    .ql-snow .ql-picker-item.ql-selected { color: var(--yellow); }
-    .ql-snow .ql-picker-label:hover,
-    .ql-snow .ql-picker-label.ql-active { color: var(--yellow); }
-    .ql-toolbar.ql-snow button:hover .ql-stroke,
-    .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: var(--yellow); }
-    .ql-toolbar.ql-snow button:hover .ql-fill,
-    .ql-toolbar.ql-snow button.ql-active .ql-fill { fill: var(--yellow); }
-
-    /* Editor content styles */
-    .ql-editor u { text-decoration: underline; }
-    .ql-editor s { text-decoration: line-through; }
-    .ql-editor blockquote {
-      border-left: 3px solid var(--yellow);
-      padding-left: 12px;
-      color: var(--muted);
-    }
-    .ql-editor pre.ql-syntax {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--green);
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-    }
-    .ql-editor a { color: var(--yellow); }
-
-    /* ── Preview pane ── */
-    .preview-header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-
-    .preview-header h2 {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .refresh-btn {
-      padding: 3px 10px;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.15s;
-    }
-
-    .refresh-btn:hover {
-      border-color: var(--yellow);
-      color: var(--yellow);
-    }
-
-    #preview {
-      flex: 1;
-      overflow: auto;
-      padding: 16px 18px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      line-height: 1.65;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: #8ab8a0;
-    }
-
-    /* ── Bottom bar ── */
-    .bottom-bar {
-      background: var(--surface);
-      border-top: 2px solid var(--border);
       padding: 9px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
       flex-shrink: 0;
     }
-
-    .save-btn {
-      padding: 7px 26px;
-      background: var(--yellow);
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.15s;
-      flex-shrink: 0;
-    }
-
-    .save-btn:hover { background: var(--yellow-dim); }
-    .save-btn:active { transform: scale(0.97); }
-
-    #save-path {
-      font-size: 11px;
-      font-family: 'Courier New', monospace;
+    header h1 { font-size: 16px; color: var(--yellow); font-family: 'Courier New', monospace; }
+    .header-btn {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      background: none;
       color: var(--muted);
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: all 0.15s;
     }
+    .header-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .ext-toggle { display: flex; gap: 3px; margin-left: auto; }
+    .ext-btn {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .ext-btn.active { background: var(--yellow); color: #000; border-color: var(--yellow); font-weight: bold; }
 
-    #status {
-      font-size: 13px;
+    /* ── Main ── */
+    .main { display: flex; flex: 1; overflow: hidden; }
+    .left-pane { width: 55%; display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow: hidden; }
+    .right-pane { width: 45%; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Frontmatter ── */
+    .fm-section { background: var(--surface); border-bottom: 1px solid var(--border); padding: 9px 13px; flex-shrink: 0; }
+    .fm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .fm-grid .span2 { grid-column: 1 / -1; }
+    .fm-field label { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .fm-field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+    }
+    .fm-field input:focus { outline: none; border-color: var(--yellow); }
+    .fm-bottom-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
+    .fm-draft { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+    .fm-draft input[type="checkbox"] { accent-color: var(--yellow); }
+
+    /* ── MDX Imports ── */
+    #imports-section { display: none; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    #imports-section.visible { display: block; }
+    .imports-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .imports-header label { font-size: 10px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
+    .import-preset-btn {
+      padding: 2px 9px;
+      border: 1px solid #3a3a00;
+      background: #1a1a00;
+      color: var(--yellow);
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 11px;
+      transition: all 0.1s;
+    }
+    .import-preset-btn:hover { background: #2a2a00; border-color: var(--yellow); }
+    .insert-preset-btn {
+      padding: 2px 9px;
+      border: 1px solid #003a00;
+      background: #001a00;
+      color: var(--green);
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 11px;
+      transition: all 0.1s;
+    }
+    .insert-preset-btn:hover { background: #002a00; border-color: var(--green); }
+    .imports-sep { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
+    #fm-imports {
+      display: block;
+      width: 100%;
+      background: var(--bg);
+      border: none;
+      color: var(--green);
+      padding: 5px 13px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      resize: vertical;
+      min-height: 48px;
+    }
+    #fm-imports:focus { outline: none; }
+
+    /* ── Color presets ── */
+    .color-presets {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 13px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
+    .color-presets .pl { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-right: 2px; }
+    .color-dot {
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer; flex-shrink: 0;
+      transition: transform 0.1s;
+    }
+    .color-dot:hover { transform: scale(1.3); border-color: #fff; }
+    .color-dot.clear {
+      background: none; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--muted); width: auto; padding: 0 4px;
+    }
+    .psep { width: 1px; height: 13px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
 
+    /* ── Editor ── */
+    .editor-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    #editor { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .ql-toolbar.ql-snow { background: var(--surface); border: none; border-bottom: 1px solid var(--border); padding: 4px 8px; flex-shrink: 0; }
+    .ql-container.ql-snow { flex: 1; border: none; background: var(--bg); overflow: auto; }
+    .ql-editor { color: var(--text); font-size: 15px; line-height: 1.85; min-height: 100%; padding: 18px 22px; }
+    .ql-editor.ql-blank::before { color: var(--muted); font-style: normal; font-size: 14px; }
+    .ql-snow .ql-stroke { stroke: #888; }
+    .ql-snow .ql-fill { fill: #888; }
+    .ql-snow .ql-picker { color: #888; }
+    .ql-snow .ql-picker-options { background: var(--surface); border-color: var(--border); }
+    .ql-snow .ql-picker-item { color: var(--text); }
+    .ql-snow .ql-picker-item:hover, .ql-snow .ql-picker-item.ql-selected { color: var(--yellow); }
+    .ql-snow .ql-picker-label:hover, .ql-snow .ql-picker-label.ql-active { color: var(--yellow); }
+    .ql-toolbar.ql-snow button:hover .ql-stroke, .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: var(--yellow); }
+    .ql-toolbar.ql-snow button:hover .ql-fill, .ql-toolbar.ql-snow button.ql-active .ql-fill { fill: var(--yellow); }
+    .ql-editor u { text-decoration: underline; }
+    .ql-editor s { text-decoration: line-through; }
+    .ql-editor blockquote { border-left: 3px solid var(--yellow); padding-left: 12px; color: var(--muted); }
+    .ql-editor pre.ql-syntax { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--green); font-size: 13px; }
+    .ql-editor a { color: var(--yellow); }
+
+    /* ── Preview ── */
+    .preview-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 7px 13px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .preview-header h2 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .refresh-btn { padding: 3px 9px; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .refresh-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    #preview { flex: 1; overflow: auto; padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: #7aad88; }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 8px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .save-btn { padding: 6px 22px; background: var(--yellow); color: #000; border: none; border-radius: 4px; font-weight: bold; font-size: 13px; cursor: pointer; }
+    .save-btn:hover { background: var(--yellow-dim); }
+    .new-btn { padding: 6px 14px; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; font-size: 13px; cursor: pointer; }
+    .new-btn:hover { border-color: var(--green); color: var(--green); }
+    #save-path { font-size: 11px; font-family: 'Courier New', monospace; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #status { font-size: 12px; flex-shrink: 0; }
     #status.success { color: var(--green); }
     #status.error { color: var(--red); }
+
+    /* ── Article List Drawer ── */
+    .drawer-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+    }
+    .drawer-overlay.open { display: block; }
+    .drawer {
+      position: fixed;
+      top: 0; left: -420px;
+      width: 400px; height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      z-index: 101;
+      display: flex; flex-direction: column;
+      transition: left 0.25s ease;
+    }
+    .drawer.open { left: 0; }
+    .drawer-header {
+      background: #111;
+      border-bottom: 2px solid var(--yellow);
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .drawer-header h2 { font-size: 14px; color: var(--yellow); font-family: 'Courier New', monospace; }
+    .drawer-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 4px; }
+    .drawer-close:hover { color: var(--text); }
+    .drawer-search { padding: 10px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .drawer-search input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 6px 10px; border-radius: 4px;
+      font-size: 13px; font-family: 'Courier New', monospace;
+    }
+    .drawer-search input:focus { outline: none; border-color: var(--yellow); }
+    #post-list { flex: 1; overflow-y: auto; }
+    .year-group { padding: 6px 14px 2px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-top: 1px solid var(--border); margin-top: 4px; }
+    .post-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      border-bottom: 1px solid #1f1f1f;
+      transition: background 0.1s;
+    }
+    .post-item:hover { background: #1f1f1f; }
+    .post-info { flex: 1; min-width: 0; }
+    .post-title { font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .post-path { font-size: 10px; color: var(--muted); font-family: 'Courier New', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .post-ext { font-size: 10px; color: var(--yellow); font-family: 'Courier New', monospace; flex-shrink: 0; }
+    .edit-btn {
+      padding: 3px 8px; border: 1px solid var(--border); background: none;
+      color: var(--muted); border-radius: 3px; cursor: pointer; font-size: 11px; flex-shrink: 0;
+    }
+    .edit-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .del-btn {
+      padding: 3px 8px; border: 1px solid var(--border); background: none;
+      color: var(--muted); border-radius: 3px; cursor: pointer; font-size: 11px; flex-shrink: 0;
+    }
+    .del-btn:hover { border-color: var(--red); color: var(--red); }
+    .no-posts { padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
   </style>
 </head>
 <body>
@@ -428,9 +279,10 @@
 <!-- ── Header ── -->
 <header>
   <h1>r&gt;_ Blog Editor</h1>
+  <button class="header-btn" onclick="openDrawer()">📂 記事一覧</button>
   <div class="ext-toggle">
-    <button class="ext-btn active" data-ext="md" onclick="setExt('md')">index.md</button>
-    <button class="ext-btn" data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
+    <button class="ext-btn active" data-ext="md"  onclick="setExt('md')">index.md</button>
+    <button class="ext-btn"        data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
   </div>
 </header>
 
@@ -439,7 +291,7 @@
   <!-- ── Left: Editor ── -->
   <div class="left-pane">
 
-    <!-- Frontmatter フォーム -->
+    <!-- Frontmatter -->
     <div class="fm-section">
       <div class="fm-grid">
         <div class="fm-field span2">
@@ -468,22 +320,36 @@
           <input type="checkbox" id="fm-draft">
           <label for="fm-draft">下書き (draft)</label>
         </div>
-        <div class="fm-field" style="flex:0 0 200px; margin-left:auto;">
+        <div class="fm-field" style="flex:0 0 195px; margin-left:auto;">
           <label>updatedDate（任意）</label>
           <input type="datetime-local" id="fm-updated">
         </div>
       </div>
     </div>
 
-    <!-- MDX imports（.mdx 選択時のみ表示） -->
+    <!-- MDX Imports -->
     <div id="imports-section">
-      <label>MDX Imports</label>
-      <textarea id="fm-imports" placeholder="import Note from '@/components/blog/Note.astro';&#10;import LinkCard from '@/components/blog/LinkCard.astro';"></textarea>
+      <div class="imports-header">
+        <label>imports</label>
+        <button class="import-preset-btn" onclick="addImport('Note')">+ Note</button>
+        <button class="import-preset-btn" onclick="addImport('LinkCard')">+ LinkCard</button>
+        <button class="import-preset-btn" onclick="addImport('Details')">+ Details</button>
+        <div class="imports-sep"></div>
+        <label>挿入:</label>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','info')">Note(info)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','warning')">Note(warn)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','tip')">Note(tip)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','danger')">Note(!)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('LinkCard')">LinkCard</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Details')">Details</button>
+      </div>
+      <textarea id="fm-imports" rows="2"
+        placeholder="import Note from '@/components/blog/Note.astro';&#10;import LinkCard from '@/components/blog/LinkCard.astro';"></textarea>
     </div>
 
-    <!-- クイックカラープリセット -->
+    <!-- Quick color presets -->
     <div class="color-presets">
-      <span class="preset-label">文字色</span>
+      <span class="pl">文字色</span>
       <div class="color-dot" style="background:#ff0000" title="赤 #ff0000"    onclick="applyColor('#ff0000')"></div>
       <div class="color-dot" style="background:#0000ff" title="青 #0000ff"    onclick="applyColor('#0000ff')"></div>
       <div class="color-dot" style="background:#8f20ff" title="紫 #8f20ff"    onclick="applyColor('#8f20ff')"></div>
@@ -491,23 +357,23 @@
       <div class="color-dot" style="background:#ffd700" title="黄 #ffd700"    onclick="applyColor('#ffd700')"></div>
       <div class="color-dot" style="background:#ff007d" title="ピンク #ff007d" onclick="applyColor('#ff007d')"></div>
       <div class="color-dot" style="background:#7cd300" title="黄緑 #7cd300"  onclick="applyColor('#7cd300')"></div>
-      <div class="color-dot" style="background:#ffffff" title="白 #ffffff"    onclick="applyColor('#ffffff')"></div>
+      <div class="color-dot" style="background:#fff"    title="白 #ffffff"    onclick="applyColor('#ffffff')"></div>
       <div class="color-dot clear" title="色なし" onclick="applyColor(false)">✕</div>
-      <div class="preset-sep"></div>
-      <span class="preset-label">背景</span>
-      <div class="color-dot" style="background:#ffcc00" title="黄ハイライト #ffcc00" onclick="applyBg('#ffcc00')"></div>
-      <div class="color-dot" style="background:#7cd300; opacity:0.7" title="緑ハイライト #7cd300" onclick="applyBg('#7cd300')"></div>
+      <div class="psep"></div>
+      <span class="pl">背景</span>
+      <div class="color-dot" style="background:#ffcc00"           title="黄ハイライト" onclick="applyBg('#ffcc00')"></div>
+      <div class="color-dot" style="background:#7cd300;opacity:.6" title="緑ハイライト" onclick="applyBg('#7cd300')"></div>
       <div class="color-dot clear" title="背景なし" onclick="applyBg(false)">✕</div>
     </div>
 
-    <!-- Quill エディタ -->
+    <!-- Quill -->
     <div class="editor-wrap">
       <div id="editor"></div>
     </div>
 
   </div>
 
-  <!-- ── Right: Markdown プレビュー ── -->
+  <!-- ── Right: Preview ── -->
   <div class="right-pane">
     <div class="preview-header">
       <h2>Markdown プレビュー</h2>
@@ -521,21 +387,32 @@
 <!-- ── Bottom bar ── -->
 <div class="bottom-bar">
   <button class="save-btn" onclick="savePost()">保存</button>
+  <button class="new-btn" onclick="newPost()">＋ 新規</button>
   <span id="save-path"></span>
   <span id="status"></span>
+</div>
+
+<!-- ── Article List Drawer ── -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>📂 記事一覧</h2>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-search">
+    <input type="text" id="drawer-search" placeholder="タイトル検索..." oninput="filterPosts(this.value)">
+  </div>
+  <div id="post-list"><div class="no-posts">読み込み中...</div></div>
 </div>
 
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 
-// ── Quill 初期化 ────────────────────────────────────────────────────────
-
+// ── Quill ──────────────────────────────────────────────────────────────────
 const PRESET_COLORS = [
-  '#ff0000', '#ff007d', '#ff7f00', '#ffd700', '#7cd300',
-  '#0000ff', '#8f20ff', '#00ccff', '#ffffff', '#e0e0e0',
-  '#888888', '#000000', '#ffcc00', '#ccff00',
+  '#ff0000','#ff007d','#ff7f00','#ffd700','#7cd300',
+  '#0000ff','#8f20ff','#00ccff','#ffffff','#e0e0e0','#888','#000','#ffcc00',
 ];
-
 const quill = new Quill('#editor', {
   theme: 'snow',
   placeholder: 'どうも、レイと申します。\n\n本文を書いてください...',
@@ -551,126 +428,136 @@ const quill = new Quill('#editor', {
   }
 });
 
-// ── ファイル形式切り替え ────────────────────────────────────────────────
-
+// ── 状態 ──────────────────────────────────────────────────────────────────
 let currentExt = 'md';
+let originalPath = '';   // 編集中の既存記事パス（新規なら空）
+let allPosts = [];       // 記事一覧キャッシュ
 
+// ── 拡張子切り替え ─────────────────────────────────────────────────────────
 function setExt(ext) {
   currentExt = ext;
-  document.querySelectorAll('.ext-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.ext === ext);
-  });
+  document.querySelectorAll('.ext-btn').forEach(b => b.classList.toggle('active', b.dataset.ext === ext));
   document.getElementById('imports-section').classList.toggle('visible', ext === 'mdx');
 }
 
-// ── クイックカラー ──────────────────────────────────────────────────────
+// ── カラー適用 ─────────────────────────────────────────────────────────────
+function applyColor(c) { quill.format('color', c || false); }
+function applyBg(c)    { quill.format('background', c || false); }
 
-function applyColor(color) {
-  quill.format('color', color || false);
+// ── MDX コンポーネントプリセット ───────────────────────────────────────────
+const IMPORT_MAP = {
+  Note:     "import Note from '@/components/blog/Note.astro';",
+  LinkCard: "import LinkCard from '@/components/blog/LinkCard.astro';",
+  Details:  "import Details from '@/components/blog/Details.astro';",
+};
+
+const COMPONENT_TEMPLATES = {
+  'Note-info':    '<Note type="info" title="情報">ここに内容を書く</Note>',
+  'Note-warning': '<Note type="warning" title="注意">ここに内容を書く</Note>',
+  'Note-tip':     '<Note type="tip" title="ヒント">ここに内容を書く</Note>',
+  'Note-danger':  '<Note type="danger" title="警告">ここに内容を書く</Note>',
+  'LinkCard':     '<LinkCard url="https://example.com" />',
+  'Details':      '<Details summary="詳細を見る">ここに内容を書く</Details>',
+};
+
+function addImport(component) {
+  const ta = document.getElementById('fm-imports');
+  const line = IMPORT_MAP[component];
+  if (!ta.value.includes(line)) {
+    ta.value = ta.value.trim() ? ta.value.trim() + '\n' + line : line;
+  }
 }
 
-function applyBg(color) {
-  quill.format('background', color || false);
+function insertComponent(type, variant) {
+  const key = variant ? `${type}-${variant}` : type;
+  const tpl = COMPONENT_TEMPLATES[key];
+  if (!tpl) return;
+  const range = quill.getSelection(true);
+  quill.clipboard.dangerouslyPasteHTML(range ? range.index : quill.getLength(), `<p>${tpl}</p>`);
+  addImport(type);  // import も自動追加
 }
 
-// ── デフォルト日時セット ────────────────────────────────────────────────
-
+// ── 初期日時 ───────────────────────────────────────────────────────────────
 (function setDefaultDate() {
   const now = new Date();
-  // ローカル時刻を datetime-local フォーマットに変換
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
   document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
 })();
 
-// ── フロントマターのプレビュー文字列生成 ─────────────────────────────
-
+// ── フロントマタープレビュー文字列 ────────────────────────────────────────
 function buildFrontmatterText() {
-  const title      = document.getElementById('fm-title').value;
-  const desc       = document.getElementById('fm-desc').value;
-  const slug       = document.getElementById('fm-slug').value;
-  const dateVal    = document.getElementById('fm-date').value;
-  const tagsRaw    = document.getElementById('fm-tags').value;
-  const draft      = document.getElementById('fm-draft').checked;
-  const updatedVal = document.getElementById('fm-updated').value;
-
+  const title   = document.getElementById('fm-title').value;
+  const desc    = document.getElementById('fm-desc').value;
+  const slug    = document.getElementById('fm-slug').value;
+  const dateVal = document.getElementById('fm-date').value;
+  const tagsRaw = document.getElementById('fm-tags').value;
+  const draft   = document.getElementById('fm-draft').checked;
+  const updated = document.getElementById('fm-updated').value;
   const tags    = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
   const tagsStr = '[' + tags.map(t => `"${t}"`).join(', ') + ']';
   const pubDate = dateVal ? dateVal + ':00' : '';
-
   let fm = `---\ntitle: "${title}"\ndescription: "${desc}"\npubDate: ${pubDate}\nslug: ${slug}\nauthor: reiblast1123\ntags: ${tagsStr}\ndraft: ${draft}`;
-
-  if (updatedVal) {
-    fm += `\nupdatedDate: ${updatedVal}:00`;
-  }
+  if (updated) fm += `\nupdatedDate: ${updated}:00`;
   fm += '\n---';
-
   if (currentExt === 'mdx') {
     const imports = document.getElementById('fm-imports').value.trim();
     if (imports) fm += '\n\n' + imports;
   }
-
   return fm;
 }
 
-// ── プレビュー更新 ──────────────────────────────────────────────────────
-
+// ── プレビュー ─────────────────────────────────────────────────────────────
 async function refreshPreview() {
-  const html = quill.root.innerHTML;
   try {
-    const res  = await fetch('/api/convert', {
+    const res = await fetch('/api/convert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ html }),
+      body: JSON.stringify({ html: quill.root.innerHTML }),
     });
     const data = await res.json();
-    document.getElementById('preview').textContent =
-      buildFrontmatterText() + '\n\n' + data.markdown;
+    document.getElementById('preview').textContent = buildFrontmatterText() + '\n\n' + data.markdown;
   } catch (e) {
     document.getElementById('preview').textContent = 'エラー: ' + e.message;
   }
 }
 
-// ── 保存 ────────────────────────────────────────────────────────────────
-
+// ── 保存 ───────────────────────────────────────────────────────────────────
 async function savePost() {
-  const title      = document.getElementById('fm-title').value.trim();
-  const slug       = document.getElementById('fm-slug').value.trim();
-  const desc       = document.getElementById('fm-desc').value.trim();
-  const dateVal    = document.getElementById('fm-date').value;
-  const tagsRaw    = document.getElementById('fm-tags').value;
-  const draft      = document.getElementById('fm-draft').checked;
-  const updatedVal = document.getElementById('fm-updated').value;
-  const imports    = document.getElementById('fm-imports').value;
-
+  const title   = document.getElementById('fm-title').value.trim();
+  const slug    = document.getElementById('fm-slug').value.trim();
   if (!title) { setStatus('タイトルを入力してください', true); return; }
   if (!slug)  { setStatus('slug を入力してください', true);   return; }
 
-  const tags    = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  const dateVal = document.getElementById('fm-date').value;
+  const tagsRaw = document.getElementById('fm-tags').value;
   const pubDate = dateVal ? dateVal + ':00' : new Date().toISOString().slice(0, 19);
+  const updated = document.getElementById('fm-updated').value;
 
   setStatus('保存中...', false);
-
   try {
     const res = await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title,
-        description: desc,
+        description: document.getElementById('fm-desc').value.trim(),
         slug,
         pubDate,
-        tags,
-        draft,
-        updatedDate: updatedVal ? updatedVal + ':00' : '',
-        imports,
+        tags: tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
+        draft: document.getElementById('fm-draft').checked,
+        updatedDate: updated ? updated + ':00' : '',
+        imports: document.getElementById('fm-imports').value,
         ext: currentExt,
         body: quill.root.innerHTML,
         author: 'reiblast1123',
+        originalPath,
       }),
     });
-
     const data = await res.json();
     if (data.success) {
+      // 保存後は元ファイルが消えているので追跡パスを更新
+      const relFromBlog = data.path.replace(/^src\/content\/blog\//, '');
+      originalPath = relFromBlog;
       document.getElementById('save-path').textContent = '→ ' + data.path;
       setStatus('保存しました ✓', false);
       await refreshPreview();
@@ -682,21 +569,170 @@ async function savePost() {
   }
 }
 
-// ── ステータス表示 ──────────────────────────────────────────────────────
-
-function setStatus(msg, isError) {
-  const el = document.getElementById('status');
-  el.textContent  = msg;
-  el.className    = isError ? 'error' : 'success';
+// ── 新規 ───────────────────────────────────────────────────────────────────
+function newPost() {
+  if (quill.getText().trim() && !confirm('現在の内容を破棄して新規作成しますか？')) return;
+  document.getElementById('fm-title').value = '';
+  document.getElementById('fm-desc').value  = '';
+  document.getElementById('fm-slug').value  = '';
+  document.getElementById('fm-tags').value  = '';
+  document.getElementById('fm-draft').checked = false;
+  document.getElementById('fm-updated').value = '';
+  document.getElementById('fm-imports').value = '';
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
+  quill.root.innerHTML = '';
+  originalPath = '';
+  document.getElementById('save-path').textContent = '';
+  document.getElementById('preview').textContent = '← 「更新 ↻」で Markdown を確認';
+  setStatus('', false);
+  setExt('md');
 }
 
-// ── Ctrl+S で保存 ───────────────────────────────────────────────────────
+// ── ステータス表示 ─────────────────────────────────────────────────────────
+function setStatus(msg, isError) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className   = isError ? 'error' : 'success';
+}
 
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    savePost();
+// ── 記事一覧ドロワー ───────────────────────────────────────────────────────
+async function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer-search').value = '';
+  await loadPostList();
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+}
+
+async function loadPostList() {
+  try {
+    const res = await fetch('/api/posts');
+    allPosts = await res.json();
+    renderPostList(allPosts);
+  } catch (e) {
+    document.getElementById('post-list').innerHTML = `<div class="no-posts">エラー: ${e.message}</div>`;
   }
+}
+
+function renderPostList(posts) {
+  const container = document.getElementById('post-list');
+  if (posts.length === 0) {
+    container.innerHTML = '<div class="no-posts">記事が見つかりません</div>';
+    return;
+  }
+
+  // 年ごとにグループ化
+  const groups = {};
+  for (const post of posts) {
+    const year = post.path.slice(0, 4);
+    if (!groups[year]) groups[year] = [];
+    groups[year].push(post);
+  }
+
+  let html = '';
+  for (const year of Object.keys(groups).sort().reverse()) {
+    html += `<div class="year-group">${year}</div>`;
+    for (const post of groups[year]) {
+      const pathEsc  = escapeAttr(post.path);
+      const titleEsc = escapeAttr(post.title);
+      const extLabel = post.ext || '.md';
+      html += `
+        <div class="post-item" id="item-${CSS.escape(post.path)}">
+          <div class="post-info">
+            <div class="post-title">${escapeHtml(post.title)}</div>
+            <div class="post-path">${escapeHtml(post.path)}</div>
+          </div>
+          <span class="post-ext">${extLabel}</span>
+          <button class="edit-btn" onclick="editPost('${pathEsc}')">編集</button>
+          <button class="del-btn"  onclick="deletePost('${pathEsc}', '${titleEsc}')">削除</button>
+        </div>`;
+    }
+  }
+  container.innerHTML = html;
+}
+
+function filterPosts(query) {
+  const q = query.toLowerCase();
+  const filtered = q
+    ? allPosts.filter(p => p.title.toLowerCase().includes(q) || p.path.toLowerCase().includes(q))
+    : allPosts;
+  renderPostList(filtered);
+}
+
+// ── 記事を読み込んで編集 ───────────────────────────────────────────────────
+async function editPost(path) {
+  try {
+    const res  = await fetch('/api/load', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    });
+    const data = await res.json();
+    if (!data.success) { alert('読み込みエラー: ' + data.error); return; }
+
+    document.getElementById('fm-title').value   = data.title;
+    document.getElementById('fm-desc').value    = data.description;
+    document.getElementById('fm-slug').value    = data.slug;
+    document.getElementById('fm-date').value    = data.pubDate;
+    document.getElementById('fm-tags').value    = (data.tags || []).join(', ');
+    document.getElementById('fm-draft').checked = data.draft;
+    document.getElementById('fm-updated').value = data.updatedDate || '';
+    document.getElementById('fm-imports').value = data.imports || '';
+
+    setExt(data.ext || 'md');
+    quill.root.innerHTML = data.bodyHtml || '';
+    originalPath = path;
+
+    document.getElementById('save-path').textContent = '編集中: ' + path;
+    document.getElementById('preview').textContent   = '← 「更新 ↻」で確認';
+    setStatus('読み込みました ✓', false);
+    closeDrawer();
+  } catch (e) {
+    alert('エラー: ' + e.message);
+  }
+}
+
+// ── 記事削除 ───────────────────────────────────────────────────────────────
+async function deletePost(path, title) {
+  if (!confirm(`「${title}」を削除しますか？\n\n${path}\n\nこの操作は取り消せません。`)) return;
+  try {
+    const res  = await fetch('/api/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      allPosts = allPosts.filter(p => p.path !== path);
+      renderPostList(allPosts);
+      // 編集中の記事を削除した場合はリセット
+      if (originalPath === path) newPost();
+    } else {
+      alert('削除エラー: ' + (data.error || ''));
+    }
+  } catch (e) {
+    alert('エラー: ' + e.message);
+  }
+}
+
+// ── ユーティリティ ─────────────────────────────────────────────────────────
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escapeAttr(s) {
+  return String(s).replace(/'/g, "\\'");
+}
+
+// ── Ctrl+S で保存 ──────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); savePost(); }
+  if (e.key === 'Escape') closeDrawer();
 });
 
 </script>

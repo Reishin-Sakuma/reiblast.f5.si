@@ -52,7 +52,6 @@ def convert_node(node) -> str:
     # ── ブロック要素 ──
     if tag == "p":
         content = inner()
-        # 空段落 (<p><br></p>) は空行
         if content.strip() in ("", "\n"):
             return "\n"
         return content + "\n\n"
@@ -78,7 +77,6 @@ def convert_node(node) -> str:
         return "\n".join("> " + l for l in lines) + "\n\n"
 
     if tag == "pre":
-        # Quill のコードブロック: <pre class="ql-syntax">
         code = node.find("code") or node
         lang = ""
         for cls in (code.get("class") or []):
@@ -116,13 +114,22 @@ def convert_node(node) -> str:
     if tag == "br":
         return "\n"
 
+    if tag == "mark":
+        style = node.get("style", "")
+        content = inner()
+        bg_m = re.search(r"background-color:\s*([^;]+)", style)
+        if bg_m:
+            color = bg_m.group(1).strip()
+            if color.startswith("rgb"):
+                color = rgb_to_hex(color)
+            return f'<mark style="background-color:{color}">{content}</mark>'
+        return content
+
     if tag == "span":
         style = node.get("style", "")
         content = inner()
 
-        # 文字色
         color_m = re.search(r"(?<![a-z-])color:\s*(rgb\([^)]+\)|#[0-9a-fA-F]{3,6}|[a-z]+)", style)
-        # 背景色 → <mark>
         bg_m = re.search(r"background-color:\s*(rgb\([^)]+\)|#[0-9a-fA-F]{3,6}|[a-z]+)", style)
 
         if bg_m:
@@ -139,7 +146,6 @@ def convert_node(node) -> str:
 
         return content
 
-    # ── コンテナ（そのまま中身を処理） ──
     if tag in ("div", "body", "html", "section", "article", "[document]"):
         return inner()
 
@@ -150,9 +156,96 @@ def convert_node(node) -> str:
 def html_to_markdown(html: str) -> str:
     soup = BeautifulSoup(html, "html.parser")
     result = convert_node(soup)
-    # 3つ以上の連続改行を2つに圧縮
     result = re.sub(r"\n{3,}", "\n\n", result)
     return result.strip()
+
+
+# ── Markdown → Quill HTML 変換（既存記事の読み込み用）─────────────────────
+
+def inline_md_to_html(text: str) -> str:
+    """インライン Markdown を Quill 互換 HTML に変換"""
+    # コードを先に保護
+    text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
+    # 太字
+    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+    # 斜体
+    text = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", text)
+    # 取り消し線
+    text = re.sub(r"~~(.+?)~~", r"<s>\1</s>", text)
+    # リンク
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
+    # <mark> → Quill の background-color span に変換
+    text = re.sub(
+        r'<mark style="background-color:([^"]+)">(.*?)</mark>',
+        r'<span style="background-color:\1">\2</span>',
+        text, flags=re.DOTALL,
+    )
+    return text
+
+
+def markdown_to_quill_html(md: str) -> str:
+    """ブログ記事の Markdown+HTML を Quill が読み込める HTML に変換"""
+    md = md.replace("\r\n", "\n").replace("\r", "\n")
+    raw_blocks = re.split(r"\n{2,}", md.strip())
+    html_parts = []
+
+    for block in raw_blocks:
+        block = block.strip()
+        if not block:
+            continue
+
+        # コードブロック
+        cb_m = re.match(r"^```(\w*)\n?([\s\S]*?)```$", block, re.DOTALL)
+        if cb_m:
+            code = cb_m.group(2).rstrip("\n")
+            html_parts.append(f'<pre class="ql-syntax" spellcheck="false">{code}</pre>')
+            continue
+
+        # 見出し
+        hm = re.match(r"^(#{1,6})\s+(.+)$", block)
+        if hm:
+            level = len(hm.group(1))
+            html_parts.append(f"<h{level}>{inline_md_to_html(hm.group(2))}</h{level}>")
+            continue
+
+        # HR
+        if re.match(r"^[-*_]{3,}$", block.strip()):
+            html_parts.append("<p><br></p>")
+            continue
+
+        lines = block.split("\n")
+
+        # 箇条書き（順不同）
+        if all(re.match(r"^[-*+] ", l.strip()) for l in lines if l.strip()):
+            items = "".join(
+                f"<li>{inline_md_to_html(re.sub(r'^[-*+] ', '', l.strip()))}</li>"
+                for l in lines if l.strip()
+            )
+            html_parts.append(f"<ul>{items}</ul>")
+            continue
+
+        # 箇条書き（順序付き）
+        if all(re.match(r"^\d+\. ", l.strip()) for l in lines if l.strip()):
+            items = "".join(
+                f"<li>{inline_md_to_html(re.sub(r'^\d+\. ', '', l.strip()))}</li>"
+                for l in lines if l.strip()
+            )
+            html_parts.append(f"<ol>{items}</ol>")
+            continue
+
+        # 引用
+        if all(re.match(r"^> ?", l) or not l.strip() for l in lines):
+            inner = "<br>".join(
+                inline_md_to_html(re.sub(r"^> ?", "", l)) for l in lines
+            )
+            html_parts.append(f"<blockquote><p>{inner}</p></blockquote>")
+            continue
+
+        # 通常段落（インラインHTMLも含む）
+        converted = "<br>".join(inline_md_to_html(l) for l in lines)
+        html_parts.append(f"<p>{converted}</p>")
+
+    return "\n".join(html_parts)
 
 
 # ── Frontmatter ───────────────────────────────────────────────────────────
@@ -185,6 +278,34 @@ def build_frontmatter(data: dict) -> str:
     return fm
 
 
+def parse_frontmatter(raw: str) -> tuple[dict, str]:
+    """frontmatter と本文を分離してパース"""
+    fm_m = re.match(r"^---\n(.*?)\n---\n?", raw, re.DOTALL)
+    if not fm_m:
+        return {}, raw
+
+    fm_raw = fm_m.group(1)
+    body = raw[fm_m.end():]
+
+    def get(key, default=""):
+        m = re.search(rf"^{key}:\s*(.+)$", fm_raw, re.MULTILINE)
+        return m.group(1).strip().strip("\"'") if m else default
+
+    tags_m = re.search(r"^tags:\s*\[(.+)\]$", fm_raw, re.MULTILINE)
+    tags = [t.strip().strip("\"'") for t in tags_m.group(1).split(",")] if tags_m else []
+
+    return {
+        "title": get("title"),
+        "description": get("description"),
+        "slug": get("slug"),
+        "pubDate": get("pubDate"),
+        "author": get("author", "reiblast1123"),
+        "draft": get("draft", "false").lower() == "true",
+        "updatedDate": get("updatedDate"),
+        "tags": tags,
+    }, body
+
+
 # ── Routes ────────────────────────────────────────────────────────────────
 
 @app.route("/")
@@ -207,6 +328,7 @@ def save():
     file_ext = data.get("ext", "md")
     imports = data.get("imports", "").strip()
     body_html = data.get("body", "")
+    original_path = data.get("originalPath", "").strip()
 
     if not slug:
         return jsonify({"error": "slug が空です"}), 400
@@ -236,6 +358,18 @@ def save():
         f.write(content)
 
     rel = os.path.relpath(save_path, PROJECT_ROOT)
+
+    # slug や日付が変わった場合は元ファイルを削除
+    if original_path:
+        orig_full = os.path.join(BLOG_DIR, original_path)
+        new_rel_from_blog = os.path.relpath(save_path, BLOG_DIR)
+        if orig_full != save_path and os.path.exists(orig_full):
+            os.remove(orig_full)
+            try:
+                os.rmdir(os.path.dirname(orig_full))
+            except OSError:
+                pass
+
     return jsonify({"success": True, "path": rel})
 
 
@@ -257,6 +391,77 @@ def list_posts():
                 except Exception:
                     pass
     return jsonify(sorted(posts, key=lambda x: x["path"], reverse=True))
+
+
+@app.route("/api/load", methods=["POST"])
+def load_post():
+    data = request.json
+    rel_path = data.get("path", "")
+    file_path = os.path.join(BLOG_DIR, rel_path)
+
+    if not os.path.exists(file_path):
+        return jsonify({"error": "File not found"}), 404
+
+    with open(file_path, encoding="utf-8") as f:
+        raw = f.read()
+
+    fm, body = parse_frontmatter(raw)
+    ext = "mdx" if rel_path.endswith(".mdx") else "md"
+
+    # MDX: 先頭の import 行を分離
+    imports = ""
+    if ext == "mdx":
+        import_lines = []
+        body_lines = body.lstrip("\n").split("\n")
+        rest = []
+        in_imports = True
+        for line in body_lines:
+            if in_imports and (line.startswith("import ") or line.strip() == ""):
+                if line.startswith("import "):
+                    import_lines.append(line)
+            else:
+                in_imports = False
+                rest.append(line)
+        imports = "\n".join(import_lines)
+        body = "\n".join(rest)
+
+    body_html = markdown_to_quill_html(body.strip())
+
+    return jsonify({
+        "success": True,
+        "title": fm.get("title", ""),
+        "description": fm.get("description", ""),
+        "slug": fm.get("slug", ""),
+        "pubDate": fm.get("pubDate", "")[:16],   # datetime-local 用に秒を省略
+        "author": fm.get("author", "reiblast1123"),
+        "tags": fm.get("tags", []),
+        "draft": fm.get("draft", False),
+        "updatedDate": fm.get("updatedDate", "")[:16],
+        "ext": ext,
+        "imports": imports,
+        "bodyHtml": body_html,
+    })
+
+
+@app.route("/api/delete", methods=["POST"])
+def delete_post():
+    data = request.json
+    rel_path = data.get("path", "")
+    file_path = os.path.join(BLOG_DIR, rel_path)
+
+    if not os.path.exists(file_path):
+        return jsonify({"error": "File not found"}), 404
+
+    os.remove(file_path)
+
+    # 親ディレクトリが空になったら削除
+    parent = os.path.dirname(file_path)
+    try:
+        os.rmdir(parent)
+    except OSError:
+        pass
+
+    return jsonify({"success": True})
 
 
 if __name__ == "__main__":
