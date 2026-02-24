@@ -24,7 +24,54 @@ function formatDate(date: Date): string {
   <main>
     <!-- Hero Section -->
     <section class="blog-hero">
-      <div class="container">
+      <div class="minsa-overlay" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="mp-blog" x="0" y="0" width="96" height="52" patternUnits="userSpaceOnUse">
+              <rect x="0" y="0" width="3" height="8" fill="black"/>
+              <rect x="6" y="0" width="3" height="8" fill="black"/>
+              <rect x="12" y="0" width="3" height="8" fill="black"/>
+              <rect x="18" y="0" width="3" height="8" fill="black"/>
+              <rect x="24" y="0" width="3" height="8" fill="black"/>
+              <rect x="30" y="0" width="3" height="8" fill="black"/>
+              <rect x="36" y="0" width="3" height="8" fill="black"/>
+              <rect x="42" y="0" width="3" height="8" fill="black"/>
+              <rect x="48" y="0" width="3" height="8" fill="black"/>
+              <rect x="54" y="0" width="3" height="8" fill="black"/>
+              <rect x="60" y="0" width="3" height="8" fill="black"/>
+              <rect x="66" y="0" width="3" height="8" fill="black"/>
+              <rect x="72" y="0" width="3" height="8" fill="black"/>
+              <rect x="78" y="0" width="3" height="8" fill="black"/>
+              <rect x="84" y="0" width="3" height="8" fill="black"/>
+              <rect x="90" y="0" width="3" height="8" fill="black"/>
+              <rect x="0" y="9" width="96" height="2" fill="black"/>
+              <path d="M4,13 H18 V20 H15 V27 H18 V34 H4 V27 H7 V20 H4 Z" fill="black"/>
+              <path d="M22,13 H36 V20 H33 V27 H36 V34 H22 V27 H25 V20 H22 Z" fill="black"/>
+              <path d="M52,13 H66 V20 H63 V27 H66 V34 H52 V27 H55 V20 H52 Z" fill="black"/>
+              <path d="M70,13 H84 V20 H81 V27 H84 V34 H70 V27 H73 V20 H70 Z" fill="black"/>
+              <rect x="0" y="35" width="96" height="2" fill="black"/>
+              <rect x="0" y="38" width="3" height="8" fill="black"/>
+              <rect x="6" y="38" width="3" height="8" fill="black"/>
+              <rect x="12" y="38" width="3" height="8" fill="black"/>
+              <rect x="18" y="38" width="3" height="8" fill="black"/>
+              <rect x="24" y="38" width="3" height="8" fill="black"/>
+              <rect x="30" y="38" width="3" height="8" fill="black"/>
+              <rect x="36" y="38" width="3" height="8" fill="black"/>
+              <rect x="42" y="38" width="3" height="8" fill="black"/>
+              <rect x="48" y="38" width="3" height="8" fill="black"/>
+              <rect x="54" y="38" width="3" height="8" fill="black"/>
+              <rect x="60" y="38" width="3" height="8" fill="black"/>
+              <rect x="66" y="38" width="3" height="8" fill="black"/>
+              <rect x="72" y="38" width="3" height="8" fill="black"/>
+              <rect x="78" y="38" width="3" height="8" fill="black"/>
+              <rect x="84" y="38" width="3" height="8" fill="black"/>
+              <rect x="90" y="38" width="3" height="8" fill="black"/>
+              </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#mp-blog)"/>
+        </svg>
+      </div>
+      <div class="container" style="position: relative; z-index: 1;">
         <h1 class="blog-title">沖縄でエンジニアしてて思ったこと</h1>
         <p class="blog-description">
           インフラエンジニアの24歳男子が仕事、趣味、クルマ、社会に対して思ったことを書いてくとこ。<br>
@@ -80,8 +127,28 @@ function formatDate(date: Date): string {
     .blog-hero {
       padding: 4rem 0 3rem;
       text-align: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, #FFD700 0%, #FFC200 100%);
+      color: #111111;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .minsa-overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0.22;
+      pointer-events: none;
+      z-index: 0;
+      mask-image: linear-gradient(135deg, black 0%, transparent 20%),
+                  linear-gradient(315deg, black 0%, transparent 20%);
+      -webkit-mask-image: linear-gradient(135deg, black 0%, transparent 20%),
+                          linear-gradient(315deg, black 0%, transparent 20%);
+    }
+
+    .minsa-overlay svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .blog-title {
@@ -183,7 +250,7 @@ function formatDate(date: Date): string {
 
     .tag {
       padding: 0.25rem 0.5rem;
-      background: rgba(37, 99, 235, 0.1);
+      background: rgba(0, 0, 0, 0.07);
       color: var(--primary);
       border-radius: 0.25rem;
       font-size: 0.75rem;
