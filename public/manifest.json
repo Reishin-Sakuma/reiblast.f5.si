@@ -4,8 +4,8 @@
   "description": "reiblast1123 のプロジェクトポートフォリオサイト",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#FFD700",
+  "theme_color": "#FFD700",
   "icons": [
     {
       "src": "/icon-192x192.png",
