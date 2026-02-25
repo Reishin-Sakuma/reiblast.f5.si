@@ -898,12 +898,12 @@ function getTweetUrl() {
   return `https://reiblast.f5.si/blog/${slug}/`;
 }
 
-/** エディタ本文の冒頭1行（空行・HTMLタグを除いた最初のテキスト）を返す */
+/** エディタ本文の冒頭1行（見出し要素を除いた最初の段落テキスト）を返す */
 function getFirstLine() {
-  const text = quill.getText();
-  for (const line of text.split('\n')) {
-    const trimmed = line.trim();
-    if (trimmed) return trimmed;
+  for (const el of quill.root.children) {
+    if (/^H[1-6]$/.test(el.tagName)) continue; // 見出しはスキップ
+    const text = el.textContent.trim();
+    if (text) return text;
   }
   return '';
 }
