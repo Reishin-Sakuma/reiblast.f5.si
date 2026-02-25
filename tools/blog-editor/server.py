@@ -13,6 +13,7 @@ Blog Editor - Flask server
 
 import os
 import re
+import subprocess
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, Response
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -405,7 +406,33 @@ def save():
             except OSError:
                 pass
 
-    return jsonify({"success": True, "path": rel})
+    # OGP画像を自動生成
+    ogp_ok = False
+    ogp_msg = ""
+    try:
+        ogp_script = os.path.join(PROJECT_ROOT, "scripts/generate-ogp.js")
+        result = subprocess.run(
+            ["node", ogp_script, slug],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        ogp_ok = result.returncode == 0
+        ogp_msg = (result.stdout.strip() or result.stderr.strip())
+    except Exception as e:
+        ogp_msg = f"OGP生成エラー: {e}"
+
+    return jsonify({"success": True, "path": rel, "ogpGenerated": ogp_ok, "ogpMessage": ogp_msg})
+
+
+@app.route("/api/ogp-image/<slug>")
+def ogp_image(slug):
+    from flask import send_file
+    for root, dirs, files in os.walk(BLOG_DIR):
+        if os.path.basename(root) == slug and "ogp.png" in files:
+            return send_file(os.path.join(root, "ogp.png"), mimetype="image/png")
+    return jsonify({"error": "not found"}), 404
 
 
 @app.route("/api/posts")

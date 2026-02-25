@@ -212,6 +212,23 @@
     #status.success { color: var(--green); }
     #status.error { color: var(--red); }
 
+    /* ── OGP Toast ── */
+    #ogp-toast {
+      display: none;
+      position: fixed; bottom: 60px; right: 16px; z-index: 2000;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      padding: 10px; width: 320px;
+    }
+    #ogp-toast img { width: 100%; border-radius: 4px; display: block; }
+    #ogp-toast-label {
+      font-size: 11px; color: var(--muted); margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #ogp-toast-label button {
+      background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0;
+    }
+
     /* ── Article List Drawer ── */
     .drawer-overlay {
       display: none;
@@ -469,6 +486,15 @@
 
 </div>
 
+<!-- ── OGP Toast ── -->
+<div id="ogp-toast">
+  <div id="ogp-toast-label">
+    <span>OGP プレビュー</span>
+    <button onclick="closeOgpToast()">✕</button>
+  </div>
+  <img id="ogp-toast-img" src="" alt="OGP preview">
+</div>
+
 <!-- ── Bottom bar ── -->
 <div class="bottom-bar">
   <button class="save-btn" onclick="savePost()">保存</button>
@@ -660,6 +686,7 @@ async function savePost() {
       originalPath = relFromBlog;
       document.getElementById('save-path').textContent = '→ ' + data.path;
       setStatus('保存しました ✓', false);
+      if (data.ogpGenerated) showOgpToast(slug);
       await refreshPreview();
     } else {
       setStatus('エラー: ' + (data.error || JSON.stringify(data)), true);
@@ -983,6 +1010,21 @@ function openTweetDrawer() {
 function closeTweetDrawer() {
   document.getElementById('tweet-drawer').classList.remove('open');
   document.getElementById('tweet-overlay').classList.remove('open');
+}
+
+// ── OGP Toast ──────────────────────────────────────────────────────────────
+let _ogpToastTimer = null;
+function showOgpToast(slug) {
+  const toast = document.getElementById('ogp-toast');
+  const img   = document.getElementById('ogp-toast-img');
+  // キャッシュバスターで常に最新画像を表示
+  img.src = `/api/ogp-image/${slug}?t=${Date.now()}`;
+  toast.style.display = 'block';
+  clearTimeout(_ogpToastTimer);
+  _ogpToastTimer = setTimeout(closeOgpToast, 10000);
+}
+function closeOgpToast() {
+  document.getElementById('ogp-toast').style.display = 'none';
 }
 
 // ── Ctrl+S で保存 ──────────────────────────────────────────────────────────
