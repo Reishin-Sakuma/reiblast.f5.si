@@ -212,6 +212,23 @@
     #status.success { color: var(--green); }
     #status.error { color: var(--red); }
 
+    /* ── OGP Toast ── */
+    #ogp-toast {
+      display: none;
+      position: fixed; bottom: 60px; right: 16px; z-index: 2000;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      padding: 10px; width: 320px;
+    }
+    #ogp-toast img { width: 100%; border-radius: 4px; display: block; }
+    #ogp-toast-label {
+      font-size: 11px; color: var(--muted); margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #ogp-toast-label button {
+      background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0;
+    }
+
     /* ── Article List Drawer ── */
     .drawer-overlay {
       display: none;
@@ -272,6 +289,90 @@
     }
     .del-btn:hover { border-color: var(--red); color: var(--red); }
     .no-posts { padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
+
+    /* ── Tweet Drawer ── */
+    .tweet-drawer {
+      position: fixed;
+      top: 0; right: -480px;
+      width: 460px; height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 101;
+      display: flex; flex-direction: column;
+      transition: right 0.25s ease;
+    }
+    .tweet-drawer.open { right: 0; }
+    .tweet-drawer-body {
+      flex: 1; overflow-y: auto;
+      padding: 12px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .tweet-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .tweet-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .tweet-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--yellow); font-family: 'Courier New', monospace;
+    }
+    .tweet-chars { font-size: 11px; font-family: 'Courier New', monospace; color: var(--muted); }
+    .tweet-chars.over { color: var(--red); }
+    .tweet-textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.7;
+      resize: vertical;
+      min-height: 120px;
+    }
+    .tweet-textarea:focus { outline: none; border-color: var(--yellow); }
+    .tweet-copy-btn {
+      margin-top: 7px;
+      width: 100%;
+      padding: 7px;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tweet-copy-btn:hover { background: var(--yellow-dim); }
+    .tweet-copy-btn.copied { background: var(--green); }
+    .tweet-info-bar {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .tweet-info-bar p { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .tweet-url-preview {
+      font-size: 11px; font-family: 'Courier New', monospace;
+      color: var(--yellow); word-break: break-all; margin-bottom: 6px;
+    }
+    .tweet-regen-btn {
+      padding: 4px 12px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .tweet-regen-btn:hover { border-color: var(--yellow); color: var(--yellow); }
   </style>
 </head>
 <body>
@@ -280,6 +381,7 @@
 <header>
   <h1>r&gt;_ Blog Editor</h1>
   <button class="header-btn" onclick="openDrawer()">📂 記事一覧</button>
+  <button class="header-btn" onclick="openTweetDrawer()">🐦 ポスト</button>
   <div class="ext-toggle">
     <button class="ext-btn active" data-ext="md"  onclick="setExt('md')">index.md</button>
     <button class="ext-btn"        data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
@@ -384,6 +486,15 @@
 
 </div>
 
+<!-- ── OGP Toast ── -->
+<div id="ogp-toast">
+  <div id="ogp-toast-label">
+    <span>OGP プレビュー</span>
+    <button onclick="closeOgpToast()">✕</button>
+  </div>
+  <img id="ogp-toast-img" src="" alt="OGP preview">
+</div>
+
 <!-- ── Bottom bar ── -->
 <div class="bottom-bar">
   <button class="save-btn" onclick="savePost()">保存</button>
@@ -403,6 +514,21 @@
     <input type="text" id="drawer-search" placeholder="タイトル検索..." oninput="filterPosts(this.value)">
   </div>
   <div id="post-list"><div class="no-posts">読み込み中...</div></div>
+</div>
+
+<!-- ── Tweet Template Drawer ── -->
+<div class="drawer-overlay" id="tweet-overlay" onclick="closeTweetDrawer()"></div>
+<div class="tweet-drawer" id="tweet-drawer">
+  <div class="drawer-header">
+    <h2>🐦 ポスト用テンプレート</h2>
+    <button class="drawer-close" onclick="closeTweetDrawer()">✕</button>
+  </div>
+  <div class="tweet-info-bar">
+    <p>記事タイトル・日付・slugを入力してから開くと自動入力されます。</p>
+    <div class="tweet-url-preview" id="tweet-url-preview">🔗 -</div>
+    <button class="tweet-regen-btn" onclick="buildTweetTemplates()">↻ 再生成</button>
+  </div>
+  <div class="tweet-drawer-body" id="tweet-drawer-body"></div>
 </div>
 
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
@@ -560,6 +686,7 @@ async function savePost() {
       originalPath = relFromBlog;
       document.getElementById('save-path').textContent = '→ ' + data.path;
       setStatus('保存しました ✓', false);
+      if (data.ogpGenerated) showOgpToast(slug);
       await refreshPreview();
     } else {
       setStatus('エラー: ' + (data.error || JSON.stringify(data)), true);
@@ -739,10 +866,171 @@ function escapeAttr(s) {
   return String(s).replace(/'/g, "\\'");
 }
 
+// ── ツイートテンプレート ────────────────────────────────────────────────────
+const TWEET_DEFS = [
+  {
+    label: '基本',
+    build: (title, url, hashTags, desc) =>
+`ブログを更新しました！📖
+
+📝${title}
+
+${desc}
+
+🔗 ${url}
+
+#エンジニアブログ #インフラエンジニア${hashTags}`,
+  },
+  {
+    label: '技術系',
+    build: (title, url, hashTags, desc) =>
+`ブログを更新しました！👨‍💻
+
+【${title}】
+
+${desc}
+
+🔗 ${url}
+
+#インフラエンジニア #エンジニアブログ${hashTags}`,
+  },
+  {
+    label: '趣味・日常系',
+    build: (title, url, hashTags, desc) => {
+      let t = `ブログ書いたよ〜\n\n【${title}】\n\n${desc}\nよかったら読んでみてください(^o^)\n\n🔗 ${url}`;
+      if (hashTags.trim()) t += '\n\n' + hashTags.trim();
+      return t;
+    },
+  },
+  {
+    label: 'Ameba移植',
+    build: (title, url, hashTags, desc) =>
+`昔Amebaに書いたやつをブログに移植しました
+
+【${title}】
+
+${desc}
+黒歴史感あるけどせっかくなので笑
+
+🔗 ${url}
+
+#エンジニアブログ${hashTags}`,
+  },
+];
+
+function getTweetUrl() {
+  const slug = document.getElementById('fm-slug').value.trim();
+  if (!slug) return null;
+  return `https://reiblast.f5.si/blog/${slug}/`;
+}
+
+/** エディタ本文の冒頭1行（見出し要素を除いた最初の段落テキスト）を返す */
+function getFirstLine() {
+  for (const el of quill.root.children) {
+    if (/^H[1-6]$/.test(el.tagName)) continue; // 見出しはスキップ
+    const text = el.textContent.trim();
+    if (text) return text;
+  }
+  return '';
+}
+
+function buildTweetTemplates() {
+  const title    = document.getElementById('fm-title').value.trim() || '（タイトル未入力）';
+  const url      = getTweetUrl() || 'https://reiblast.f5.si/blog/...';
+  const tagsRaw  = document.getElementById('fm-tags').value;
+  const hashTags = tagsRaw
+    .split(',')
+    .map(t => t.trim())
+    .filter(Boolean)
+    .map(t => ' #' + t.replace(/\s+/g, ''))
+    .join('');
+  const desc = getFirstLine() || '〈一言で内容を説明〉';
+
+  document.getElementById('tweet-url-preview').textContent = '🔗 ' + url;
+
+  const body = document.getElementById('tweet-drawer-body');
+  body.innerHTML = TWEET_DEFS.map((def, i) => `
+    <div class="tweet-card">
+      <div class="tweet-card-header">
+        <span class="tweet-label">${def.label}</span>
+        <span class="tweet-chars" id="tweet-chars-${i}">-- 文字</span>
+      </div>
+      <textarea class="tweet-textarea" id="tweet-text-${i}" rows="9"
+        oninput="updateTweetChars(${i})"></textarea>
+      <button class="tweet-copy-btn" id="tweet-copy-${i}"
+        onclick="copyTweet(${i})">コピー</button>
+    </div>`).join('');
+
+  // textarea.value はinnerHTMLではなくJSで設定（エスケープ問題を回避）
+  TWEET_DEFS.forEach((def, i) => {
+    document.getElementById(`tweet-text-${i}`).value = def.build(title, url, hashTags, desc);
+    updateTweetChars(i);
+  });
+}
+
+/** X の文字数カウント（URL は長さに関わらず23文字固定扱い） */
+function tweetLength(text) {
+  const noUrl = text.replace(/https?:\/\/[^\s]+/g, '_'.repeat(23));
+  return [...noUrl].length;
+}
+
+function updateTweetChars(i) {
+  const text = document.getElementById(`tweet-text-${i}`).value;
+  const len  = tweetLength(text);
+  const el   = document.getElementById(`tweet-chars-${i}`);
+  el.textContent = len + ' 文字';
+  el.classList.toggle('over', len > 260);
+}
+
+async function copyTweet(i) {
+  const text = document.getElementById(`tweet-text-${i}`).value;
+  const btn  = document.getElementById(`tweet-copy-${i}`);
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (_) {
+    // HTTP 環境・旧ブラウザのフォールバック
+    const ta = document.getElementById(`tweet-text-${i}`);
+    ta.select();
+    document.execCommand('copy');
+  }
+  btn.textContent = 'コピーしました ✓';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'コピー';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function openTweetDrawer() {
+  buildTweetTemplates();
+  document.getElementById('tweet-drawer').classList.add('open');
+  document.getElementById('tweet-overlay').classList.add('open');
+}
+
+function closeTweetDrawer() {
+  document.getElementById('tweet-drawer').classList.remove('open');
+  document.getElementById('tweet-overlay').classList.remove('open');
+}
+
+// ── OGP Toast ──────────────────────────────────────────────────────────────
+let _ogpToastTimer = null;
+function showOgpToast(slug) {
+  const toast = document.getElementById('ogp-toast');
+  const img   = document.getElementById('ogp-toast-img');
+  // キャッシュバスターで常に最新画像を表示
+  img.src = `/api/ogp-image/${slug}?t=${Date.now()}`;
+  toast.style.display = 'block';
+  clearTimeout(_ogpToastTimer);
+  _ogpToastTimer = setTimeout(closeOgpToast, 10000);
+}
+function closeOgpToast() {
+  document.getElementById('ogp-toast').style.display = 'none';
+}
+
 // ── Ctrl+S で保存 ──────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); savePost(); }
-  if (e.key === 'Escape') closeDrawer();
+  if (e.key === 'Escape') { closeDrawer(); closeTweetDrawer(); }
 });
 
 // ── 初期ロード時にテンプレートを展開 ────────────────────────────────────────

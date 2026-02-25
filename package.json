@@ -7,7 +7,9 @@
     "dev": "npm run copy-images && astro dev",
     "build": "npm run copy-images && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "ogp": "node scripts/generate-ogp.js",
+    "ogp:all": "node scripts/generate-ogp.js --all"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",

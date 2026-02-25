@@ -205,9 +205,16 @@ draft: false
 
 ### 記事作成後の検証
 
-1. `npm run build` でビルドが通ることを確認
-2. ビルド後のHTMLで生の `**` が残っていないか `grep '\*\*'` で確認
-3. 全リンクの HTTP ステータスを確認（200以外は修正）
+1. OGP画像を生成する（**必須**）
+   ```bash
+   node scripts/generate-ogp.js <slug>
+   ```
+   例: `node scripts/generate-ogp.js 24sai-kara-mita-chatgpt-no-sekai`
+   → `src/content/blog/YYYY/MM/DD/<slug>/ogp.png` が生成される。これをコミットに含めること。
+   （ビルド時に `npm run copy-images` で `public/images/blog/...` にコピーされ公開される）
+2. `npm run build` でビルドが通ることを確認
+3. ビルド後のHTMLで生の `**` が残っていないか `grep '\*\*'` で確認
+4. 全リンクの HTTP ステータスを確認（200以外は修正）
 
 ### 既存記事でよく使われる色
 

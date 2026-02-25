@@ -17,6 +17,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
 
+// OGP画像: src/content/blog/YYYY/MM/DD/<slug>/ogp.png → コピー先 /images/blog/YYYY/MM/DD/<slug>/ogp.png
+const _d = post.data.pubDate;
+const _datePath = `${_d.getFullYear()}/${String(_d.getMonth()+1).padStart(2,'0')}/${String(_d.getDate()).padStart(2,'0')}`;
+const ogImage = `/images/blog/${_datePath}/${post.data.slug}/ogp.png`;
+
 // Google AdSense
 // 環境変数 PUBLIC_ADSENSE_CLIENT_ID と PUBLIC_ADSENSE_SLOT_ARTICLE が設定されていると広告が表示されます
 const adsenseClientId = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID;
@@ -37,7 +42,7 @@ function formatDate(date: Date): string {
 }
 ---
 
-<Layout title={`${post.data.title} - Blog`} description={post.data.description}>
+<Layout title={`${post.data.title} - Blog`} description={post.data.description} ogImage={ogImage}>
   <main>
     <article class="blog-post">
       <!-- Post Hero (Racing Yellow) -->

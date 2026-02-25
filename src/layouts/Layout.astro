@@ -42,7 +42,7 @@ const websiteJsonLd = {
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:locale" content="ja_JP" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
     <meta name="twitter:site" content="@reiblast1123" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
