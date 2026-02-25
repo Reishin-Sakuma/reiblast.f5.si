@@ -893,12 +893,9 @@ const TWEET_DEFS = [
 ];
 
 function getTweetUrl() {
-  const slug    = document.getElementById('fm-slug').value.trim();
-  const dateVal = document.getElementById('fm-date').value; // YYYY-MM-DDTHH:MM
-  if (!slug || !dateVal) return null;
-  const [datePart] = dateVal.split('T');
-  const [y, m, d]  = datePart.split('-');
-  return `https://reiblast.f5.si/blog/${y}/${m}/${d}/${slug}/`;
+  const slug = document.getElementById('fm-slug').value.trim();
+  if (!slug) return null;
+  return `https://reiblast.f5.si/blog/${slug}/`;
 }
 
 function buildTweetTemplates() {
