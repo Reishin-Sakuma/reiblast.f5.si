@@ -186,7 +186,9 @@ const comingSoonProjects = [
 
     <!-- Tabs -->
     <div class="tabs-root">
-      <nav class="tab-nav" role="tablist">
+      <div class="tab-nav-outer">
+        <button class="tab-scroll-btn tab-scroll-btn-left" aria-label="前のタブ" hidden>&#8249;</button>
+        <nav class="tab-nav" role="tablist">
         <button class="tab-btn active" data-tab="top" role="tab" aria-selected="true" aria-controls="tab-top">
           <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
           Top
@@ -211,7 +213,9 @@ const comingSoonProjects = [
           <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
           Blog - 沖縄でエンジニアしてて思ったこと。
         </button>
-      </nav>
+        </nav>
+        <button class="tab-scroll-btn tab-scroll-btn-right" aria-label="次のタブ">&#8250;</button>
+      </div>
 
       <!-- Top Tab (Profile) -->
       <div id="tab-top" class="tab-panel active" role="tabpanel">
@@ -519,6 +523,27 @@ const comingSoonProjects = [
       activateTab(hash);
     }
 
+    // Tab scroll buttons
+    const tabNav = document.querySelector<HTMLElement>('.tab-nav');
+    const scrollBtnLeft = document.querySelector<HTMLButtonElement>('.tab-scroll-btn-left');
+    const scrollBtnRight = document.querySelector<HTMLButtonElement>('.tab-scroll-btn-right');
+
+    function updateTabScrollBtns() {
+      if (!tabNav || !scrollBtnLeft || !scrollBtnRight) return;
+      scrollBtnLeft.hidden = tabNav.scrollLeft <= 0;
+      scrollBtnRight.hidden = tabNav.scrollLeft >= tabNav.scrollWidth - tabNav.clientWidth - 1;
+    }
+
+    scrollBtnLeft?.addEventListener('click', () => {
+      tabNav?.scrollBy({ left: -200, behavior: 'smooth' });
+    });
+    scrollBtnRight?.addEventListener('click', () => {
+      tabNav?.scrollBy({ left: 200, behavior: 'smooth' });
+    });
+    tabNav?.addEventListener('scroll', updateTabScrollBtns);
+    window.addEventListener('resize', updateTabScrollBtns);
+    updateTabScrollBtns();
+
     // Blog tab tag filter
     document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -668,14 +693,20 @@ const comingSoonProjects = [
       flex-direction: column;
     }
 
-    .tab-nav {
+    .tab-nav-outer {
       display: flex;
-      overflow-x: auto;
+      align-items: stretch;
       background: var(--surface);
       border-bottom: 2px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 10;
+    }
+
+    .tab-nav {
+      display: flex;
+      overflow-x: auto;
+      flex: 1;
       scrollbar-width: none;
     }
 
@@ -683,15 +714,29 @@ const comingSoonProjects = [
       display: none;
     }
 
-    /* 右端にフェードグラデーションを表示してスクロール可能なことを示す */
-    .tab-nav::after {
-      content: '';
-      position: sticky;
-      right: 0;
-      flex: 0 0 48px;
-      background: linear-gradient(to right, rgba(255, 255, 255, 0), var(--surface));
-      pointer-events: none;
-      align-self: stretch;
+    .tab-scroll-btn {
+      flex-shrink: 0;
+      width: 2rem;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tab-scroll-btn:hover {
+      color: var(--primary);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .tab-scroll-btn[hidden] {
+      display: none;
     }
 
     .tab-btn {
