@@ -162,6 +162,12 @@ const comingSoonProjects = [
           PWA・フルスタック開発・UI/UXデザインに注力しています。
         </p>
         <div class="hero-links">
+          <button id="profile-open-btn" class="btn btn-profile">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+            プロフィール
+          </button>
           <a href="https://github.com/Reishin-Sakuma" target="_blank" rel="noopener noreferrer" class="btn btn-github">
             <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
@@ -186,10 +192,12 @@ const comingSoonProjects = [
 
     <!-- Tabs -->
     <div class="tabs-root">
-      <nav class="tab-nav" role="tablist">
-        <button class="tab-btn active" data-tab="top" role="tab" aria-selected="true" aria-controls="tab-top">
-          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-          Top
+      <div class="tab-nav-outer">
+        <button class="tab-scroll-btn tab-scroll-btn-left" aria-label="前のタブ" hidden>&#8249;</button>
+        <nav class="tab-nav" role="tablist">
+        <button class="tab-btn active" data-tab="blog" role="tab" aria-selected="true" aria-controls="tab-blog">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
+          Blog - 沖縄でエンジニアしてて思ったこと。
         </button>
         <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">
           <img class="tab-icon tab-favicon" src="https://shakeeper.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
@@ -207,69 +215,8 @@ const comingSoonProjects = [
           <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"/></svg>
           Other Projects
         </button>
-        <button class="tab-btn" data-tab="blog" role="tab" aria-selected="false" aria-controls="tab-blog">
-          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
-          Blog - 沖縄でエンジニアしてて思ったこと。
-        </button>
-      </nav>
-
-      <!-- Top Tab (Profile) -->
-      <div id="tab-top" class="tab-panel active" role="tabpanel">
-        <div class="container">
-          <!-- 基本情報 -->
-          <section class="profile-section">
-            <h2 class="profile-section-title">基本情報</h2>
-            <div class="profile-header">
-              <img
-                class="profile-avatar"
-                src="https://github.com/Reishin-Sakuma.png"
-                alt="reiblast1123"
-                width="96"
-                height="96"
-                loading="lazy"
-              />
-              <div class="profile-grid">
-              <div class="profile-row">
-                <span class="profile-label">ハンドルネーム</span>
-                <span class="profile-value">{profileEntry.data.handle}</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">生年月日</span>
-                <span class="profile-value">{profileEntry.data.birthdate}</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">出身</span>
-                <span class="profile-value">{profileEntry.data.location}</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">学歴</span>
-                <span class="profile-value">{profileEntry.data.education}</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">趣味</span>
-                <span class="profile-value">
-                  {profileEntry.data.hobbies.join(' / ')}
-                </span>
-              </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- 資格 -->
-          <section class="profile-section">
-            <h2 class="profile-section-title">資格</h2>
-            <div class="project-tech">
-              {profileEntry.data.certifications.map((cert) => (
-                <span class="tech-badge">{cert}</span>
-              ))}
-            </div>
-          </section>
-
-          <!-- 入社するまで / 業務経歴 (Markdown) -->
-          <div class="profile-content">
-            <ProfileContent />
-          </div>
-        </div>
+        </nav>
+        <button class="tab-scroll-btn tab-scroll-btn-right" aria-label="次のタブ">&#8250;</button>
       </div>
 
       <!-- Shakeeper Tab -->
@@ -370,7 +317,7 @@ const comingSoonProjects = [
         </div>
       </div>
       <!-- Blog Tab -->
-      <div id="tab-blog" class="tab-panel" role="tabpanel" hidden>
+      <div id="tab-blog" class="tab-panel active" role="tabpanel">
         <div class="blog-tab-hero">
           <div class="minsa-overlay" aria-hidden="true">
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -468,6 +415,71 @@ const comingSoonProjects = [
       </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="profile-modal-overlay" hidden>
+      <div class="profile-modal-panel" role="dialog" aria-modal="true" aria-label="プロフィール">
+        <div class="profile-modal-header">
+          <h2 class="profile-modal-title">プロフィール</h2>
+          <button id="profile-close-btn" class="profile-modal-close" aria-label="閉じる">&times;</button>
+        </div>
+        <div class="profile-modal-body">
+          <!-- 基本情報 -->
+          <section class="profile-section">
+            <h2 class="profile-section-title">基本情報</h2>
+            <div class="profile-header">
+              <img
+                class="profile-avatar"
+                src="https://github.com/Reishin-Sakuma.png"
+                alt="reiblast1123"
+                width="96"
+                height="96"
+                loading="lazy"
+              />
+              <div class="profile-grid">
+              <div class="profile-row">
+                <span class="profile-label">ハンドルネーム</span>
+                <span class="profile-value">{profileEntry.data.handle}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">生年月日</span>
+                <span class="profile-value">{profileEntry.data.birthdate}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">出身</span>
+                <span class="profile-value">{profileEntry.data.location}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">学歴</span>
+                <span class="profile-value">{profileEntry.data.education}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">趣味</span>
+                <span class="profile-value">
+                  {profileEntry.data.hobbies.join(' / ')}
+                </span>
+              </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 資格 -->
+          <section class="profile-section">
+            <h2 class="profile-section-title">資格</h2>
+            <div class="project-tech">
+              {profileEntry.data.certifications.map((cert) => (
+                <span class="tech-badge">{cert}</span>
+              ))}
+            </div>
+          </section>
+
+          <!-- 入社するまで / 業務経歴 (Markdown) -->
+          <div class="profile-content">
+            <ProfileContent />
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
       <div class="container">
@@ -518,6 +530,52 @@ const comingSoonProjects = [
     if (hash && document.getElementById(`tab-${hash}`)) {
       activateTab(hash);
     }
+
+    // Profile modal
+    const profileModal = document.getElementById('profile-modal')!;
+    const profileOpenBtn = document.getElementById('profile-open-btn')!;
+    const profileCloseBtn = document.getElementById('profile-close-btn')!;
+
+    function openProfileModal() {
+      profileModal.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden';
+      profileCloseBtn.focus();
+    }
+
+    function closeProfileModal() {
+      profileModal.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+    }
+
+    profileOpenBtn.addEventListener('click', openProfileModal);
+    profileCloseBtn.addEventListener('click', closeProfileModal);
+    profileModal.addEventListener('click', (e) => {
+      if (e.target === profileModal) closeProfileModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !profileModal.hasAttribute('hidden')) closeProfileModal();
+    });
+
+    // Tab scroll buttons
+    const tabNav = document.querySelector<HTMLElement>('.tab-nav');
+    const scrollBtnLeft = document.querySelector<HTMLButtonElement>('.tab-scroll-btn-left');
+    const scrollBtnRight = document.querySelector<HTMLButtonElement>('.tab-scroll-btn-right');
+
+    function updateTabScrollBtns() {
+      if (!tabNav || !scrollBtnLeft || !scrollBtnRight) return;
+      scrollBtnLeft.hidden = tabNav.scrollLeft <= 0;
+      scrollBtnRight.hidden = tabNav.scrollLeft >= tabNav.scrollWidth - tabNav.clientWidth - 1;
+    }
+
+    scrollBtnLeft?.addEventListener('click', () => {
+      tabNav?.scrollBy({ left: -200, behavior: 'smooth' });
+    });
+    scrollBtnRight?.addEventListener('click', () => {
+      tabNav?.scrollBy({ left: 200, behavior: 'smooth' });
+    });
+    tabNav?.addEventListener('scroll', updateTabScrollBtns);
+    window.addEventListener('resize', updateTabScrollBtns);
+    updateTabScrollBtns();
 
     // Blog tab tag filter
     document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn').forEach(btn => {
@@ -668,18 +726,49 @@ const comingSoonProjects = [
       flex-direction: column;
     }
 
-    .tab-nav {
+    .tab-nav-outer {
       display: flex;
-      overflow-x: auto;
+      align-items: stretch;
       background: var(--surface);
       border-bottom: 2px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 10;
+    }
+
+    .tab-nav {
+      display: flex;
+      overflow-x: auto;
+      flex: 1;
       scrollbar-width: none;
     }
 
     .tab-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-scroll-btn {
+      flex-shrink: 0;
+      width: 2rem;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tab-scroll-btn:hover {
+      color: var(--primary);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .tab-scroll-btn[hidden] {
       display: none;
     }
 
@@ -939,6 +1028,17 @@ const comingSoonProjects = [
       color: var(--primary);
     }
 
+    .btn-profile {
+      background: rgba(0, 0, 0, 0.15);
+      color: #111111;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-profile:hover {
+      background: rgba(0, 0, 0, 0.25);
+      transform: translateY(-2px);
+    }
+
     .btn-github {
       background: #181717;
       color: white;
@@ -1130,6 +1230,80 @@ const comingSoonProjects = [
       background: #111111;
       border-color: #111111;
       color: #FFD700;
+    }
+
+    /* Profile Modal */
+    .profile-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .profile-modal-overlay[hidden] {
+      display: none;
+    }
+
+    .profile-modal-panel {
+      background: var(--background);
+      border-radius: 1rem;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .profile-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .profile-modal-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .profile-modal-close {
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      background: none;
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--text-secondary);
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .profile-modal-close:hover {
+      color: var(--primary);
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .profile-modal-body {
+      overflow-y: auto;
+      padding: 1.5rem;
     }
 
     /* Profile Tab */
