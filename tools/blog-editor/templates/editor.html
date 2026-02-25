@@ -843,12 +843,12 @@ function escapeAttr(s) {
 const TWEET_DEFS = [
   {
     label: '基本',
-    build: (title, url, hashTags) =>
+    build: (title, url, hashTags, desc) =>
 `ブログ書きました！
 
 📝${title}
 
-〈一言で内容を説明〉
+${desc}
 
 🔗 ${url}
 
@@ -856,12 +856,12 @@ const TWEET_DEFS = [
   },
   {
     label: '技術系',
-    build: (title, url, hashTags) =>
+    build: (title, url, hashTags, desc) =>
 `ブログ書きました📝
 
 【${title}】
 
-〈検証・調査した内容を一言で〉
+${desc}
 同じ状況で詰まってる人の参考になれば！
 
 🔗 ${url}
@@ -870,20 +870,20 @@ const TWEET_DEFS = [
   },
   {
     label: '趣味・日常系',
-    build: (title, url, hashTags) => {
-      let t = `ブログ書いたよ〜\n\n【${title}】\n\n〈内容をカジュアルに一言〉\nよかったら読んでみてください(^o^)\n\n🔗 ${url}`;
+    build: (title, url, hashTags, desc) => {
+      let t = `ブログ書いたよ〜\n\n【${title}】\n\n${desc}\nよかったら読んでみてください(^o^)\n\n🔗 ${url}`;
       if (hashTags.trim()) t += '\n\n' + hashTags.trim();
       return t;
     },
   },
   {
     label: 'Ameba移植',
-    build: (title, url, hashTags) =>
+    build: (title, url, hashTags, desc) =>
 `昔Amebaに書いたやつをブログに移植しました
 
 【${title}】
 
-〈当時の状況・内容を一言〉
+${desc}
 黒歴史感あるけどせっかくなので笑
 
 🔗 ${url}
@@ -898,6 +898,16 @@ function getTweetUrl() {
   return `https://reiblast.f5.si/blog/${slug}/`;
 }
 
+/** エディタ本文の冒頭1行（空行・HTMLタグを除いた最初のテキスト）を返す */
+function getFirstLine() {
+  const text = quill.getText();
+  for (const line of text.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed) return trimmed;
+  }
+  return '';
+}
+
 function buildTweetTemplates() {
   const title    = document.getElementById('fm-title').value.trim() || '（タイトル未入力）';
   const url      = getTweetUrl() || 'https://reiblast.f5.si/blog/...';
@@ -908,6 +918,7 @@ function buildTweetTemplates() {
     .filter(Boolean)
     .map(t => ' #' + t.replace(/\s+/g, ''))
     .join('');
+  const desc = getFirstLine() || '〈一言で内容を説明〉';
 
   document.getElementById('tweet-url-preview').textContent = '🔗 ' + url;
 
@@ -926,7 +937,7 @@ function buildTweetTemplates() {
 
   // textarea.value はinnerHTMLではなくJSで設定（エスケープ問題を回避）
   TWEET_DEFS.forEach((def, i) => {
-    document.getElementById(`tweet-text-${i}`).value = def.build(title, url, hashTags);
+    document.getElementById(`tweet-text-${i}`).value = def.build(title, url, hashTags, desc);
     updateTweetChars(i);
   });
 }
