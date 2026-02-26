@@ -116,6 +116,8 @@ function formatDate(date: Date): string {
                   <span class="updated">更新: {formatDate(post.data.updatedDate)}</span>
                 </>
               )}
+              <span class="separator">·</span>
+              <span id="pv-count" class="pv-count" aria-label="閲覧数"></span>
             </div>
             {post.data.tags && post.data.tags.length > 0 && (
               <div class="post-tags">
@@ -300,6 +302,15 @@ function formatDate(date: Date): string {
 
     .post-meta .separator {
       opacity: 0.5;
+    }
+
+    .pv-count {
+      font-size: 0.9375rem;
+      color: rgba(0, 0, 0, 0.65);
+    }
+
+    .pv-count:empty::before {
+      content: '...';
     }
 
     .post-tags {
@@ -579,4 +590,29 @@ function formatDate(date: Date): string {
       .post-content :global(h3) { font-size: 1.25rem; }
     }
   </style>
+
+<script>
+  (async () => {
+    const path = window.location.pathname;
+    const el = document.getElementById('pv-count');
+    if (!el) return;
+    try {
+      const res = await fetch(`/api/pageviews?path=${encodeURIComponent(path)}`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const { count } = await res.json();
+        el.textContent = `${count.toLocaleString('ja-JP')} 閲覧`;
+      } else {
+        el.remove();
+        const sep = el.previousElementSibling;
+        if (sep?.classList.contains('separator')) sep.remove();
+      }
+    } catch {
+      el.remove();
+      const sep = el.previousElementSibling;
+      if (sep?.classList.contains('separator')) sep.remove();
+    }
+  })();
+</script>
 </Layout>

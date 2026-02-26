@@ -84,6 +84,7 @@ function formatDate(date: Date): string {
           新入社員が「なるほど、わからん」なところをゆるく解説します。<br>
           ※このブログの内容を実践してあなたに降り掛かったいかなる不都合も不幸も怒号も悪夢も僕は責任を取りません。
         </p>
+        <p class="blog-total-pv">合計 <span id="total-pv">...</span> 閲覧</p>
       </div>
     </section>
 
@@ -176,6 +177,12 @@ function formatDate(date: Date): string {
       opacity: 0.9;
       max-width: 600px;
       margin: 0 auto;
+    }
+
+    .blog-total-pv {
+      margin-top: 1rem;
+      font-size: 0.9375rem;
+      opacity: 0.75;
     }
 
     /* Blog Posts */
@@ -353,5 +360,23 @@ function formatDate(date: Date): string {
         });
       });
     });
+  </script>
+
+  <script>
+    (async () => {
+      const el = document.getElementById('total-pv');
+      if (!el) return;
+      try {
+        const res = await fetch('/api/pageviews?path=__total__');
+        if (res.ok) {
+          const { count } = await res.json();
+          el.textContent = count.toLocaleString('ja-JP');
+        } else {
+          el.closest('.blog-total-pv')?.remove();
+        }
+      } catch {
+        el.closest('.blog-total-pv')?.remove();
+      }
+    })();
   </script>
 </Layout>
