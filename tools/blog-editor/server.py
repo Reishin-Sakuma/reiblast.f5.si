@@ -557,34 +557,56 @@ def publish():
         return subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, **kwargs)
 
     try:
+        # ── ファイル内容をメモリに退避（branch切り替え時に上書きされても復元できるように）
+        saved_files = {}
+        for root, _dirs, files in os.walk(post_dir):
+            for f in files:
+                full = os.path.join(root, f)
+                with open(full, "rb") as fh:
+                    saved_files[full] = fh.read()
+
+        def restore_files():
+            """退避したファイルをディスクに書き戻す"""
+            for full, content in saved_files.items():
+                os.makedirs(os.path.dirname(full), exist_ok=True)
+                with open(full, "wb") as fh:
+                    fh.write(content)
+
         # 現在のブランチを記録（完了後に戻る）
         current = run(["git", "branch", "--show-current"])
-        original_branch = current.stdout.strip() or "main"
+        original_branch = current.stdout.strip() or "master"
 
         # ブランチ作成（既存の場合は切り替え）
+        # 未コミット変更があっても -f で強制切り替えし、その後ファイルを復元する
         r = run(["git", "checkout", "-b", branch])
         if r.returncode != 0:
-            r2 = run(["git", "checkout", branch])
+            r2 = run(["git", "checkout", "-f", branch])
             if r2.returncode != 0:
                 return jsonify({"error": f"ブランチ切り替え失敗: {r2.stderr.strip()}"}), 500
+
+        # checkout で上書きされた可能性があるので復元
+        restore_files()
 
         # ファイルをステージング
         r = run(["git", "add", rel_post_dir])
         if r.returncode != 0:
-            run(["git", "checkout", original_branch])
+            run(["git", "checkout", "-f", original_branch])
+            restore_files()
             return jsonify({"error": f"git add 失敗: {r.stderr.strip()}"}), 500
 
         # コミット（"nothing to commit" は正常）
         commit_msg = f"feat: {title}" if title else f"feat: add post {slug}"
         r = run(["git", "commit", "-m", commit_msg])
         if r.returncode != 0 and "nothing to commit" not in r.stdout and "nothing to commit" not in r.stderr:
-            run(["git", "checkout", original_branch])
+            run(["git", "checkout", "-f", original_branch])
+            restore_files()
             return jsonify({"error": f"git commit 失敗: {r.stderr.strip()}"}), 500
 
         # プッシュ
         r = run(["git", "push", "-u", "origin", branch])
         if r.returncode != 0:
-            run(["git", "checkout", original_branch])
+            run(["git", "checkout", "-f", original_branch])
+            restore_files()
             return jsonify({"error": f"git push 失敗: {r.stderr.strip()}"}), 500
 
         # PR 作成（既存の場合はその URL を取得）
@@ -593,7 +615,7 @@ def publish():
         r = run(["gh", "pr", "create",
                  "--title", pr_title,
                  "--body", pr_body,
-                 "--base", "main",
+                 "--base", "master",
                  "--head", branch])
 
         if r.returncode == 0:
@@ -604,14 +626,45 @@ def publish():
             if r2.returncode == 0 and r2.stdout.strip():
                 pr_url = r2.stdout.strip()
             else:
-                run(["git", "checkout", original_branch])
+                run(["git", "checkout", "-f", original_branch])
+                restore_files()
                 return jsonify({"error": f"PR 作成失敗: {r.stderr.strip()}"}), 500
 
-        # 元のブランチに戻る
-        run(["git", "checkout", original_branch])
+        # 元のブランチに戻る（checkout でファイルが変わるので復元する）
+        run(["git", "checkout", "-f", original_branch])
+        restore_files()
 
         return jsonify({"success": True, "prUrl": pr_url, "branch": branch})
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/merge", methods=["POST"])
+def merge_pr():
+    """
+    PR をマージしてブランチを削除する。
+    リクエスト: { branch }
+    レスポンス: { success } or { error }
+    """
+    data = request.json
+    branch = data.get("branch", "").strip()
+
+    if not branch:
+        return jsonify({"error": "branch が空です"}), 400
+
+    def run(cmd, **kwargs):
+        return subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, **kwargs)
+
+    try:
+        r = run(["gh", "pr", "merge", branch,
+                 "--merge",           # マージコミット方式
+                 "--delete-branch"])  # マージ後にブランチ削除
+        if r.returncode == 0:
+            return jsonify({"success": True})
+        else:
+            msg = r.stderr.strip() or r.stdout.strip()
+            return jsonify({"error": msg}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

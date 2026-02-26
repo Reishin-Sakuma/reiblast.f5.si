@@ -440,6 +440,20 @@
       cursor: pointer;
     }
     .modal-open-btn:hover { background: var(--yellow-dim); }
+    .modal-merge-btn {
+      padding: 7px 18px;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .modal-merge-btn:hover { opacity: 0.85; }
+    .modal-merge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #pr-modal-status { font-size: 12px; color: var(--muted); margin-top: 8px; min-height: 18px; }
     .modal-close-btn {
       padding: 7px 18px;
       background: none;
@@ -598,13 +612,15 @@
 <!-- ── PR Modal ── -->
 <div class="modal-overlay" id="pr-modal">
   <div class="modal-box">
-    <h2>✅ PR を作成しました</h2>
-    <p>GitHub でマージすると本番環境に公開されます。</p>
+    <h2 id="pr-modal-title">✅ PR を作成しました</h2>
+    <p id="pr-modal-desc">GitHub でマージすると本番環境に公開されます。</p>
     <div class="pr-url-box" id="pr-url-text"></div>
     <div class="modal-actions">
       <button class="modal-close-btn" onclick="closePrModal()">閉じる</button>
       <button class="modal-open-btn" id="pr-open-btn" onclick="openPrUrl()">PR を開く ↗</button>
+      <button class="modal-merge-btn" id="merge-btn" onclick="confirmMerge()">マージして公開 ✓</button>
     </div>
+    <div id="pr-modal-status"></div>
   </div>
 </div>
 
@@ -1142,7 +1158,8 @@ document.addEventListener('keydown', e => {
 });
 
 // ── 公開（ブランチ作成 → コミット → プッシュ → PR 作成）─────────────────────
-let _prUrl = '';
+let _prUrl    = '';
+let _prBranch = '';
 
 async function publishPost() {
   const slug  = document.getElementById('fm-slug').value.trim();
@@ -1163,8 +1180,15 @@ async function publishPost() {
     });
     const data = await res.json();
     if (data.success) {
-      _prUrl = data.prUrl;
+      _prUrl    = data.prUrl;
+      _prBranch = data.branch || '';
       document.getElementById('pr-url-text').textContent = _prUrl;
+      document.getElementById('pr-modal-title').textContent = '✅ PR を作成しました';
+      document.getElementById('pr-modal-desc').textContent  = 'GitHub でマージすると本番環境に公開されます。';
+      document.getElementById('pr-modal-status').textContent = '';
+      document.getElementById('merge-btn').disabled = false;
+      document.getElementById('merge-btn').textContent = 'マージして公開 ✓';
+      document.getElementById('pr-open-btn').style.display = '';
       document.getElementById('pr-modal').classList.add('open');
       setStatus('PR 作成完了 ✓', false);
     } else {
@@ -1184,6 +1208,41 @@ function openPrUrl() {
 
 function closePrModal() {
   document.getElementById('pr-modal').classList.remove('open');
+}
+
+async function confirmMerge() {
+  if (!_prBranch) { return; }
+  if (!confirm(`PR をマージして本番公開します。\nブランチ (${_prBranch}) も削除されます。\nよろしいですか？`)) return;
+
+  const btn = document.getElementById('merge-btn');
+  btn.disabled = true;
+  btn.textContent = 'マージ中...';
+  document.getElementById('pr-modal-status').textContent = '';
+
+  try {
+    const res = await fetch('/api/merge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branch: _prBranch }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('pr-modal-title').textContent = '🎉 マージ完了！';
+      document.getElementById('pr-modal-desc').textContent  = 'Cloudflare Pages のビルドが完了すると本番に公開されます。';
+      document.getElementById('pr-modal-status').textContent = '';
+      btn.textContent = 'マージ済み ✓';
+      document.getElementById('pr-open-btn').style.display = 'none';
+      setStatus('マージ完了 ✓', false);
+    } else {
+      document.getElementById('pr-modal-status').textContent = '⚠ ' + (data.error || 'マージに失敗しました');
+      btn.disabled = false;
+      btn.textContent = 'マージして公開 ✓';
+    }
+  } catch (e) {
+    document.getElementById('pr-modal-status').textContent = '⚠ エラー: ' + e.message;
+    btn.disabled = false;
+    btn.textContent = 'マージして公開 ✓';
+  }
 }
 
 function showPublishError(msg) {
