@@ -991,11 +991,8 @@ function escapeAttr(s) {
 }
 
 // ── ツイートテンプレート ────────────────────────────────────────────────────
-const TWEET_DEFS = [
-  {
-    label: '基本',
-    build: (title, url, hashTags, desc) =>
-`ブログを更新しました！📖
+function buildTweetText(title, url, hashTags, desc) {
+  return `ブログを更新しました！📖
 
 📝${title}
 
@@ -1003,44 +1000,8 @@ ${desc}
 
 🔗 ${url}
 
-#エンジニアブログ #インフラエンジニア${hashTags}`,
-  },
-  {
-    label: '技術系',
-    build: (title, url, hashTags, desc) =>
-`ブログを更新しました！👨‍💻
-
-【${title}】
-
-${desc}
-
-🔗 ${url}
-
-#インフラエンジニア #エンジニアブログ${hashTags}`,
-  },
-  {
-    label: '趣味・日常系',
-    build: (title, url, hashTags, desc) => {
-      let t = `ブログ書いたよ〜\n\n【${title}】\n\n${desc}\nよかったら読んでみてください(^o^)\n\n🔗 ${url}`;
-      if (hashTags.trim()) t += '\n\n' + hashTags.trim();
-      return t;
-    },
-  },
-  {
-    label: 'Ameba移植',
-    build: (title, url, hashTags, desc) =>
-`昔Amebaに書いたやつをブログに移植しました
-
-【${title}】
-
-${desc}
-黒歴史感あるけどせっかくなので笑
-
-🔗 ${url}
-
-#エンジニアブログ${hashTags}`,
-  },
-];
+#エンジニアブログ${hashTags}`;
+}
 
 function getTweetUrl() {
   const slug = document.getElementById('fm-slug').value.trim();
@@ -1073,23 +1034,20 @@ function buildTweetTemplates() {
   document.getElementById('tweet-url-preview').textContent = '🔗 ' + url;
 
   const body = document.getElementById('tweet-drawer-body');
-  body.innerHTML = TWEET_DEFS.map((def, i) => `
+  body.innerHTML = `
     <div class="tweet-card">
       <div class="tweet-card-header">
-        <span class="tweet-label">${def.label}</span>
-        <span class="tweet-chars" id="tweet-chars-${i}">-- 文字</span>
+        <span class="tweet-chars" id="tweet-chars-0">-- 文字</span>
       </div>
-      <textarea class="tweet-textarea" id="tweet-text-${i}" rows="9"
-        oninput="updateTweetChars(${i})"></textarea>
-      <button class="tweet-copy-btn" id="tweet-copy-${i}"
-        onclick="copyTweet(${i})">コピー</button>
-    </div>`).join('');
+      <textarea class="tweet-textarea" id="tweet-text-0" rows="9"
+        oninput="updateTweetChars(0)"></textarea>
+      <button class="tweet-copy-btn" id="tweet-copy-0"
+        onclick="copyTweet(0)">コピー</button>
+    </div>`;
 
   // textarea.value はinnerHTMLではなくJSで設定（エスケープ問題を回避）
-  TWEET_DEFS.forEach((def, i) => {
-    document.getElementById(`tweet-text-${i}`).value = def.build(title, url, hashTags, desc);
-    updateTweetChars(i);
-  });
+  document.getElementById('tweet-text-0').value = buildTweetText(title, url, hashTags, desc);
+  updateTweetChars(0);
 }
 
 /** X の文字数カウント（URL は長さに関わらず23文字固定扱い） */
