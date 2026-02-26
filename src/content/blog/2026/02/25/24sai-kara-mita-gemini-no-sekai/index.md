@@ -6,6 +6,7 @@ slug: 24sai-kara-mita-gemini-no-sekai
 author: reiblast1123
 tags: ["生成AI", "Gemini", "Google", "インフラエンジニア", "IT"]
 draft: false
+updatedDate: 2026-02-26T15:44:00
 ---
 
 # 24歳から見た「Geminiの世界」とは
