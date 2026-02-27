@@ -591,26 +591,25 @@ function formatDate(date: Date): string {
     }
   </style>
 
-<script>
+<script is:inline>
   (async () => {
     const path = window.location.pathname;
     const el = document.getElementById('pv-count');
     if (!el) return;
+    const sep = el.previousElementSibling;
     try {
-      const res = await fetch(`/api/pageviews?path=${encodeURIComponent(path)}`, {
+      const res = await fetch('/api/pageviews?path=' + encodeURIComponent(path), {
         method: 'POST',
       });
       if (res.ok) {
         const { count } = await res.json();
-        el.textContent = `${count.toLocaleString('ja-JP')} 閲覧`;
+        el.textContent = count.toLocaleString('ja-JP') + ' 閲覧';
       } else {
         el.remove();
-        const sep = el.previousElementSibling;
         if (sep?.classList.contains('separator')) sep.remove();
       }
     } catch {
       el.remove();
-      const sep = el.previousElementSibling;
       if (sep?.classList.contains('separator')) sep.remove();
     }
   })();
