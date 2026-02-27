@@ -43,7 +43,7 @@ function formatDate(date: Date): string {
 ---
 
 <Layout title={`${post.data.title} - Blog`} description={post.data.description} ogImage={ogImage}>
-  <main>
+  <main id="main-content">
     <article class="blog-post">
       <!-- Post Hero (Racing Yellow) -->
       <div class="post-hero">
@@ -95,12 +95,12 @@ function formatDate(date: Date): string {
           </svg>
         </div>
         <div class="post-hero-inner">
-          <nav class="breadcrumb">
+          <nav class="breadcrumb" aria-label="パンくずリスト">
             <a href="/">ホーム</a>
-            <span class="separator">/</span>
+            <span class="separator" aria-hidden="true">/</span>
             <a href="/blog/">Blog</a>
-            <span class="separator">/</span>
-            <span class="current">{post.data.title}</span>
+            <span class="separator" aria-hidden="true">/</span>
+            <span class="current" aria-current="page">{post.data.title}</span>
           </nav>
           <header class="post-header">
             <h1 class="post-title">{post.data.title}</h1>
@@ -117,7 +117,7 @@ function formatDate(date: Date): string {
                 </>
               )}
               <span class="separator">·</span>
-              <span id="pv-count" class="pv-count" aria-label="閲覧数"></span>
+              <span id="pv-count" class="pv-count" aria-label="閲覧数" aria-live="polite"></span>
             </div>
             {post.data.tags && post.data.tags.length > 0 && (
               <div class="post-tags">
@@ -153,11 +153,11 @@ function formatDate(date: Date): string {
           </div>
 
           <!-- Table of Contents + サイドバー広告 -->
-          <aside class="toc">
+          <aside class="toc" aria-label="目次">
             {tocHeadings.length > 0 && (
               <div class="toc-inner">
-                <p class="toc-title">目次</p>
-                <nav>
+                <p class="toc-title" id="toc-heading">目次</p>
+                <nav aria-labelledby="toc-heading">
                   <ul class="toc-list">
                     {tocHeadings.map((heading) => (
                       <li class={`toc-item toc-h${heading.depth}`}>
