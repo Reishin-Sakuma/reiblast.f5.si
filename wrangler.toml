@@ -1,3 +1,8 @@
 name = "reiblast-portfolio"
 compatibility_date = "2026-02-09"
 pages_build_output_dir = "./dist"
+
+[[kv_namespaces]]
+binding = "PAGEVIEWS"
+id = "67c5757af5d44cb5a42664ee45924c7d"
+preview_id = "7a63466edc6a41b890977651acb17b6a"
