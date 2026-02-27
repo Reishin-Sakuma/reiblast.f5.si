@@ -6,10 +6,10 @@ import Layout from '../layouts/Layout.astro';
   title="404 Not Found - reiblast1123"
   description="お探しのページは見つかりませんでした。"
 >
-  <main class="error-page">
+  <main class="error-page" id="main-content">
     <div class="container">
       <div class="terminal-window">
-        <div class="terminal-header">
+        <div class="terminal-header" aria-hidden="true">
           <span class="dot dot-red"></span>
           <span class="dot dot-yellow"></span>
           <span class="dot dot-green"></span>
@@ -36,12 +36,12 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </div>
 
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="ナビゲーション">
         <a href="/" class="nav-btn primary">
-          <span class="btn-icon">⌂</span> ホームへ戻る
+          <span class="btn-icon" aria-hidden="true">⌂</span> ホームへ戻る
         </a>
         <a href="/blog" class="nav-btn secondary">
-          <span class="btn-icon">✎</span> ブログ一覧
+          <span class="btn-icon" aria-hidden="true">✎</span> ブログ一覧
         </a>
       </nav>
     </div>
@@ -156,6 +156,12 @@ import Layout from '../layouts/Layout.astro';
   .blink {
     animation: blink 1s step-start infinite;
     color: #FFD700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blink {
+      animation: none;
+    }
   }
 
   /* Navigation Buttons */

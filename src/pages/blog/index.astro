@@ -27,7 +27,7 @@ function formatDate(date: Date): string {
   title="沖縄でエンジニアしてて思ったこと。 - reiblast1123"
   description="インフラエンジニアの24歳男子が仕事、趣味、クルマ、社会に対して思ったことを書いてくとこ。新入社員が「なるほど、わからん」なところをゆるく解説します。"
 >
-  <main>
+  <main id="main-content">
     <!-- Hero Section -->
     <section class="blog-hero">
       <div class="minsa-overlay" aria-hidden="true">
@@ -91,19 +91,19 @@ function formatDate(date: Date): string {
     <!-- Blog Posts -->
     <section class="blog-posts">
       <div class="container">
-        <nav class="breadcrumb">
+        <nav class="breadcrumb" aria-label="パンくずリスト">
           <a href="/">ホーム</a>
-          <span class="sep">/</span>
-          <span class="current">Blog</span>
+          <span class="sep" aria-hidden="true">/</span>
+          <span class="current" aria-current="page">Blog</span>
         </nav>
         {sortedPosts.length === 0 ? (
           <p class="no-posts">まだ記事がありません。</p>
         ) : (
           <>
-            <div class="tag-filter">
-              <button class="filter-btn active" data-tag="all">すべて</button>
+            <div class="tag-filter" role="group" aria-label="タグフィルター">
+              <button class="filter-btn active" data-tag="all" aria-pressed="true">すべて</button>
               {allTags.map(tag => (
-                <button class="filter-btn" data-tag={tag}>{tag}</button>
+                <button class="filter-btn" data-tag={tag} aria-pressed="false">{tag}</button>
               ))}
             </div>
           <div class="posts-grid">
@@ -352,8 +352,12 @@ function formatDate(date: Date): string {
     document.querySelectorAll<HTMLButtonElement>('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const tag = btn.dataset.tag;
-        document.querySelectorAll<HTMLButtonElement>('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll<HTMLButtonElement>('.filter-btn').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         document.querySelectorAll<HTMLElement>('.post-card').forEach(card => {
           const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
           card.style.display = (tag === 'all' || tags.includes(tag!)) ? '' : 'none';
