@@ -406,8 +406,13 @@ const comingSoonProjects = [
                     <p class="blog-desc">{post.data.description}</p>
                     <div class="blog-card-footer">
                       <span class="blog-read-more">続きを読む →</span>
-                      <span class="card-likes" data-path={`/blog/${post.slug}`}>
-                        ♡ <span class="like-num">…</span>
+                      <span class="blog-card-stats">
+                        <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
+                          👁 <span class="pv-num">…</span>
+                        </span>
+                        <span class="card-likes" data-path={`/blog/${post.slug}`}>
+                          ♡ <span class="like-num">…</span>
+                        </span>
                       </span>
                     </div>
                   </a>
@@ -632,6 +637,26 @@ const comingSoonProjects = [
             const path = el.dataset.path!;
             const count = counts[path] ?? 0;
             const numEl = el.querySelector('.like-num');
+            if (numEl) numEl.textContent = count.toLocaleString('ja-JP');
+          });
+        }
+      } catch {}
+    })();
+  </script>
+
+  <script>
+    (async () => {
+      const pvEls = document.querySelectorAll<HTMLElement>('#tab-blog .card-pv');
+      if (pvEls.length === 0) return;
+      const paths = Array.from(pvEls).map(el => el.dataset.pvPath).join(',');
+      try {
+        const res = await fetch('/api/pageviews?paths=' + encodeURIComponent(paths));
+        if (res.ok) {
+          const counts: Record<string, number> = await res.json();
+          pvEls.forEach(el => {
+            const path = el.dataset.pvPath!;
+            const count = counts[path] ?? 0;
+            const numEl = el.querySelector('.pv-num');
             if (numEl) numEl.textContent = count.toLocaleString('ja-JP');
           });
         }
@@ -1256,13 +1281,20 @@ const comingSoonProjects = [
       color: var(--primary);
     }
 
+    .blog-card-stats {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .card-pv,
     .card-likes {
       font-size: 0.8rem;
       color: #888;
       display: flex;
       align-items: center;
       gap: 0.2rem;
-      flex-shrink: 0;
     }
 
     .blog-tag-filter {
