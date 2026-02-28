@@ -146,6 +146,15 @@ function formatDate(date: Date): string {
           </div>
         )}
 
+        <!-- いいねセクション（記事上部） -->
+        <div class="like-section like-section-top">
+          <p class="like-message">記事が気に入ったらいいねしてください！</p>
+          <button class="like-btn js-like-btn" aria-label="この記事にいいねをする" aria-pressed="false">
+            <span class="like-icon">♡</span>
+            <span class="like-count js-like-count">…</span>
+          </button>
+        </div>
+
         <div class="post-layout">
           <!-- Post Content -->
           <div class="post-content">
@@ -200,11 +209,12 @@ function formatDate(date: Date): string {
           </div>
         )}
 
-        <!-- いいねセクション -->
-        <div class="like-section">
-          <button id="like-btn" class="like-btn" aria-label="この記事にいいねをする" aria-pressed="false">
+        <!-- いいねセクション（記事下部） -->
+        <div class="like-section like-section-bottom">
+          <p class="like-message">記事が気に入ったらいいねしてください！</p>
+          <button class="like-btn js-like-btn" aria-label="この記事にいいねをする" aria-pressed="false">
             <span class="like-icon">♡</span>
-            <span id="like-count" class="like-count">…</span>
+            <span class="like-count js-like-count">…</span>
           </button>
         </div>
 
@@ -550,8 +560,20 @@ function formatDate(date: Date): string {
     /* いいねセクション */
     .like-section {
       display: flex;
-      justify-content: center;
-      padding: 2rem 0 1rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem 0;
+    }
+
+    .like-section-top {
+      padding-bottom: 2rem;
+    }
+
+    .like-message {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #666;
     }
 
     .like-btn {
@@ -670,18 +692,31 @@ function formatDate(date: Date): string {
 
 <script is:inline>
   (async () => {
-    const path = window.location.pathname;
-    const btn = document.getElementById('like-btn');
-    const countEl = document.getElementById('like-count');
-    if (!btn || !countEl) return;
+    // 末尾スラッシュを取り除いて一覧ページの data-path と一致させる
+    const path = window.location.pathname.replace(/\/$/, '');
+    const btns = document.querySelectorAll('.js-like-btn');
+    const countEls = document.querySelectorAll('.js-like-count');
+    if (btns.length === 0) return;
     const STORAGE_KEY = 'liked:' + path;
+
+    function setLiked(count) {
+      countEls.forEach(el => { el.textContent = count.toLocaleString('ja-JP'); });
+      btns.forEach(btn => {
+        btn.classList.add('liked');
+        btn.setAttribute('aria-pressed', 'true');
+        btn.querySelector('.like-icon').textContent = '♥';
+        btn.disabled = true;
+      });
+    }
 
     // 既にいいね済みの場合はボタンを無効化
     if (localStorage.getItem(STORAGE_KEY)) {
-      btn.classList.add('liked');
-      btn.setAttribute('aria-pressed', 'true');
-      btn.querySelector('.like-icon').textContent = '♥';
-      btn.disabled = true;
+      btns.forEach(btn => {
+        btn.classList.add('liked');
+        btn.setAttribute('aria-pressed', 'true');
+        btn.querySelector('.like-icon').textContent = '♥';
+        btn.disabled = true;
+      });
     }
 
     // 現在のいいね数を取得
@@ -689,29 +724,28 @@ function formatDate(date: Date): string {
       const res = await fetch('/api/likes?path=' + encodeURIComponent(path));
       if (res.ok) {
         const { count } = await res.json();
-        countEl.textContent = count.toLocaleString('ja-JP');
+        countEls.forEach(el => { el.textContent = count.toLocaleString('ja-JP'); });
       }
     } catch {}
 
-    // ボタンクリック
-    btn.addEventListener('click', async () => {
-      if (btn.disabled) return;
-      btn.disabled = true;
-      try {
-        const res = await fetch('/api/likes?path=' + encodeURIComponent(path), { method: 'POST' });
-        if (res.ok) {
-          const { count } = await res.json();
-          countEl.textContent = count.toLocaleString('ja-JP');
-          btn.classList.add('liked');
-          btn.setAttribute('aria-pressed', 'true');
-          btn.querySelector('.like-icon').textContent = '♥';
-          localStorage.setItem(STORAGE_KEY, '1');
-        } else {
-          btn.disabled = false;
+    // ボタンクリック（どちらのボタンでも動作）
+    btns.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (btn.disabled) return;
+        btns.forEach(b => { b.disabled = true; });
+        try {
+          const res = await fetch('/api/likes?path=' + encodeURIComponent(path), { method: 'POST' });
+          if (res.ok) {
+            const { count } = await res.json();
+            localStorage.setItem(STORAGE_KEY, '1');
+            setLiked(count);
+          } else {
+            btns.forEach(b => { b.disabled = false; });
+          }
+        } catch {
+          btns.forEach(b => { b.disabled = false; });
         }
-      } catch {
-        btn.disabled = false;
-      }
+      });
     });
   })();
 </script>
