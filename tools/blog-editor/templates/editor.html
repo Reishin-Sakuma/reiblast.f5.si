@@ -24,12 +24,36 @@
       --green: #7cd300;
       --red: #ff4444;
     }
+    body.light {
+      --bg: #fafaf0;
+      --surface: #ffffff;
+      --surface2: #f0efe4;
+      --border: #ddd8c0;
+      --yellow: #FFD700;
+      --yellow-dim: #FFC200;
+      --text: #111111;
+      --muted: #888888;
+      --green: #10b981;
+      --red: #cc2200;
+    }
+    body.light header h1 { color: #111111; }
+    body.light .ql-snow .ql-stroke { stroke: #555; }
+    body.light .ql-snow .ql-fill   { fill:   #555; }
+    body.light .ql-snow .ql-picker { color:  #555; }
+    body.light .ql-toolbar.ql-snow button:hover .ql-stroke,
+    body.light .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: #b8860b; }
+    body.light .ql-toolbar.ql-snow button:hover .ql-fill,
+    body.light .ql-toolbar.ql-snow button.ql-active .ql-fill   { fill:   #b8860b; }
+    body.light .ql-editor a { color: #b8860b; }
+    body.light .fm-draft .tooltip { background: #fff; color: #333; border-color: #ddd8c0; }
+    body.light .fm-toggle-bar:hover { background: rgba(0,0,0,0.04); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       height: 100vh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -76,7 +100,20 @@
     .right-pane { width: 45%; display: flex; flex-direction: column; overflow: hidden; }
 
     /* ── Frontmatter ── */
-    .fm-section { background: var(--surface); border-bottom: 1px solid var(--border); padding: 9px 13px; flex-shrink: 0; }
+    .fm-section { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; flex-shrink: 0; }
+    .fm-toggle-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 13px; cursor: pointer; user-select: none;
+      border-bottom: 1px solid transparent; transition: border-color 0.15s;
+    }
+    .fm-toggle-bar:hover { background: rgba(255,255,255,0.03); }
+    .fm-section.collapsed .fm-toggle-bar { border-bottom-color: transparent; }
+    .fm-toggle-label { font-size: 11px; color: var(--muted); font-family: 'Courier New', monospace; }
+    .fm-toggle-summary { font-size: 11px; color: #aaa; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fm-toggle-arrow { font-size: 10px; color: var(--muted); margin-left: auto; flex-shrink: 0; transition: transform 0.2s; }
+    .fm-section.collapsed .fm-toggle-arrow { transform: rotate(180deg); }
+    .fm-body { padding: 0 13px 9px; }
+    .fm-section.collapsed .fm-body { display: none; }
     .fm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
     .fm-grid .span2 { grid-column: 1 / -1; }
     .fm-field label { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
@@ -92,8 +129,17 @@
     }
     .fm-field input:focus { outline: none; border-color: var(--yellow); }
     .fm-bottom-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
-    .fm-draft { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+    .fm-draft { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); flex-shrink: 0; position: relative; }
     .fm-draft input[type="checkbox"] { accent-color: var(--yellow); }
+    .fm-draft .help-icon { font-size: 11px; color: var(--muted); cursor: default; opacity: 0.6; }
+    .fm-draft .tooltip {
+      display: none; position: absolute; bottom: calc(100% + 6px); left: 0;
+      background: #2a2a2a; border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 10px; font-size: 11px; line-height: 1.6; color: #ccc;
+      white-space: nowrap; z-index: 100; pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .fm-draft:hover .tooltip { display: block; }
 
     /* ── MDX Imports ── */
     #imports-section { display: none; flex-shrink: 0; border-bottom: 1px solid var(--border); }
@@ -522,6 +568,7 @@
   <h1>r&gt;_ Blog Editor</h1>
   <button class="header-btn" onclick="openDrawer()">📂 記事一覧</button>
   <button class="header-btn" onclick="openTweetDrawer()">🐦 ポスト</button>
+  <button class="header-btn" id="theme-btn" onclick="toggleTheme()" title="ライト/ダークモード切替">🌙</button>
   <div class="ext-toggle">
     <button class="ext-btn active" data-ext="md"  onclick="setExt('md')">index.md</button>
     <button class="ext-btn"        data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
@@ -534,37 +581,51 @@
   <div class="left-pane">
 
     <!-- Frontmatter -->
-    <div class="fm-section">
-      <div class="fm-grid">
-        <div class="fm-field span2">
-          <label>タイトル</label>
-          <input type="text" id="fm-title" placeholder='24歳から見た「○○の世界」とは'>
-        </div>
-        <div class="fm-field span2">
-          <label>説明文 (description)</label>
-          <input type="text" id="fm-desc" placeholder="記事の説明文">
-        </div>
-        <div class="fm-field">
-          <label>slug</label>
-          <input type="text" id="fm-slug" placeholder="24sai-kara-mita-xxx">
-        </div>
-        <div class="fm-field">
-          <label>pubDate</label>
-          <input type="datetime-local" id="fm-date">
-        </div>
-        <div class="fm-field span2">
-          <label>タグ（カンマ区切り）</label>
-          <input type="text" id="fm-tags" placeholder="技術, 日記, インフラ">
-        </div>
+    <div class="fm-section" id="fm-section">
+      <div class="fm-toggle-bar" onclick="toggleFm()">
+        <span class="fm-toggle-label">frontmatter</span>
+        <span class="fm-toggle-summary" id="fm-summary"></span>
+        <span class="fm-toggle-arrow">▲</span>
       </div>
-      <div class="fm-bottom-row">
-        <div class="fm-draft">
-          <input type="checkbox" id="fm-draft">
-          <label for="fm-draft">下書き (draft)</label>
+      <div class="fm-body">
+        <div class="fm-grid">
+          <div class="fm-field span2">
+            <label>タイトル</label>
+            <input type="text" id="fm-title" placeholder='24歳から見た「○○の世界」とは' oninput="updateFmSummary()">
+          </div>
+          <div class="fm-field span2">
+            <label>説明文 (description)</label>
+            <input type="text" id="fm-desc" placeholder="記事の説明文">
+          </div>
+          <div class="fm-field">
+            <label>slug</label>
+            <input type="text" id="fm-slug" placeholder="24sai-kara-mita-xxx" oninput="updateFmSummary()">
+          </div>
+          <div class="fm-field">
+            <label>pubDate</label>
+            <input type="datetime-local" id="fm-date">
+          </div>
+          <div class="fm-field span2">
+            <label>タグ（カンマ区切り）</label>
+            <input type="text" id="fm-tags" placeholder="技術, 日記, インフラ">
+          </div>
         </div>
-        <div class="fm-field" style="flex:0 0 195px; margin-left:auto;">
-          <label>updatedDate（任意）</label>
-          <input type="datetime-local" id="fm-updated">
+        <div class="fm-bottom-row">
+          <div class="fm-draft">
+            <input type="checkbox" id="fm-draft">
+            <label for="fm-draft">下書き (draft)</label>
+            <span class="help-icon">?</span>
+            <div class="tooltip">
+              チェックあり → ビルドから除外（URL なし・一覧非表示）<br>
+              チェックなし → 公開される<br>
+              <br>
+              💡 ブランチに push したいけどまだ公開しない、というときに使う
+            </div>
+          </div>
+          <div class="fm-field" style="flex:0 0 195px; margin-left:auto;">
+            <label>updatedDate（任意）</label>
+            <input type="datetime-local" id="fm-updated">
+          </div>
         </div>
       </div>
     </div>
@@ -1143,6 +1204,43 @@ function showOgpToast(slug) {
 function closeOgpToast() {
   document.getElementById('ogp-toast').style.display = 'none';
 }
+
+// ── テーマ切替 ────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const light = document.body.classList.toggle('light');
+  localStorage.setItem('theme', light ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = light ? '☀️' : '🌙';
+}
+
+// 初期化
+(function() {
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '☀️';
+  }
+})();
+
+// ── Frontmatter 折りたたみ ────────────────────────────────────────────────
+function toggleFm() {
+  const sec = document.getElementById('fm-section');
+  const collapsed = sec.classList.toggle('collapsed');
+  localStorage.setItem('fm-collapsed', collapsed ? '1' : '0');
+}
+
+function updateFmSummary() {
+  const title = document.getElementById('fm-title').value.trim();
+  const slug  = document.getElementById('fm-slug').value.trim();
+  const parts = [title, slug ? `[${slug}]` : ''].filter(Boolean);
+  document.getElementById('fm-summary').textContent = parts.join('  ');
+}
+
+// 初期化：保存済み状態を復元
+(function() {
+  if (localStorage.getItem('fm-collapsed') === '1') {
+    document.getElementById('fm-section').classList.add('collapsed');
+  }
+  updateFmSummary();
+})();
 
 // ── Ctrl+S で保存 ──────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
