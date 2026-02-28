@@ -200,6 +200,14 @@ function formatDate(date: Date): string {
           </div>
         )}
 
+        <!-- いいねセクション -->
+        <div class="like-section">
+          <button id="like-btn" class="like-btn" aria-label="この記事にいいねをする" aria-pressed="false">
+            <span class="like-icon">♡</span>
+            <span id="like-count" class="like-count">…</span>
+          </button>
+        </div>
+
         <!-- Post Footer -->
         <footer class="post-footer">
           <a href="/blog/" class="back-link">← ブログ一覧に戻る</a>
@@ -539,6 +547,51 @@ function formatDate(date: Date): string {
       min-height: 90px;
     }
 
+    /* いいねセクション */
+    .like-section {
+      display: flex;
+      justify-content: center;
+      padding: 2rem 0 1rem;
+    }
+
+    .like-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: 2px solid #ddd;
+      border-radius: 9999px;
+      padding: 0.5rem 1.5rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      color: #555;
+    }
+
+    .like-btn:hover:not(:disabled) {
+      border-color: #e74c3c;
+      color: #e74c3c;
+      background: #fff0f0;
+    }
+
+    .like-btn.liked,
+    .like-btn:disabled {
+      border-color: #e74c3c;
+      color: #e74c3c;
+      cursor: default;
+    }
+
+    .like-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .like-count {
+      font-weight: bold;
+      min-width: 1.5rem;
+      text-align: left;
+    }
+
     /* Post Footer */
     .post-footer {
       margin-top: 4rem;
@@ -612,6 +665,54 @@ function formatDate(date: Date): string {
       el.remove();
       if (sep?.classList.contains('separator')) sep.remove();
     }
+  })();
+</script>
+
+<script is:inline>
+  (async () => {
+    const path = window.location.pathname;
+    const btn = document.getElementById('like-btn');
+    const countEl = document.getElementById('like-count');
+    if (!btn || !countEl) return;
+    const STORAGE_KEY = 'liked:' + path;
+
+    // 既にいいね済みの場合はボタンを無効化
+    if (localStorage.getItem(STORAGE_KEY)) {
+      btn.classList.add('liked');
+      btn.setAttribute('aria-pressed', 'true');
+      btn.querySelector('.like-icon').textContent = '♥';
+      btn.disabled = true;
+    }
+
+    // 現在のいいね数を取得
+    try {
+      const res = await fetch('/api/likes?path=' + encodeURIComponent(path));
+      if (res.ok) {
+        const { count } = await res.json();
+        countEl.textContent = count.toLocaleString('ja-JP');
+      }
+    } catch {}
+
+    // ボタンクリック
+    btn.addEventListener('click', async () => {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/likes?path=' + encodeURIComponent(path), { method: 'POST' });
+        if (res.ok) {
+          const { count } = await res.json();
+          countEl.textContent = count.toLocaleString('ja-JP');
+          btn.classList.add('liked');
+          btn.setAttribute('aria-pressed', 'true');
+          btn.querySelector('.like-icon').textContent = '♥';
+          localStorage.setItem(STORAGE_KEY, '1');
+        } else {
+          btn.disabled = false;
+        }
+      } catch {
+        btn.disabled = false;
+      }
+    });
   })();
 </script>
 </Layout>

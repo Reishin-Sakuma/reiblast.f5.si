@@ -126,6 +126,9 @@ function formatDate(date: Date): string {
                   <p class="post-description">{post.data.description}</p>
                   <div class="post-footer">
                     <span class="read-more">続きを読む →</span>
+                    <span class="card-likes" data-path={`/blog/${post.slug}`}>
+                      ♡ <span class="like-num">…</span>
+                    </span>
                   </div>
                 </a>
               </article>
@@ -294,7 +297,17 @@ function formatDate(date: Date): string {
 
     .post-footer {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-likes {
+      font-size: 0.85rem;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      flex-shrink: 0;
     }
 
     .read-more {
@@ -381,6 +394,26 @@ function formatDate(date: Date): string {
       } catch {
         el.closest('.blog-total-pv')?.remove();
       }
+    })();
+  </script>
+
+  <script>
+    (async () => {
+      const likeEls = document.querySelectorAll<HTMLElement>('.card-likes');
+      if (likeEls.length === 0) return;
+      const paths = Array.from(likeEls).map(el => el.dataset.path).join(',');
+      try {
+        const res = await fetch('/api/likes?paths=' + encodeURIComponent(paths));
+        if (res.ok) {
+          const counts: Record<string, number> = await res.json();
+          likeEls.forEach(el => {
+            const path = el.dataset.path!;
+            const count = counts[path] ?? 0;
+            const numEl = el.querySelector('.like-num');
+            if (numEl) numEl.textContent = count.toLocaleString('ja-JP');
+          });
+        }
+      } catch {}
     })();
   </script>
 </Layout>
