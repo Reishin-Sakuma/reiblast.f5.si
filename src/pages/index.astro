@@ -319,63 +319,6 @@ const comingSoonProjects = [
       </div>
       <!-- Blog Tab -->
       <div id="tab-blog" class="tab-panel active" role="tabpanel">
-        <div class="blog-tab-hero">
-          <div class="minsa-overlay" aria-hidden="true">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="mp-tab" x="0" y="0" width="96" height="52" patternUnits="userSpaceOnUse">
-              <rect x="0" y="0" width="3" height="8" fill="black"/>
-              <rect x="6" y="0" width="3" height="8" fill="black"/>
-              <rect x="12" y="0" width="3" height="8" fill="black"/>
-              <rect x="18" y="0" width="3" height="8" fill="black"/>
-              <rect x="24" y="0" width="3" height="8" fill="black"/>
-              <rect x="30" y="0" width="3" height="8" fill="black"/>
-              <rect x="36" y="0" width="3" height="8" fill="black"/>
-              <rect x="42" y="0" width="3" height="8" fill="black"/>
-              <rect x="48" y="0" width="3" height="8" fill="black"/>
-              <rect x="54" y="0" width="3" height="8" fill="black"/>
-              <rect x="60" y="0" width="3" height="8" fill="black"/>
-              <rect x="66" y="0" width="3" height="8" fill="black"/>
-              <rect x="72" y="0" width="3" height="8" fill="black"/>
-              <rect x="78" y="0" width="3" height="8" fill="black"/>
-              <rect x="84" y="0" width="3" height="8" fill="black"/>
-              <rect x="90" y="0" width="3" height="8" fill="black"/>
-              <rect x="0" y="9" width="96" height="2" fill="black"/>
-              <path d="M4,13 H18 V20 H15 V27 H18 V34 H4 V27 H7 V20 H4 Z" fill="black"/>
-              <path d="M22,13 H36 V20 H33 V27 H36 V34 H22 V27 H25 V20 H22 Z" fill="black"/>
-              <path d="M52,13 H66 V20 H63 V27 H66 V34 H52 V27 H55 V20 H52 Z" fill="black"/>
-              <path d="M70,13 H84 V20 H81 V27 H84 V34 H70 V27 H73 V20 H70 Z" fill="black"/>
-              <rect x="0" y="35" width="96" height="2" fill="black"/>
-              <rect x="0" y="38" width="3" height="8" fill="black"/>
-              <rect x="6" y="38" width="3" height="8" fill="black"/>
-              <rect x="12" y="38" width="3" height="8" fill="black"/>
-              <rect x="18" y="38" width="3" height="8" fill="black"/>
-              <rect x="24" y="38" width="3" height="8" fill="black"/>
-              <rect x="30" y="38" width="3" height="8" fill="black"/>
-              <rect x="36" y="38" width="3" height="8" fill="black"/>
-              <rect x="42" y="38" width="3" height="8" fill="black"/>
-              <rect x="48" y="38" width="3" height="8" fill="black"/>
-              <rect x="54" y="38" width="3" height="8" fill="black"/>
-              <rect x="60" y="38" width="3" height="8" fill="black"/>
-              <rect x="66" y="38" width="3" height="8" fill="black"/>
-              <rect x="72" y="38" width="3" height="8" fill="black"/>
-              <rect x="78" y="38" width="3" height="8" fill="black"/>
-              <rect x="84" y="38" width="3" height="8" fill="black"/>
-              <rect x="90" y="38" width="3" height="8" fill="black"/>
-              </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#mp-tab)"/>
-            </svg>
-          </div>
-          <div class="blog-tab-hero-inner">
-            <h2 class="blog-tab-title">沖縄でエンジニアしてて思ったこと。</h2>
-            <p class="blog-tab-desc">
-              インフラエンジニアの24歳男子が仕事、趣味、クルマ、社会に対して思ったことを書いてくとこ。<br>
-              新入社員が「なるほど、わからん」なところをゆるく解説します。<br>
-              ※このブログの内容を実践してあなたに降り掛かったいかなる不都合も不幸も怒号も悪夢も僕は責任を取りません。
-            </p>
-          </div>
-        </div>
         <div class="container">
           {sortedPosts.length === 0 ? (
             <p class="no-posts">まだ記事がありません。</p>
@@ -1162,36 +1105,6 @@ const comingSoonProjects = [
       width: 100%;
       height: 100%;
       display: block;
-    }
-
-    /* Blog Tab Hero */
-    .blog-tab-hero {
-      padding: 2rem 0 1.5rem;
-      text-align: center;
-      background: linear-gradient(135deg, #FFD700 0%, #FFC200 100%);
-      color: #111111;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .blog-tab-hero-inner {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .blog-tab-title {
-      font-size: 1.375rem;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-    }
-
-    .blog-tab-desc {
-      font-size: 0.9375rem;
-      opacity: 0.9;
-      line-height: 1.7;
     }
 
     /* Blog Tab */
