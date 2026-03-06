@@ -95,34 +95,6 @@ const comingSoonProjects = [
 
 <Layout title="reiblast1123 - Portfolio">
   <main id="main-content">
-    <!-- Tab Navigation (top) -->
-    <div class="tab-nav-outer">
-      <button class="tab-scroll-btn tab-scroll-btn-left" aria-label="前のタブ" hidden>&#8249;</button>
-      <nav class="tab-nav" role="tablist">
-      <button class="tab-btn active" data-tab="blog" role="tab" aria-selected="true" aria-controls="tab-blog">
-        <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
-        Blog - 沖縄でエンジニアしてて思ったこと。
-      </button>
-      <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">
-        <img class="tab-icon tab-favicon" src="https://shakeeper.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
-        愛車管理アプリ - Shakeeper
-      </button>
-      <button class="tab-btn" data-tab="milpon" role="tab" aria-selected="false" aria-controls="tab-milpon">
-        <img class="tab-icon tab-favicon" src="https://milpon.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
-        赤ちゃん記録アプリ - MilPon
-      </button>
-      <button class="tab-btn" data-tab="charin" role="tab" aria-selected="false" aria-controls="tab-charin">
-        <img class="tab-icon tab-favicon" src="https://charin.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
-        FX AI分析ツール - Charin
-      </button>
-      <button class="tab-btn" data-tab="other" role="tab" aria-selected="false" aria-controls="tab-other">
-        <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"/></svg>
-        Other Projects
-      </button>
-      </nav>
-      <button class="tab-scroll-btn tab-scroll-btn-right" aria-label="次のタブ">&#8250;</button>
-    </div>
-
     <!-- Hero Section -->
     <section class="hero" aria-label="紹介">
       <div class="minsa-overlay" aria-hidden="true">
@@ -220,6 +192,18 @@ const comingSoonProjects = [
 
     <!-- Tab Panels -->
     <div class="tabs-root">
+      <!-- Tab Navigation -->
+      <div class="tab-nav-outer">
+        <button class="tab-scroll-btn tab-scroll-btn-left" aria-label="前のタブ" hidden>&#8249;</button>
+        <nav class="tab-nav" role="tablist">
+          <button class="tab-btn active" data-tab="blog" role="tab" aria-selected="true" aria-controls="tab-blog">Blog - 沖縄でエンジニアしてて思ったこと。</button>
+          <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">愛車管理アプリ - Shakeeper</button>
+          <button class="tab-btn" data-tab="milpon" role="tab" aria-selected="false" aria-controls="tab-milpon">赤ちゃん記録アプリ - MilPon</button>
+          <button class="tab-btn" data-tab="charin" role="tab" aria-selected="false" aria-controls="tab-charin">FX AI分析ツール - Charin</button>
+          <button class="tab-btn" data-tab="other" role="tab" aria-selected="false" aria-controls="tab-other">Other Projects</button>
+        </nav>
+        <button class="tab-scroll-btn tab-scroll-btn-right" aria-label="次のタブ">&#8250;</button>
+      </div>
       <!-- Shakeeper Tab -->
       <div id="tab-shakeeper" class="tab-panel tab-panel-frame" role="tabpanel" hidden>
         <iframe
@@ -319,6 +303,27 @@ const comingSoonProjects = [
       </div>
       <!-- Blog Tab -->
       <div id="tab-blog" class="tab-panel active" role="tabpanel">
+        <div class="blog-tab-hero">
+          <div class="minsa-overlay" aria-hidden="true">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="minsa" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M0 20 L10 0 L20 20 L10 40 Z" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+                  <path d="M20 20 L30 0 L40 20 L30 40 Z" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#minsa)"/>
+            </svg>
+          </div>
+          <div class="blog-tab-hero-inner">
+            <h2 class="blog-tab-title">沖縄でエンジニアしてて思ったこと。</h2>
+            <p class="blog-tab-desc">
+              インフラエンジニアの24歳男子が仕事、趣味、クルマ、社会に対して思ったことを書いてくとこ。<br>
+              新入社員が「なるほど、わからん」なところをゆるく解説します。<br>
+              ※このブログの内容を実践してあなたに降り掛かったいかなる不都合も不幸も怒号も悪夢も僕は責任を取りません。
+            </p>
+          </div>
+        </div>
         <div class="container">
           {sortedPosts.length === 0 ? (
             <p class="no-posts">まだ記事がありません。</p>
@@ -377,6 +382,7 @@ const comingSoonProjects = [
           <button id="profile-close-btn" class="profile-modal-close" aria-label="閉じる">&times;</button>
         </div>
         <div class="profile-modal-body">
+          <p class="profile-intro">本業ではSIerでITインフラエンジニアに従事しながら、個人で実用的なWebアプリケーションの開発を行っています。【誰でも使える・いつでも使える】をモットーに、PWA・フルスタック開発・UI/UXデザインに注力しています。</p>
           <!-- 基本情報 -->
           <section class="profile-section">
             <h2 class="profile-section-title">基本情報</h2>
@@ -825,6 +831,38 @@ const comingSoonProjects = [
     .tab-btn.active {
       color: var(--primary);
       border-bottom-color: var(--primary);
+    }
+
+    /* Blog Tab Hero */
+    .blog-tab-hero {
+      padding: 2rem 0 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #FFD700 0%, #FFC200 100%);
+      color: #111111;
+      position: relative;
+      overflow: hidden;
+    }
+    .minsa-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .blog-tab-hero-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .blog-tab-title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+    .blog-tab-desc {
+      font-size: 0.9375rem;
+      opacity: 0.9;
+      line-height: 1.7;
     }
 
     /* Tab Panels */
@@ -1312,6 +1350,15 @@ const comingSoonProjects = [
     .profile-modal-body {
       overflow-y: auto;
       padding: 1.5rem;
+    }
+
+    .profile-intro {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--text-secondary, #555);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border, #e5e7eb);
     }
 
     /* Profile Tab */
