@@ -190,35 +190,20 @@ const comingSoonProjects = [
       </div>
     </section>
 
-    <!-- Tabs -->
+    <!-- Tab Panels -->
     <div class="tabs-root">
+      <!-- Tab Navigation -->
       <div class="tab-nav-outer">
         <button class="tab-scroll-btn tab-scroll-btn-left" aria-label="前のタブ" hidden>&#8249;</button>
         <nav class="tab-nav" role="tablist">
-        <button class="tab-btn active" data-tab="blog" role="tab" aria-selected="true" aria-controls="tab-blog">
-          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>
-          Blog - 沖縄でエンジニアしてて思ったこと。
-        </button>
-        <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">
-          <img class="tab-icon tab-favicon" src="https://shakeeper.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
-          愛車管理アプリ - Shakeeper
-        </button>
-        <button class="tab-btn" data-tab="milpon" role="tab" aria-selected="false" aria-controls="tab-milpon">
-          <img class="tab-icon tab-favicon" src="https://milpon.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
-          赤ちゃん記録アプリ - MilPon
-        </button>
-        <button class="tab-btn" data-tab="charin" role="tab" aria-selected="false" aria-controls="tab-charin">
-          <img class="tab-icon tab-favicon" src="https://charin.reiblast.f5.si/favicon.ico" width="16" height="16" alt="" loading="lazy" />
-          FX AI分析ツール - Charin
-        </button>
-        <button class="tab-btn" data-tab="other" role="tab" aria-selected="false" aria-controls="tab-other">
-          <svg class="tab-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"/></svg>
-          Other Projects
-        </button>
+          <button class="tab-btn active" data-tab="blog" role="tab" aria-selected="true" aria-controls="tab-blog">Blog - 沖縄でエンジニアしてて思ったこと。</button>
+          <button class="tab-btn" data-tab="shakeeper" role="tab" aria-selected="false" aria-controls="tab-shakeeper">愛車管理アプリ - Shakeeper</button>
+          <button class="tab-btn" data-tab="milpon" role="tab" aria-selected="false" aria-controls="tab-milpon">赤ちゃん記録アプリ - MilPon</button>
+          <button class="tab-btn" data-tab="charin" role="tab" aria-selected="false" aria-controls="tab-charin">FX AI分析ツール - Charin</button>
+          <button class="tab-btn" data-tab="other" role="tab" aria-selected="false" aria-controls="tab-other">Other Projects</button>
         </nav>
         <button class="tab-scroll-btn tab-scroll-btn-right" aria-label="次のタブ">&#8250;</button>
       </div>
-
       <!-- Shakeeper Tab -->
       <div id="tab-shakeeper" class="tab-panel tab-panel-frame" role="tabpanel" hidden>
         <iframe
@@ -322,48 +307,12 @@ const comingSoonProjects = [
           <div class="minsa-overlay" aria-hidden="true">
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <pattern id="mp-tab" x="0" y="0" width="96" height="52" patternUnits="userSpaceOnUse">
-              <rect x="0" y="0" width="3" height="8" fill="black"/>
-              <rect x="6" y="0" width="3" height="8" fill="black"/>
-              <rect x="12" y="0" width="3" height="8" fill="black"/>
-              <rect x="18" y="0" width="3" height="8" fill="black"/>
-              <rect x="24" y="0" width="3" height="8" fill="black"/>
-              <rect x="30" y="0" width="3" height="8" fill="black"/>
-              <rect x="36" y="0" width="3" height="8" fill="black"/>
-              <rect x="42" y="0" width="3" height="8" fill="black"/>
-              <rect x="48" y="0" width="3" height="8" fill="black"/>
-              <rect x="54" y="0" width="3" height="8" fill="black"/>
-              <rect x="60" y="0" width="3" height="8" fill="black"/>
-              <rect x="66" y="0" width="3" height="8" fill="black"/>
-              <rect x="72" y="0" width="3" height="8" fill="black"/>
-              <rect x="78" y="0" width="3" height="8" fill="black"/>
-              <rect x="84" y="0" width="3" height="8" fill="black"/>
-              <rect x="90" y="0" width="3" height="8" fill="black"/>
-              <rect x="0" y="9" width="96" height="2" fill="black"/>
-              <path d="M4,13 H18 V20 H15 V27 H18 V34 H4 V27 H7 V20 H4 Z" fill="black"/>
-              <path d="M22,13 H36 V20 H33 V27 H36 V34 H22 V27 H25 V20 H22 Z" fill="black"/>
-              <path d="M52,13 H66 V20 H63 V27 H66 V34 H52 V27 H55 V20 H52 Z" fill="black"/>
-              <path d="M70,13 H84 V20 H81 V27 H84 V34 H70 V27 H73 V20 H70 Z" fill="black"/>
-              <rect x="0" y="35" width="96" height="2" fill="black"/>
-              <rect x="0" y="38" width="3" height="8" fill="black"/>
-              <rect x="6" y="38" width="3" height="8" fill="black"/>
-              <rect x="12" y="38" width="3" height="8" fill="black"/>
-              <rect x="18" y="38" width="3" height="8" fill="black"/>
-              <rect x="24" y="38" width="3" height="8" fill="black"/>
-              <rect x="30" y="38" width="3" height="8" fill="black"/>
-              <rect x="36" y="38" width="3" height="8" fill="black"/>
-              <rect x="42" y="38" width="3" height="8" fill="black"/>
-              <rect x="48" y="38" width="3" height="8" fill="black"/>
-              <rect x="54" y="38" width="3" height="8" fill="black"/>
-              <rect x="60" y="38" width="3" height="8" fill="black"/>
-              <rect x="66" y="38" width="3" height="8" fill="black"/>
-              <rect x="72" y="38" width="3" height="8" fill="black"/>
-              <rect x="78" y="38" width="3" height="8" fill="black"/>
-              <rect x="84" y="38" width="3" height="8" fill="black"/>
-              <rect x="90" y="38" width="3" height="8" fill="black"/>
-              </pattern>
+                <pattern id="minsa" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M0 20 L10 0 L20 20 L10 40 Z" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+                  <path d="M20 20 L30 0 L40 20 L30 40 Z" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+                </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#mp-tab)"/>
+              <rect width="100%" height="100%" fill="url(#minsa)"/>
             </svg>
           </div>
           <div class="blog-tab-hero-inner">
@@ -433,6 +382,7 @@ const comingSoonProjects = [
           <button id="profile-close-btn" class="profile-modal-close" aria-label="閉じる">&times;</button>
         </div>
         <div class="profile-modal-body">
+          <p class="profile-intro">本業ではSIerでITインフラエンジニアに従事しながら、個人で実用的なWebアプリケーションの開発を行っています。【誰でも使える・いつでも使える】をモットーに、PWA・フルスタック開発・UI/UXデザインに注力しています。</p>
           <!-- 基本情報 -->
           <section class="profile-section">
             <h2 class="profile-section-title">基本情報</h2>
@@ -667,7 +617,7 @@ const comingSoonProjects = [
   <style>
     /* Hero Section */
     .hero {
-      padding: 6rem 0 4rem;
+      padding: 1.25rem 0;
       text-align: center;
       background: linear-gradient(135deg, #FFD700 0%, #FFC200 40%, #FFE000 70%, #FFD700 100%);
       background-size: 300% 300%;
@@ -683,38 +633,37 @@ const comingSoonProjects = [
     }
 
     .hero-title {
-      font-size: 3rem;
+      font-size: 1.5rem;
       font-weight: 800;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.125rem;
       letter-spacing: -0.02em;
       animation: fadeInUp 0.8s ease both;
       animation-delay: 0.1s;
     }
 
     .hero-subtitle {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 0.8125rem;
+      margin-bottom: 0.75rem;
       animation: fadeInUp 0.8s ease both;
       animation-delay: 0.3s;
     }
 
     .hero-description {
-      font-size: 1.125rem;
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      animation: fadeInUp 0.8s ease both;
-      animation-delay: 0.5s;
+      display: none;
     }
 
     .hero-links {
       display: flex;
-      gap: 1rem;
+      gap: 0.5rem;
       justify-content: center;
       flex-wrap: wrap;
       animation: fadeInUp 0.8s ease both;
-      animation-delay: 0.7s;
+      animation-delay: 0.5s;
+    }
+
+    .hero .btn {
+      padding: 0.35rem 0.875rem;
+      font-size: 0.8125rem;
     }
 
     /* Hero Animations */
@@ -882,6 +831,38 @@ const comingSoonProjects = [
     .tab-btn.active {
       color: var(--primary);
       border-bottom-color: var(--primary);
+    }
+
+    /* Blog Tab Hero */
+    .blog-tab-hero {
+      padding: 2rem 0 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #FFD700 0%, #FFC200 100%);
+      color: #111111;
+      position: relative;
+      overflow: hidden;
+    }
+    .minsa-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .blog-tab-hero-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .blog-tab-title {
+      font-size: 1.375rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+    .blog-tab-desc {
+      font-size: 0.9375rem;
+      opacity: 0.9;
+      line-height: 1.7;
     }
 
     /* Tab Panels */
@@ -1164,36 +1145,6 @@ const comingSoonProjects = [
       display: block;
     }
 
-    /* Blog Tab Hero */
-    .blog-tab-hero {
-      padding: 2rem 0 1.5rem;
-      text-align: center;
-      background: linear-gradient(135deg, #FFD700 0%, #FFC200 100%);
-      color: #111111;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .blog-tab-hero-inner {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .blog-tab-title {
-      font-size: 1.375rem;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-    }
-
-    .blog-tab-desc {
-      font-size: 0.9375rem;
-      opacity: 0.9;
-      line-height: 1.7;
-    }
-
     /* Blog Tab */
     .no-posts {
       text-align: center;
@@ -1401,6 +1352,15 @@ const comingSoonProjects = [
       padding: 1.5rem;
     }
 
+    .profile-intro {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--text-secondary, #555);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border, #e5e7eb);
+    }
+
     /* Profile Tab */
     .profile-section {
       margin-bottom: 2.5rem;
@@ -1569,15 +1529,15 @@ const comingSoonProjects = [
     /* Responsive */
     @media (max-width: 768px) {
       .hero-title {
-        font-size: 2rem;
-      }
-
-      .hero-subtitle {
         font-size: 1.25rem;
       }
 
+      .hero-subtitle {
+        font-size: 0.75rem;
+      }
+
       .hero-description {
-        font-size: 1rem;
+        display: none;
       }
 
       .tab-btn {
