@@ -605,8 +605,10 @@ def publish():
             restore_files()
             return jsonify({"error": f"git commit 失敗: {r.stderr.strip()}"}), 500
 
-        # プッシュ
+        # プッシュ（リモートに古いブランチが残っている場合は force push）
         r = run(["git", "push", "-u", "origin", branch])
+        if r.returncode != 0:
+            r = run(["git", "push", "-u", "--force-with-lease", "origin", branch])
         if r.returncode != 0:
             run(["git", "checkout", "-f", original_branch])
             restore_files()
