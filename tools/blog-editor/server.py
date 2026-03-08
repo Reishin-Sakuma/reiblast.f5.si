@@ -576,6 +576,9 @@ def publish():
         current = run(["git", "branch", "--show-current"])
         original_branch = current.stdout.strip() or "master"
 
+        # master に切り替えてからブランチを作成する（他ブランチの変更を混入させないため）
+        run(["git", "checkout", "-f", "master"])
+
         # ブランチ作成（既存の場合は切り替え）
         # 未コミット変更があっても -f で強制切り替えし、その後ファイルを復元する
         r = run(["git", "checkout", "-b", branch])
