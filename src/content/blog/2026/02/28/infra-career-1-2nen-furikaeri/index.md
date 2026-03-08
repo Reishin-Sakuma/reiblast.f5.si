@@ -6,6 +6,7 @@ slug: infra-career-1-2nen-furikaeri
 author: reiblast1123
 tags: ["キャリア", "インフラエンジニア", "高卒", "IT", "振り返り"]
 draft: false
+updatedDate: 2026-03-08T23:00:00
 ---
 
 # 高卒インフラエンジニア、1〜2年目を振り返る
@@ -91,9 +92,9 @@ draft: false
 
 実は、<mark style="background-color:#ffcc00">自ら志望したわけではない</mark>のですww
 
-僕の所属する企業はマーケティングからコンサル、システム設計開発からハードウェアの保守まで、<span style="color:#ff7f00"><a href="https://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%A4%E3%83%B3%E3%83%86%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%BF">SIer</a>の全部のせ</span>のようなところです。
+僕の所属する企業はマーケティングからコンサル、システム設計開発からハードウェアの保守まで、<span style="color:#ff7f00">[SIer](https://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%A4%E3%83%B3%E3%83%86%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%BF)の全部のせ</span>のようなところです。
 
-もちろん、この全部のせにはネットワークやサーバを含むITインフラも含まれているのですが、、、僕が当初志望していたのは<span style="color:#0000ff"><a href="https://ja.wikipedia.org/wiki/%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%83%BC%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2">カスタマーエンジニア</a></span>でした。
+もちろん、この全部のせにはネットワークやサーバを含むITインフラも含まれているのですが、、、僕が当初志望していたのは<span style="color:#0000ff">[カスタマーエンジニア](https://ja.wikipedia.org/wiki/%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%83%BC%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2)</span>でした。
 
 カスタマーエンジニアとは、ハードウェアの保守や修理、現場対応を行うエンジニアのことです(少なくとも僕の会社では)。
 
@@ -163,8 +164,8 @@ draft: false
 
 3年目からは、部内業務の改革・効率化に<span style="color:#8f20ff">手を染めていきます</span>(言い方)。
 
-ここが、<mark style="background-color:#ffcc00">僕が</mark>~~辞められなくなった~~<mark style="background-color:#ffcc00">自動化や<a href="https://ja.wikipedia.org/wiki/Infrastructure_as_Code">IaC</a>に対して興味を持ち始めるきっかけ</mark>になります。
+ここが、<mark style="background-color:#ffcc00">僕が</mark>~~辞められなくなった~~<mark style="background-color:#ffcc00">自動化や[IaC](https://ja.wikipedia.org/wiki/Infrastructure_as_Code)に対して興味を持ち始めるきっかけ</mark>になります。
 
-ぜひ、次回も見てみてくださいね。多分、明々後日くらいに出るかも。
+ぜひ、次回も公開すると思うので見てみてくださいね。
 
 頑張ります。
