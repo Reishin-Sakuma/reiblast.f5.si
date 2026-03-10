@@ -5,7 +5,7 @@ pubDate: 2026-03-09T00:00:00
 slug: charin-shoukai
 author: reiblast1123
 tags: ["個人開発", "FX", "AI", "PWA"]
-draft: false
+draft: true
 ---
 
 # AIがFXの売買タイミングを教えてくれるアプリ「Charin」を作りました
