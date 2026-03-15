@@ -11,6 +11,7 @@ Blog Editor - Flask server
 ブラウザで http://localhost:5000 を開く（VS Code Remote SSHはポートを自動フォワード）
 """
 
+import html as html_lib
 import os
 import re
 import subprocess
@@ -98,6 +99,10 @@ def convert_node(node) -> str:
 
     if tag == "pre":
         code = node.find("code") or node
+        text = code.get_text()
+        # MDXコンポーネントとして保護されたブロック（<LinkCard />, <Details> 等）
+        if re.match(r'^<[A-Z]', text.strip()):
+            return text.strip() + "\n\n"
         lang = ""
         for cls in (code.get("class") or []):
             if cls.startswith("language-"):
@@ -259,6 +264,11 @@ def markdown_to_quill_html(md: str) -> str:
                 inline_md_to_html(re.sub(r"^> ?", "", l)) for l in lines
             )
             html_parts.append(f"<blockquote><p>{inner}</p></blockquote>")
+            continue
+
+        # MDXコンポーネント（<LinkCard />, <Details> 等）→ コードブロックとして保護
+        if re.match(r'^<[A-Z][a-zA-Z]*[\s/>]', block.strip()):
+            html_parts.append(f'<pre class="ql-syntax" spellcheck="false">{html_lib.escape(block.strip())}</pre>')
             continue
 
         # 通常段落（インラインHTMLも含む）
@@ -589,6 +599,15 @@ def publish():
 
         # checkout で上書きされた可能性があるので復元
         restore_files()
+
+        # OGP画像がなければ生成（save時に失敗していた場合のフォールバック）
+        ogp_path = os.path.join(post_dir, "ogp.png")
+        if not os.path.exists(ogp_path):
+            ogp_script = os.path.join(PROJECT_ROOT, "scripts/generate-ogp.js")
+            subprocess.run(
+                ["node", ogp_script, slug],
+                cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=30,
+            )
 
         # ファイルをステージング
         r = run(["git", "add", rel_post_dir])
