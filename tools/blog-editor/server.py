@@ -433,7 +433,80 @@ def save():
     except Exception as e:
         ogp_msg = f"OGP生成エラー: {e}"
 
-    return jsonify({"success": True, "path": rel, "ogpGenerated": ogp_ok, "ogpMessage": ogp_msg})
+    # ── ブランチ作成 + git commit ──────────────────────────────────────────
+    git_ok = False
+    git_msg = ""
+    branch = f"post/{slug}"
+    rel_post_dir = os.path.relpath(save_dir, PROJECT_ROOT)
+
+    def run(cmd, **kwargs):
+        return subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, **kwargs)
+
+    try:
+        # 保存したファイル群をメモリに退避（checkout で消える可能性があるため）
+        saved_files = {}
+        for root, _dirs, files in os.walk(save_dir):
+            for fname in files:
+                full = os.path.join(root, fname)
+                with open(full, "rb") as fh:
+                    saved_files[full] = fh.read()
+
+        def restore_files():
+            for full, content in saved_files.items():
+                os.makedirs(os.path.dirname(full), exist_ok=True)
+                with open(full, "wb") as fh:
+                    fh.write(content)
+
+        # 現在のブランチを記録
+        current = run(["git", "branch", "--show-current"])
+        original_branch = current.stdout.strip() or "master"
+
+        # master からブランチを切る（既存なら切り替え）
+        run(["git", "checkout", "-f", "master"])
+        r = run(["git", "checkout", "-b", branch])
+        if r.returncode != 0:
+            # 既存ブランチ: master の最新に追従させてリセット
+            run(["git", "checkout", "-f", branch])
+            run(["git", "reset", "--hard", "master"])
+
+        # checkout でファイルが消えた可能性があるので復元
+        restore_files()
+
+        # ステージング + コミット
+        run(["git", "add", rel_post_dir])
+        title = data.get("title", "").strip()
+        commit_msg = f"draft: {title}" if title else f"draft: {slug}"
+        r = run(["git", "commit", "-m", commit_msg])
+        if r.returncode == 0:
+            git_ok = True
+            git_msg = "コミット完了"
+        elif "nothing to commit" in (r.stdout + r.stderr):
+            git_ok = True
+            git_msg = "変更なし（コミット済み）"
+        else:
+            git_msg = f"commit 失敗: {r.stderr.strip()}"
+
+        # 元のブランチに戻して復元
+        run(["git", "checkout", "-f", original_branch])
+        restore_files()
+
+    except Exception as e:
+        git_msg = f"git エラー: {e}"
+        # 念のため元ブランチに戻す
+        try:
+            run(["git", "checkout", "-f", "master"])
+        except Exception:
+            pass
+
+    return jsonify({
+        "success": True,
+        "path": rel,
+        "ogpGenerated": ogp_ok,
+        "ogpMessage": ogp_msg,
+        "gitCommitted": git_ok,
+        "gitMessage": git_msg,
+        "gitBranch": branch if git_ok else "",
+    })
 
 
 @app.route("/api/ogp-image/<slug>")

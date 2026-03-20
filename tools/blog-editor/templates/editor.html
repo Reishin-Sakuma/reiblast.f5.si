@@ -905,7 +905,10 @@ async function savePost() {
       const relFromBlog = data.path.replace(/^src\/content\/blog\//, '');
       originalPath = relFromBlog;
       document.getElementById('save-path').textContent = '→ ' + data.path;
-      setStatus('保存しました ✓', false);
+      const gitInfo = data.gitCommitted
+        ? ` | git: ${data.gitBranch} (${data.gitMessage})`
+        : (data.gitMessage ? ` | git: ${data.gitMessage}` : '');
+      setStatus('保存しました ✓' + gitInfo, false);
       if (data.ogpGenerated) showOgpToast(slug);
       await refreshPreview();
     } else {
