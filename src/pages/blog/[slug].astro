@@ -125,7 +125,10 @@ function formatDate(date: Date): string {
 
       <div class="container">
         <!-- 広告: 記事ヘッダー直下（楽天 728x90） -->
-        <div class="ad-unit ad-unit-header" set:html={`<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script><script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>`} />
+        <div class="ad-unit ad-unit-header">
+          <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script>
+          <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+        </div>
 
         <!-- いいねセクション（記事上部） -->
         <div class="like-section like-section-top">
@@ -159,15 +162,24 @@ function formatDate(date: Date): string {
               </div>
             )}
             <!-- 広告: サイドバー（楽天 160x600） -->
-            <div class="ad-unit ad-unit-sidebar" set:html={`<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script><script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>`} />
+            <div class="ad-unit ad-unit-sidebar">
+              <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+              <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+            </div>
           </aside>
         </div>
 
         <!-- 広告: 記事末尾（楽天 728x90） -->
-        <div class="ad-unit ad-unit-footer" set:html={`<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script><script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>`} />
+        <div class="ad-unit ad-unit-footer">
+          <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script>
+          <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+        </div>
 
         <!-- 広告: いいねボタン付近（楽天 320x48） -->
-        <div class="ad-unit ad-unit-inline" set:html={`<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script><script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>`} />
+        <div class="ad-unit ad-unit-inline">
+          <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script>
+          <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+        </div>
 
         <!-- いいねセクション（記事下部） -->
         <div class="like-section like-section-bottom">
