@@ -106,6 +106,9 @@ function formatDate(date: Date): string {
                 <button class="filter-btn" data-tag={tag} aria-pressed="false">{tag}</button>
               ))}
             </div>
+          <!-- 広告: 記事一覧の上（楽天 728x90） -->
+          <div class="ad-unit ad-unit-list" set:html={`<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script><script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>`} />
+
           <div class="posts-grid">
             {sortedPosts.map((post) => (
               <article class="post-card" data-tags={post.data.tags?.join(',') ?? ''}>
@@ -139,6 +142,9 @@ function formatDate(date: Date): string {
               </article>
             ))}
           </div>
+
+          <!-- 広告: 記事一覧の下（楽天 320x48） -->
+          <div class="ad-unit ad-unit-list-bottom" set:html={`<script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script><script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>`} />
           </>
         )}
       </div>
@@ -360,6 +366,18 @@ function formatDate(date: Date): string {
       background: #111111;
       border-color: #111111;
       color: #FFD700;
+    }
+
+    .ad-unit-list {
+      margin-bottom: 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .ad-unit-list-bottom {
+      margin-top: 2rem;
+      text-align: center;
+      overflow: hidden;
     }
 
     @media (max-width: 768px) {
