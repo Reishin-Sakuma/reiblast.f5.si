@@ -24,7 +24,7 @@ draft: false
 
 RSI・MACD・ボリンジャーバンドといったテクニカル指標をリアルタイムで計算して、AIに投げてシグナルを出す仕組みです。インフラエンジニアがなぜFXアプリを……という話は別の記事に書いているので、気になる方はそちらも読んでみてください。
 
-アプリ本体はGMO CoinのWebSocket APIでドル円のレートをリアルタイム取得していました。
+アプリ本体はGMO CoinのWebSocket APIでドル円のレートをリアルタイム取得していました。技術スタックはCloudflare Workers + Workers AI + WebSocket構成で、Cloudflare Pagesでホストしていました。
 
 ## 公開前にサポートへ確認した
 
