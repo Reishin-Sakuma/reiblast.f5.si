@@ -7,7 +7,7 @@ const { Content: ProfileContent } = await profileEntry.render();
 
 const allPosts = await getCollection('blog', ({ data }) => data.draft !== true);
 const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags ?? []))];
+const recentPosts = sortedPosts.slice(0, 5);
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('ja-JP', {
@@ -334,53 +334,60 @@ const comingSoonProjects = [
             </p>
           </div>
         </div>
-        <div class="container">
-          {sortedPosts.length === 0 ? (
-            <p class="no-posts">まだ記事がありません。</p>
-          ) : (
-            <>
-              <div class="blog-tag-filter" role="group" aria-label="タグフィルター">
-                <button class="blog-filter-btn active" data-tag="all" aria-pressed="true">すべて</button>
-                {allTags.map(tag => (
-                  <button class="blog-filter-btn" data-tag={tag} aria-pressed="false">{tag}</button>
+        <div class="blog-body-wrapper">
+          <div class="blog-ad-side ad-desktop">
+            <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+            <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+          </div>
+          <div class="blog-body-content">
+            {recentPosts.length === 0 ? (
+              <p class="no-posts">まだ記事がありません。</p>
+            ) : (
+              <>
+              <div class="blog-grid">
+                {recentPosts.map((post) => (
+                  <article class="blog-card">
+                    <a href={`/blog/${post.slug}`} class="blog-link">
+                      <div class="blog-card-header">
+                        <time class="blog-date" datetime={post.data.pubDate.toISOString()}>
+                          {formatDate(post.data.pubDate)}
+                        </time>
+                        {post.data.tags && post.data.tags.length > 0 && (
+                          <div class="blog-tags">
+                            {post.data.tags.slice(0, 2).map((tag) => (
+                              <span class="blog-tag">{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <h3 class="blog-title">{post.data.title}</h3>
+                      <p class="blog-desc">{post.data.description}</p>
+                      <div class="blog-card-footer">
+                        <span class="blog-read-more">続きを読む →</span>
+                        <span class="blog-card-stats">
+                          <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
+                            👁 <span class="pv-num">…</span>
+                          </span>
+                          <span class="card-likes" data-path={`/blog/${post.slug}`}>
+                            ♡ <span class="like-num">…</span>
+                          </span>
+                        </span>
+                      </div>
+                    </a>
+                  </article>
                 ))}
               </div>
-            <div class="blog-grid">
-              {sortedPosts.map((post) => (
-                <article class="blog-card" data-tags={post.data.tags?.join(',') ?? ''}>
-                  <a href={`/blog/${post.slug}`} class="blog-link">
-                    <div class="blog-card-header">
-                      <time class="blog-date" datetime={post.data.pubDate.toISOString()}>
-                        {formatDate(post.data.pubDate)}
-                      </time>
-                      {post.data.tags && post.data.tags.length > 0 && (
-                        <div class="blog-tags">
-                          {post.data.tags.slice(0, 2).map((tag) => (
-                            <span class="blog-tag">{tag}</span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <h3 class="blog-title">{post.data.title}</h3>
-                    <p class="blog-desc">{post.data.description}</p>
-                    <div class="blog-card-footer">
-                      <span class="blog-read-more">続きを読む →</span>
-                      <span class="blog-card-stats">
-                        <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
-                          👁 <span class="pv-num">…</span>
-                        </span>
-                        <span class="card-likes" data-path={`/blog/${post.slug}`}>
-                          ♡ <span class="like-num">…</span>
-                        </span>
-                      </span>
-                    </div>
-                  </a>
-                </article>
-              ))}
-            </div>
-            </>
-          )}
-        </div>
+              <div class="blog-more-link">
+                <a href="/blog/" class="blog-more-btn">記事一覧をもっと見る →</a>
+              </div>
+              </>
+            )}
+          </div>
+          <div class="blog-ad-side ad-desktop">
+            <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+            <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+          </div>
+        </div><!-- /blog-body-wrapper -->
       </div>
     </div>
 
@@ -566,22 +573,6 @@ const comingSoonProjects = [
     window.addEventListener('resize', updateTabScrollBtns);
     updateTabScrollBtns();
 
-    // Blog tab tag filter
-    document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tag = btn.dataset.tag;
-        document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn').forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-pressed', 'false');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-pressed', 'true');
-        document.querySelectorAll<HTMLElement>('#tab-blog .blog-card').forEach(card => {
-          const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
-          card.style.display = (tag === 'all' || tags.includes(tag!)) ? '' : 'none';
-        });
-      });
-    });
   </script>
 
   <script>
@@ -882,6 +873,25 @@ const comingSoonProjects = [
 
     .tab-panel.active {
       display: block;
+    }
+
+    .blog-body-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 1rem 4rem;
+    }
+
+    .blog-ad-side {
+      flex: 0 0 160px;
+      width: 160px;
+    }
+
+    .blog-body-content {
+      flex: 1;
+      min-width: 0;
     }
 
     .tab-panel > .container {
@@ -1258,34 +1268,31 @@ const comingSoonProjects = [
       gap: 0.2rem;
     }
 
-    .blog-tag-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
+    @media (max-width: 1400px) {
+      .blog-ad-side {
+        display: none !important;
+      }
     }
 
-    .blog-filter-btn {
-      padding: 0.375rem 0.875rem;
-      border: 2px solid var(--border);
-      border-radius: 2rem;
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    .blog-more-link {
+      text-align: center;
+      margin-top: 2rem;
     }
 
-    .blog-filter-btn:hover {
-      border-color: #111111;
-      color: #111111;
-    }
-
-    .blog-filter-btn.active {
+    .blog-more-btn {
+      display: inline-block;
+      padding: 0.625rem 1.5rem;
       background: #111111;
-      border-color: #111111;
       color: #FFD700;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .blog-more-btn:hover {
+      opacity: 0.8;
     }
 
     /* Profile Modal */
