@@ -334,14 +334,15 @@ const comingSoonProjects = [
             </p>
           </div>
         </div>
-        <div class="blog-ad-left ad-desktop">
-          <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
-          <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-        </div>
-        <div class="blog-ad-right ad-desktop">
-          <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
-          <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-        </div>
+        <div class="blog-body-wrapper">
+          <div class="blog-ad-left ad-desktop">
+            <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+            <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+          </div>
+          <div class="blog-ad-right ad-desktop">
+            <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+            <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+          </div>
         <div class="container">
           {recentPosts.length === 0 ? (
             <p class="no-posts">まだ記事がありません。</p>
@@ -386,6 +387,7 @@ const comingSoonProjects = [
             </>
           )}
         </div>
+        </div><!-- /blog-body-wrapper -->
       </div>
     </div>
 
@@ -871,6 +873,9 @@ const comingSoonProjects = [
 
     .tab-panel.active {
       display: block;
+    }
+
+    .blog-body-wrapper {
       position: relative;
     }
 
@@ -1251,7 +1256,7 @@ const comingSoonProjects = [
     .blog-ad-left,
     .blog-ad-right {
       position: absolute;
-      top: 3rem;
+      top: 0;
       width: 160px;
     }
 
