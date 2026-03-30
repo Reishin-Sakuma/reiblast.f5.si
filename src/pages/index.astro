@@ -335,48 +335,60 @@ const comingSoonProjects = [
           </div>
         </div>
         <div class="container">
-          {recentPosts.length === 0 ? (
-            <p class="no-posts">まだ記事がありません。</p>
-          ) : (
-            <>
-            <div class="blog-grid">
-              {recentPosts.map((post) => (
-                <article class="blog-card">
-                  <a href={`/blog/${post.slug}`} class="blog-link">
-                    <div class="blog-card-header">
-                      <time class="blog-date" datetime={post.data.pubDate.toISOString()}>
-                        {formatDate(post.data.pubDate)}
-                      </time>
-                      {post.data.tags && post.data.tags.length > 0 && (
-                        <div class="blog-tags">
-                          {post.data.tags.slice(0, 2).map((tag) => (
-                            <span class="blog-tag">{tag}</span>
-                          ))}
+          <div class="blog-with-ads">
+            <div class="blog-ad-side ad-desktop">
+              <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+              <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+            </div>
+            <div class="blog-center">
+              {recentPosts.length === 0 ? (
+                <p class="no-posts">まだ記事がありません。</p>
+              ) : (
+                <>
+                <div class="blog-grid">
+                  {recentPosts.map((post) => (
+                    <article class="blog-card">
+                      <a href={`/blog/${post.slug}`} class="blog-link">
+                        <div class="blog-card-header">
+                          <time class="blog-date" datetime={post.data.pubDate.toISOString()}>
+                            {formatDate(post.data.pubDate)}
+                          </time>
+                          {post.data.tags && post.data.tags.length > 0 && (
+                            <div class="blog-tags">
+                              {post.data.tags.slice(0, 2).map((tag) => (
+                                <span class="blog-tag">{tag}</span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <h3 class="blog-title">{post.data.title}</h3>
-                    <p class="blog-desc">{post.data.description}</p>
-                    <div class="blog-card-footer">
-                      <span class="blog-read-more">続きを読む →</span>
-                      <span class="blog-card-stats">
-                        <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
-                          👁 <span class="pv-num">…</span>
-                        </span>
-                        <span class="card-likes" data-path={`/blog/${post.slug}`}>
-                          ♡ <span class="like-num">…</span>
-                        </span>
-                      </span>
-                    </div>
-                  </a>
-                </article>
-              ))}
+                        <h3 class="blog-title">{post.data.title}</h3>
+                        <p class="blog-desc">{post.data.description}</p>
+                        <div class="blog-card-footer">
+                          <span class="blog-read-more">続きを読む →</span>
+                          <span class="blog-card-stats">
+                            <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
+                              👁 <span class="pv-num">…</span>
+                            </span>
+                            <span class="card-likes" data-path={`/blog/${post.slug}`}>
+                              ♡ <span class="like-num">…</span>
+                            </span>
+                          </span>
+                        </div>
+                      </a>
+                    </article>
+                  ))}
+                </div>
+                <div class="blog-more-link">
+                  <a href="/blog/" class="blog-more-btn">記事一覧をもっと見る →</a>
+                </div>
+                </>
+              )}
             </div>
-            <div class="blog-more-link">
-              <a href="/blog/" class="blog-more-btn">記事一覧をもっと見る →</a>
+            <div class="blog-ad-side ad-desktop">
+              <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+              <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
             </div>
-            </>
-          )}
+          </div>
         </div>
       </div>
     </div>
@@ -1237,6 +1249,24 @@ const comingSoonProjects = [
       display: flex;
       align-items: center;
       gap: 0.2rem;
+    }
+
+    .blog-with-ads {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .blog-ad-side {
+      flex: 0 0 160px;
+      width: 160px;
+      position: sticky;
+      top: 1rem;
+    }
+
+    .blog-center {
+      flex: 1;
+      min-width: 0;
     }
 
     .blog-more-link {
