@@ -96,77 +96,75 @@ function formatDate(date: Date): string {
           <span class="sep" aria-hidden="true">/</span>
           <span class="current" aria-current="page">Blog</span>
         </nav>
-        <div class="posts-with-ads">
-          <div class="posts-ad-side ad-desktop">
-            <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
-            <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-          </div>
-          <div class="posts-main">
-            {sortedPosts.length === 0 ? (
-              <p class="no-posts">まだ記事がありません。</p>
-            ) : (
-              <>
-                <div class="tag-filter" role="group" aria-label="タグフィルター">
-                  <button class="filter-btn active" data-tag="all" aria-pressed="true">すべて</button>
-                  {allTags.map(tag => (
-                    <button class="filter-btn" data-tag={tag} aria-pressed="false">{tag}</button>
-                  ))}
-                </div>
-                <!-- 広告: 記事一覧の上 -->
-                <div class="ad-unit ad-unit-list ad-desktop">
-                  <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script>
-                  <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-                </div>
-                <div class="ad-unit ad-unit-list ad-mobile">
-                  <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script>
-                  <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-                </div>
-                <div class="posts-grid">
-                  {sortedPosts.map((post) => (
-                    <article class="post-card" data-tags={post.data.tags?.join(',') ?? ''}>
-                      <a href={`/blog/${post.slug}`} class="post-link">
-                        <div class="post-header">
-                          <time class="post-date" datetime={post.data.pubDate.toISOString()}>
-                            {formatDate(post.data.pubDate)}
-                          </time>
-                          {post.data.tags && post.data.tags.length > 0 && (
-                            <div class="post-tags">
-                              {post.data.tags.slice(0, 2).map((tag) => (
-                                <span class="tag">{tag}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <h2 class="post-title">{post.data.title}</h2>
-                        <p class="post-description">{post.data.description}</p>
-                        <div class="post-footer">
-                          <span class="read-more">続きを読む →</span>
-                          <span class="card-stats">
-                            <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
-                              👁 <span class="pv-num">…</span>
-                            </span>
-                            <span class="card-likes" data-path={`/blog/${post.slug}`}>
-                              ♡ <span class="like-num">…</span>
-                            </span>
+        {sortedPosts.length === 0 ? (
+          <p class="no-posts">まだ記事がありません。</p>
+        ) : (
+          <>
+            <div class="tag-filter" role="group" aria-label="タグフィルター">
+              <button class="filter-btn active" data-tag="all" aria-pressed="true">すべて</button>
+              {allTags.map(tag => (
+                <button class="filter-btn" data-tag={tag} aria-pressed="false">{tag}</button>
+              ))}
+            </div>
+            <!-- 広告: 記事一覧の上 -->
+            <div class="ad-unit ad-unit-list ad-desktop">
+              <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="728x90";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415937276";</script>
+              <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+            </div>
+            <div class="ad-unit ad-unit-list ad-mobile">
+              <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script>
+              <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+            </div>
+            <div class="posts-with-ads">
+              <div class="posts-ad-side ad-desktop">
+                <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+                <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+              </div>
+              <div class="posts-grid">
+                {sortedPosts.map((post) => (
+                  <article class="post-card" data-tags={post.data.tags?.join(',') ?? ''}>
+                    <a href={`/blog/${post.slug}`} class="post-link">
+                      <div class="post-header">
+                        <time class="post-date" datetime={post.data.pubDate.toISOString()}>
+                          {formatDate(post.data.pubDate)}
+                        </time>
+                        {post.data.tags && post.data.tags.length > 0 && (
+                          <div class="post-tags">
+                            {post.data.tags.slice(0, 2).map((tag) => (
+                              <span class="tag">{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <h2 class="post-title">{post.data.title}</h2>
+                      <p class="post-description">{post.data.description}</p>
+                      <div class="post-footer">
+                        <span class="read-more">続きを読む →</span>
+                        <span class="card-stats">
+                          <span class="card-pv" data-pv-path={`/blog/${post.slug}/`}>
+                            👁 <span class="pv-num">…</span>
                           </span>
-                        </div>
-                      </a>
-                    </article>
-                  ))}
-                </div>
-                <!-- 広告: 記事一覧の下（楽天 320x48） -->
-                <div class="ad-unit ad-unit-list-bottom">
-                  <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script>
-                  <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-                </div>
-              </>
-            )}
-          </div>
-          <div class="posts-ad-side ad-desktop">
-            <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
-            <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
-          </div>
-        </div>
+                          <span class="card-likes" data-path={`/blog/${post.slug}`}>
+                            ♡ <span class="like-num">…</span>
+                          </span>
+                        </span>
+                      </div>
+                    </a>
+                  </article>
+                ))}
+              </div>
+              <div class="posts-ad-side ad-desktop">
+                <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="160x600";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415964024";</script>
+                <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+              </div>
+            </div>
+            <!-- 広告: 記事一覧の下（楽天 320x48） -->
+            <div class="ad-unit ad-unit-list-bottom">
+              <script is:inline>rakuten_design="slide";rakuten_affiliateId="3d08be13.0a4f7fe8.3d08be14.9d22e8ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="320x48";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1774415990159";</script>
+              <script is:inline src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js?20230106"></script>
+            </div>
+          </>
+        )}
       </div>
     </section>
   </main>
@@ -268,11 +266,9 @@ function formatDate(date: Date): string {
     .posts-ad-side {
       flex: 0 0 160px;
       width: 160px;
-    }
-
-    .posts-main {
-      flex: 1;
-      min-width: 0;
+      position: sticky;
+      top: 1rem;
+      align-self: flex-start;
     }
 
     @media (max-width: 1400px) {
