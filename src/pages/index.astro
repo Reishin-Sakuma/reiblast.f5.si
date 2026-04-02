@@ -97,6 +97,10 @@ const comingSoonProjects = [
   <main id="main-content">
     <!-- Tab Navigation -->
     <div class="tab-nav-outer">
+      <a href="/" class="tab-nav-logo" aria-label="reiblast1123 ホーム">
+        <img src="/favicon.svg" alt="logo" class="tab-nav-logo-icon" />
+        <span class="tab-nav-logo-text">reiblast1123</span>
+      </a>
       <button class="tab-scroll-btn tab-scroll-btn-left" aria-label="前のタブ" hidden>&#8249;</button>
       <nav class="tab-nav" role="tablist">
         <button class="tab-btn active" data-tab="blog" role="tab" aria-selected="true" aria-controls="tab-blog">Blog - 沖縄でエンジニアしてて思ったこと。</button>
@@ -735,6 +739,27 @@ const comingSoonProjects = [
     }
 
     /* Tab Navigation */
+    .tab-nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .tab-nav-logo-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .tab-nav-logo-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
     .tabs-root {
       display: flex;
       flex-direction: column;
