@@ -172,7 +172,7 @@ const comingSoonProjects = [
       <div class="container">
         <h1 class="hero-title">reiblast1123</h1>
         <p id="adblock-msg" class="hero-adblock-msg" aria-hidden="true">君、広告ブロッカー使ってるね？😏</p>
-        <div class="ads" id="adblock-bait" aria-hidden="true" style="height:1px;width:1px;position:absolute;opacity:0;pointer-events:none;"></div>
+        <div class="pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads adsbox" id="adblock-bait" aria-hidden="true" style="height:1px;width:1px;position:absolute;opacity:0;pointer-events:none;"></div>
         <p class="hero-subtitle">IT Infrastructure Engineer / Software Developer</p>
         <p class="hero-description">
           本業ではSIerでITインフラエンジニアに従事しながら、<br />
@@ -466,16 +466,26 @@ const comingSoonProjects = [
   </main>
 
   <script is:inline>
-    window.addEventListener('load', function () {
+    function checkAdBlock() {
       var bait = document.getElementById('adblock-bait');
       var msg = document.getElementById('adblock-msg');
       if (!bait || !msg) return;
       var s = window.getComputedStyle(bait);
-      if (s.display === 'none' || s.visibility === 'hidden' || bait.offsetHeight === 0) {
+      var blocked =
+        s.display === 'none' ||
+        s.visibility === 'hidden' ||
+        bait.offsetHeight === 0 ||
+        bait.offsetWidth === 0;
+      if (blocked) {
         msg.classList.add('visible');
         msg.removeAttribute('aria-hidden');
       }
-    });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', checkAdBlock);
+    } else {
+      checkAdBlock();
+    }
   </script>
 
   <script>
