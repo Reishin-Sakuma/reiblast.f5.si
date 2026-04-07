@@ -171,6 +171,8 @@ const comingSoonProjects = [
       <div class="hero-streak hero-streak-8" aria-hidden="true"></div>
       <div class="container">
         <h1 class="hero-title">reiblast1123</h1>
+        <p id="adblock-msg" class="hero-adblock-msg" aria-hidden="true">君、広告ブロッカー使ってるね？😏</p>
+        <div class="ads" id="adblock-bait" aria-hidden="true" style="height:1px;width:1px;position:absolute;opacity:0;pointer-events:none;"></div>
         <p class="hero-subtitle">IT Infrastructure Engineer / Software Developer</p>
         <p class="hero-description">
           本業ではSIerでITインフラエンジニアに従事しながら、<br />
@@ -463,6 +465,19 @@ const comingSoonProjects = [
     </footer>
   </main>
 
+  <script is:inline>
+    window.addEventListener('load', function () {
+      var bait = document.getElementById('adblock-bait');
+      var msg = document.getElementById('adblock-msg');
+      if (!bait || !msg) return;
+      var s = window.getComputedStyle(bait);
+      if (s.display === 'none' || s.visibility === 'hidden' || bait.offsetHeight === 0) {
+        msg.classList.add('visible');
+        msg.removeAttribute('aria-hidden');
+      }
+    });
+  </script>
+
   <script>
     const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn[data-tab]');
     const panels = document.querySelectorAll<HTMLElement>('.tab-panel');
@@ -635,6 +650,19 @@ const comingSoonProjects = [
       letter-spacing: -0.02em;
       animation: fadeInUp 0.8s ease both;
       animation-delay: 0.1s;
+    }
+
+    .hero-adblock-msg {
+      display: none;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.25rem;
+      animation: fadeInUp 0.8s ease both;
+      animation-delay: 0.2s;
+    }
+
+    .hero-adblock-msg.visible {
+      display: block;
     }
 
     .hero-subtitle {
