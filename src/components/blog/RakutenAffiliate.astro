@@ -1,12 +1,18 @@
 ---
 interface Props {
   html: string;
+  htmlMobile?: string;
 }
-const { html } = Astro.props;
+const { html, htmlMobile } = Astro.props;
 ---
-<div class="rakuten-affiliate">
+<div class={`rakuten-affiliate${htmlMobile ? ' rakuten-desktop' : ''}`}>
   <Fragment set:html={html} />
 </div>
+{htmlMobile && (
+  <div class="rakuten-affiliate rakuten-mobile">
+    <Fragment set:html={htmlMobile} />
+  </div>
+)}
 
 <style>
   .rakuten-affiliate {
@@ -14,34 +20,17 @@ const { html } = Astro.props;
     overflow-x: hidden;
   }
 
-  .rakuten-affiliate :global(div[style*="width:624px"]),
-  .rakuten-affiliate :global(div[style*="width: 624px"]) {
-    width: 100% !important;
-  }
-
-  .rakuten-affiliate :global(table) {
-    width: 100%;
+  .rakuten-mobile {
+    display: none;
   }
 
   @media (max-width: 640px) {
-    /* カード内のテーブルを縦積みに */
-    .rakuten-affiliate :global(table table tr) {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .rakuten-desktop {
+      display: none;
     }
-
-    .rakuten-affiliate :global(table table td) {
-      width: 100% !important;
-      display: block !important;
+    .rakuten-mobile {
+      display: block;
       text-align: center;
-    }
-
-    /* 商品画像を大きく */
-    .rakuten-affiliate :global(table table td img[src*="thumbnail"]),
-    .rakuten-affiliate :global(table table td img[src*="hgb"]) {
-      width: 200px !important;
-      height: auto !important;
     }
   }
 </style>
