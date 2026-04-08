@@ -22,4 +22,26 @@ const { html } = Astro.props;
   .rakuten-affiliate :global(table) {
     width: 100%;
   }
+
+  @media (max-width: 640px) {
+    /* カード内のテーブルを縦積みに */
+    .rakuten-affiliate :global(table table tr) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .rakuten-affiliate :global(table table td) {
+      width: 100% !important;
+      display: block !important;
+      text-align: center;
+    }
+
+    /* 商品画像を大きく */
+    .rakuten-affiliate :global(table table td img[src*="thumbnail"]),
+    .rakuten-affiliate :global(table table td img[src*="hgb"]) {
+      width: 200px !important;
+      height: auto !important;
+    }
+  }
 </style>
