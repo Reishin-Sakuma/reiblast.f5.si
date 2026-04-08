@@ -1,0 +1,57 @@
+# Gemini 画像生成プロンプト集
+
+生成した画像は `src/content/blog/2026/04/08/ugreen-100w-charger-review/` に保存してください。
+
+---
+
+## 良かった点
+
+### 1. スマホの充電が速い
+**保存ファイル名:** `good-smartphone-charging.jpg`
+
+**プロンプト (英語):**
+```
+A modern smartphone charging at high speed, battery indicator showing rapid charge progress near 100%. Clean flat lay on a wooden cafe table with a coffee cup in the background. Soft natural lighting. Realistic product photography style.
+```
+
+---
+
+### 2. ノートPCも普通に充電できる
+**保存ファイル名:** `good-laptop-charging.jpg`
+
+**プロンプト (英語):**
+```
+A compact laptop computer connected to a USB-C charger via a small adapter, charging indicator light glowing on the laptop, placed on a wooden cafe desk. Clean and minimal setup. Realistic product photography style, soft natural lighting.
+```
+
+---
+
+### 3. 巻き取り式は本当に便利
+**保存ファイル名:** `good-retractable.jpg`
+
+**プロンプト (英語):**
+```
+A compact USB-C charger with a retractable cable neatly coiled inside, placed next to a messy bundle of tangled charging cables to show the contrast. Clean flat lay on a white background. Minimalist product photography style.
+```
+
+---
+
+## 気になった点
+
+### 4. ちょっと重い（約300g）
+**保存ファイル名:** `bad-heavy.jpg`
+
+**プロンプト (英語):**
+```
+A compact USB-C charger being held in one hand to show its weight and size. The hand looks slightly weighed down. Clean white or light gray background. Realistic product photography style.
+```
+
+---
+
+### 5. コンセントの場所によっては抜け落ちることがある
+**保存ファイル名:** `bad-falling-out.jpg`
+
+**プロンプト (英語):**
+```
+A USB charger plug partially slipping out of a wall outlet, showing it is not fully inserted. Close-up shot. Slightly dramatic lighting to emphasize the problem. Realistic style.
+```
