@@ -7,3 +7,19 @@ const { html } = Astro.props;
 <div class="rakuten-affiliate">
   <Fragment set:html={html} />
 </div>
+
+<style>
+  .rakuten-affiliate {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .rakuten-affiliate :global(div[style*="width:624px"]),
+  .rakuten-affiliate :global(div[style*="width: 624px"]) {
+    width: 100% !important;
+  }
+
+  .rakuten-affiliate :global(table) {
+    width: 100%;
+  }
+</style>
