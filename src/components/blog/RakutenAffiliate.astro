@@ -1,9 +1,48 @@
 ---
 interface Props {
   html: string;
+  htmlMobile?: string;
 }
-const { html } = Astro.props;
+const { html, htmlMobile } = Astro.props;
 ---
-<div class="rakuten-affiliate">
+<div class={`rakuten-affiliate${htmlMobile ? ' rakuten-desktop' : ''}`}>
   <Fragment set:html={html} />
 </div>
+{htmlMobile && (
+  <div class="rakuten-affiliate rakuten-mobile">
+    <Fragment set:html={htmlMobile} />
+    <p class="rakuten-mobile-caption">タップで購入できます</p>
+  </div>
+)}
+
+<style>
+  .rakuten-affiliate {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .rakuten-mobile {
+    display: none;
+  }
+
+  .rakuten-mobile-caption {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .rakuten-desktop {
+      display: none;
+    }
+    .rakuten-mobile {
+      display: block;
+      text-align: center;
+    }
+    .rakuten-mobile-caption {
+      display: block;
+      font-size: 0.75rem;
+      color: #999;
+      margin: 0.25rem 0 0;
+      text-align: center;
+    }
+  }
+</style>
