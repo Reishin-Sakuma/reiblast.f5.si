@@ -203,7 +203,7 @@ function buildOgpSvg(title) {
     font-size="22"
     fill="rgba(0,0,0,0.45)"
     text-anchor="end"
-  >reiblast.f5.si</text>
+  >reiblast1123.com</text>
 </svg>`;
 }
 

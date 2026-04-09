@@ -14,7 +14,7 @@
 
 〈一言で内容を説明〉
 
-🔗 https://reiblast.f5.si/blog/YYYY/MM/DD/slug/
+🔗 https://reiblast1123.com/blog/YYYY/MM/DD/slug/
 
 #エンジニアブログ #インフラエンジニア #タグ
 ```
@@ -31,7 +31,7 @@
 〈検証・調査した内容を一言で〉
 同じ状況で詰まってる人の参考になれば！
 
-🔗 https://reiblast.f5.si/blog/YYYY/MM/DD/slug/
+🔗 https://reiblast1123.com/blog/YYYY/MM/DD/slug/
 
 #インフラエンジニア #エンジニアブログ #タグ
 ```
@@ -48,7 +48,7 @@
 〈内容をカジュアルに一言〉
 よかったら読んでみてください(^o^)
 
-🔗 https://reiblast.f5.si/blog/YYYY/MM/DD/slug/
+🔗 https://reiblast1123.com/blog/YYYY/MM/DD/slug/
 
 #タグ #タグ
 ```
@@ -65,7 +65,7 @@
 〈当時の状況・内容を一言〉
 黒歴史感あるけどせっかくなので笑
 
-🔗 https://reiblast.f5.si/blog/YYYY/MM/DD/slug/
+🔗 https://reiblast1123.com/blog/YYYY/MM/DD/slug/
 
 #エンジニアブログ #タグ
 ```

@@ -1105,7 +1105,7 @@ ${desc}
 function getTweetUrl() {
   const slug = document.getElementById('fm-slug').value.trim();
   if (!slug) return null;
-  return `https://reiblast.f5.si/blog/${slug}/`;
+  return `https://reiblast1123.com/blog/${slug}/`;
 }
 
 /** エディタ本文の冒頭1行（見出し要素を除いた最初の段落テキスト）を返す */
@@ -1120,7 +1120,7 @@ function getFirstLine() {
 
 function buildTweetTemplates() {
   const title    = document.getElementById('fm-title').value.trim() || '（タイトル未入力）';
-  const url      = getTweetUrl() || 'https://reiblast.f5.si/blog/...';
+  const url      = getTweetUrl() || 'https://reiblast1123.com/blog/...';
   const tagsRaw  = document.getElementById('fm-tags').value;
   const hashTags = tagsRaw
     .split(',')
