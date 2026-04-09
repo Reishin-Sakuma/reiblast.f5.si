@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://reiblast.f5.si/sitemap-index.xml
+Sitemap: https://reiblast1123.com/sitemap-index.xml

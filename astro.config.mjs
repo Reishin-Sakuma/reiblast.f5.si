@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  site: 'https://reiblast.f5.si',
+  site: 'https://reiblast1123.com',
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
