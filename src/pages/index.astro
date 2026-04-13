@@ -343,7 +343,7 @@ const comingSoonProjects = [
               <div class="blog-grid">
                 {recentPosts.map((post) => (
                   <article class="blog-card">
-                    <a href={`/blog/${post.slug}`} class="blog-link">
+                    <a href={`/blog/${post.slug}/`} class="blog-link">
                       <div class="blog-card-header">
                         <time class="blog-date" datetime={post.data.pubDate.toISOString()}>
                           {formatDate(post.data.pubDate)}

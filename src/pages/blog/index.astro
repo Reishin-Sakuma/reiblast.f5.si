@@ -123,7 +123,7 @@ function formatDate(date: Date): string {
               <div class="posts-grid">
                 {sortedPosts.map((post) => (
                   <article class="post-card" data-tags={post.data.tags?.join(',') ?? ''}>
-                    <a href={`/blog/${post.slug}`} class="post-link">
+                    <a href={`/blog/${post.slug}/`} class="post-link">
                       <div class="post-header">
                         <time class="post-date" datetime={post.data.pubDate.toISOString()}>
                           {formatDate(post.data.pubDate)}
