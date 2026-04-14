@@ -70,7 +70,7 @@ node scripts/generate-ico.js
 
 # 4. ビルド＆デプロイ
 npm run build
-npx wrangler pages deploy dist --project-name=reiblast-portfolio --branch=main
+npx wrangler pages deploy dist --project-name=reiblast-f5-si --branch=main
 ```
 
 ### HTMLへの組み込み
@@ -228,6 +228,17 @@ draft: false
 | `#ff007d` (ピンク) | 強い主張 |
 | `#7cd300` (黄緑) | 背景ハイライト |
 
+## blog-editor（WYSIWYG エディタ）
+
+`tools/blog-editor/` に Flask + TipTap ベースのローカル WYSIWYG エディタがあります。
+
+- **アクセス**: http://localhost:5000（VS Code Remote SSH ポートフォワード）
+- **エディタ**: TipTap 2.11.5（esm.sh CDN）
+- **カード挿入**: ツールバーの 📝 ⚠ 💡 🚨 🔖 📂 ボタン（自動で `.mdx` に切り替わり import も追加）
+- **文字色・背景色**: カラーパレットをワンクリック
+- **保存**: 自動で `post/<slug>` ブランチを作成してコミット
+- **サービス管理**: `systemctl --user restart blog-editor`
+
 ## 今後の改善予定
 
 GitHubにIssueを作成済み：
@@ -240,9 +251,9 @@ GitHubにIssueを作成済み：
 - **#8**: カスタム404ページの作成 - Low
 - **#9**: プロジェクト詳細ページの追加 - Medium
 - **#10**: About / Contact セクションの追加 - Medium
-- **#53**: blog-editor からブランチ作成・PR作成・記事公開をできるようにする
+- **#53**: blog-editor からブランチ作成・PR作成・記事公開をできるようにする（ブランチ作成・コミットは実装済み）
 - **#54**: blog-editor を PWA 化する
 
 ---
 
-_Last updated: 2026-02-22_
+_Last updated: 2026-04-14_
