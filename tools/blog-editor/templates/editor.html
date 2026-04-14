@@ -10,7 +10,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Blog Editor">
   <link rel="apple-touch-icon" href="/static/icon-192.png">
-  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   <style>
     :root {
       --bg: #0d0d0d;
@@ -37,14 +36,10 @@
       --red: #cc2200;
     }
     body.light header h1 { color: #111111; }
-    body.light .ql-snow .ql-stroke { stroke: #555; }
-    body.light .ql-snow .ql-fill   { fill:   #555; }
-    body.light .ql-snow .ql-picker { color:  #555; }
-    body.light .ql-toolbar.ql-snow button:hover .ql-stroke,
-    body.light .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: #b8860b; }
-    body.light .ql-toolbar.ql-snow button:hover .ql-fill,
-    body.light .ql-toolbar.ql-snow button.ql-active .ql-fill   { fill:   #b8860b; }
-    body.light .ql-editor a { color: #b8860b; }
+    body.light .tb-btn { color: #555; }
+    body.light .tb-btn:hover, body.light .tb-btn.is-active { color: #b8860b; background: rgba(184,134,11,0.08); }
+    body.light #tb-heading { background: #fff; color: #555; border-color: #ddd8c0; }
+    body.light .tiptap a { color: #b8860b; }
     body.light .fm-draft .tooltip { background: #fff; color: #333; border-color: #ddd8c0; }
     body.light .fm-toggle-bar:hover { background: rgba(0,0,0,0.04); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -218,27 +213,194 @@
     }
     .psep { width: 1px; height: 13px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
 
-    /* ── Editor ── */
+    /* ── Editor Toolbar ── */
+    #editor-toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 1px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    #tb-heading {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 12px;
+      cursor: pointer;
+      height: 24px;
+    }
+    #tb-heading:focus { outline: none; border-color: var(--yellow); }
+    .tb-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: #888;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+      height: 24px;
+      min-width: 24px;
+      transition: all 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+    .tb-btn:hover { color: var(--yellow); background: rgba(255,215,0,0.08); border-color: transparent; }
+    .tb-btn.is-active { color: var(--yellow); background: rgba(255,215,0,0.12); }
+    .tb-italic { font-style: italic; }
+    .tb-underline { text-decoration: underline; }
+    .tb-strike { text-decoration: line-through; }
+    .tb-sep { width: 1px; height: 16px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+
+    /* ── TipTap Editor ── */
     .editor-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    #editor { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .ql-toolbar.ql-snow { background: var(--surface); border: none; border-bottom: 1px solid var(--border); padding: 4px 8px; flex-shrink: 0; }
-    .ql-container.ql-snow { flex: 1; border: none; background: var(--bg); overflow: auto; }
-    .ql-editor { color: var(--text); font-size: 15px; line-height: 1.85; min-height: 100%; padding: 18px 22px; }
-    .ql-editor.ql-blank::before { color: var(--muted); font-style: normal; font-size: 14px; }
-    .ql-snow .ql-stroke { stroke: #888; }
-    .ql-snow .ql-fill { fill: #888; }
-    .ql-snow .ql-picker { color: #888; }
-    .ql-snow .ql-picker-options { background: var(--surface); border-color: var(--border); }
-    .ql-snow .ql-picker-item { color: var(--text); }
-    .ql-snow .ql-picker-item:hover, .ql-snow .ql-picker-item.ql-selected { color: var(--yellow); }
-    .ql-snow .ql-picker-label:hover, .ql-snow .ql-picker-label.ql-active { color: var(--yellow); }
-    .ql-toolbar.ql-snow button:hover .ql-stroke, .ql-toolbar.ql-snow button.ql-active .ql-stroke { stroke: var(--yellow); }
-    .ql-toolbar.ql-snow button:hover .ql-fill, .ql-toolbar.ql-snow button.ql-active .ql-fill { fill: var(--yellow); }
-    .ql-editor u { text-decoration: underline; }
-    .ql-editor s { text-decoration: line-through; }
-    .ql-editor blockquote { border-left: 3px solid var(--yellow); padding-left: 12px; color: var(--muted); }
-    .ql-editor pre.ql-syntax { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--green); font-size: 13px; }
-    .ql-editor a { color: var(--yellow); }
+    #editor { flex: 1; overflow: auto; background: var(--bg); }
+    .tiptap {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.85;
+      min-height: 100%;
+      padding: 18px 22px;
+      outline: none;
+    }
+    .tiptap p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+      float: left;
+      height: 0;
+    }
+    .tiptap u { text-decoration: underline; }
+    .tiptap s { text-decoration: line-through; }
+    .tiptap em { font-style: italic; }
+    .tiptap blockquote { border-left: 3px solid var(--yellow); padding-left: 12px; color: var(--muted); margin: 0.5em 0; }
+    .tiptap pre { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; margin: 0.5em 0; }
+    .tiptap pre code { color: var(--green); font-size: 13px; font-family: 'Courier New', monospace; background: none; padding: 0; }
+    .tiptap a { color: var(--yellow); }
+    .tiptap code { background: var(--surface); padding: 1px 4px; border-radius: 3px; font-size: 0.9em; font-family: 'Courier New', monospace; }
+    .tiptap h1 { font-size: 1.6em; margin: 0.6em 0 0.3em; }
+    .tiptap h2 { font-size: 1.4em; margin: 0.6em 0 0.3em; }
+    .tiptap h3 { font-size: 1.2em; margin: 0.5em 0 0.25em; }
+    .tiptap ul, .tiptap ol { padding-left: 1.5em; margin: 0.25em 0; }
+    .tiptap li { margin-bottom: 0.2em; }
+    .tiptap mark { border-radius: 3px; padding: 1px 2px; }
+    .tiptap hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+    .tiptap p { margin-bottom: 0.5em; }
+    .tiptap p:last-child { margin-bottom: 0; }
+
+    /* ── Custom Nodes ── */
+    .note-node {
+      border-left: 4px solid #111;
+      border-radius: 0 6px 6px 0;
+      margin: 1rem 0;
+      background: rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .note-node-info    { border-color: #111111; background: rgba(0,0,0,0.04); }
+    .note-node-warning { border-color: #eab308; background: rgba(234,179,8,0.08); }
+    .note-node-tip     { border-color: #22c55e; background: rgba(34,197,94,0.08); }
+    .note-node-danger  { border-color: #ef4444; background: rgba(239,68,68,0.08); }
+    .note-node-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: rgba(0,0,0,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .note-type-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .note-title-input, .details-summary-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .note-title-input:focus, .details-summary-input:focus, .link-card-url-input:focus {
+      outline: none; border-color: var(--yellow);
+    }
+    .node-del-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0 2px;
+      opacity: 0.5;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .node-del-btn:hover { opacity: 1; color: var(--red); }
+    .note-node-content { padding: 8px 12px; }
+    .note-node-content > * { margin-bottom: 0.5em; }
+
+    .link-card-node {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 1rem 0;
+      background: var(--surface);
+      position: relative;
+    }
+    .link-card-node-header {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .link-card-url-input {
+      width: calc(100% - 28px);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+    }
+    .link-card-node .node-del-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+
+    .details-node {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin: 1rem 0;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .details-node-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .details-node-header::before { content: '▶'; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+    .details-node-content { padding: 8px 12px; }
+    .details-node-content > * { margin-bottom: 0.5em; }
 
     /* ── Preview ── */
     .preview-header {
@@ -529,33 +691,22 @@
 
     /* ── Mobile ── */
     @media (max-width: 640px) {
-      /* ヘッダー */
       header { padding: 7px 10px; gap: 6px; flex-wrap: wrap; }
       header h1 { font-size: 13px; }
       .header-btn { padding: 5px 8px; font-size: 11px; }
       .ext-toggle { margin-left: 0; }
       .ext-btn { padding: 5px 8px; font-size: 11px; }
-
-      /* レイアウト: 右ペイン（プレビュー）を非表示 */
       .right-pane { display: none; }
       .left-pane { width: 100%; border-right: none; }
-
-      /* フロントマター: 1カラムに */
       .fm-grid { grid-template-columns: 1fr; }
       .fm-grid .span2 { grid-column: 1; }
       .fm-bottom-row { flex-direction: column; align-items: flex-start; gap: 6px; }
       .fm-field[style] { flex: unset !important; width: 100% !important; margin-left: 0 !important; }
-
-      /* ボトムバー: save-path を非表示 */
       #save-path { display: none; }
       .bottom-bar { gap: 6px; }
       .save-btn { padding: 6px 16px; }
       .publish-btn { padding: 6px 10px; font-size: 12px; }
-
-      /* OGP Toast */
       #ogp-toast { width: calc(100vw - 32px); right: 16px; }
-
-      /* モーダルボタンを縦並びに */
       .modal-actions { flex-wrap: wrap; }
       .modal-actions button { flex: 1 1 auto; text-align: center; }
     }
@@ -669,8 +820,36 @@
       <div class="color-dot clear" title="背景なし" onclick="applyBg(false)">✕</div>
     </div>
 
-    <!-- Quill -->
+    <!-- TipTap Editor -->
     <div class="editor-wrap">
+      <!-- Toolbar -->
+      <div id="editor-toolbar">
+        <select id="tb-heading" title="見出し" onchange="applyHeading(this.value)">
+          <option value="0">本文</option>
+          <option value="1">H1</option>
+          <option value="2">H2</option>
+          <option value="3">H3</option>
+        </select>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="bold"        title="太字 (Ctrl+B)"><strong>B</strong></button>
+        <button class="tb-btn tb-italic" data-cmd="italic"      title="斜体 (Ctrl+I)">I</button>
+        <button class="tb-btn tb-underline" data-cmd="underline"   title="下線 (Ctrl+U)">U</button>
+        <button class="tb-btn tb-strike" data-cmd="strike"      title="取り消し線">S</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="link"        title="リンク" onclick="editorLink()">🔗</button>
+        <button class="tb-btn" data-cmd="blockquote"  title="引用">❝</button>
+        <button class="tb-btn" data-cmd="codeBlock"   title="コードブロック" style="font-family:monospace">&lt;/&gt;</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="bulletList"  title="箇条書き">•≡</button>
+        <button class="tb-btn" data-cmd="orderedList" title="番号付き">1.≡</button>
+        <button class="tb-btn" data-cmd="horizontalRule" title="区切り線">──</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="undo"        title="元に戻す (Ctrl+Z)">↩</button>
+        <button class="tb-btn" data-cmd="redo"        title="やり直し (Ctrl+Y)">↪</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="clear"       title="書式をクリア">✕</button>
+      </div>
+      <!-- Editor mount point -->
       <div id="editor"></div>
     </div>
 
@@ -751,86 +930,326 @@
   <div class="tweet-drawer-body" id="tweet-drawer-body"></div>
 </div>
 
-<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-<script>
+<!-- ── TipTap (via esm.sh CDN) ── -->
+<script type="module">
+import { Editor, Node, mergeAttributes } from 'https://esm.sh/@tiptap/core@2.11.5';
+import StarterKit              from 'https://esm.sh/@tiptap/starter-kit@2.11.5';
+import Underline               from 'https://esm.sh/@tiptap/extension-underline@2.11.5';
+import TextStyle               from 'https://esm.sh/@tiptap/extension-text-style@2.11.5';
+import { Color }               from 'https://esm.sh/@tiptap/extension-color@2.11.5';
+import Highlight               from 'https://esm.sh/@tiptap/extension-highlight@2.11.5';
+import Link                    from 'https://esm.sh/@tiptap/extension-link@2.11.5';
+import Placeholder             from 'https://esm.sh/@tiptap/extension-placeholder@2.11.5';
+import Image                   from 'https://esm.sh/@tiptap/extension-image@2.11.5';
 
-// ── Quill ──────────────────────────────────────────────────────────────────
-const PRESET_COLORS = [
-  '#ff0000','#ff007d','#ff7f00','#ffd700','#7cd300',
-  '#0000ff','#8f20ff','#00ccff','#ffffff','#e0e0e0','#888','#000','#ffcc00',
-];
-const quill = new Quill('#editor', {
-  theme: 'snow',
-  placeholder: 'どうも、レイと申します。\n\n本文を書いてください...',
-  modules: {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ color: PRESET_COLORS }, { background: PRESET_COLORS }],
-      ['link', 'blockquote', 'code-block'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['clean'],
-    ]
-  }
+// ── カスタムノード: Note ───────────────────────────────────────────────────────
+const NoteBlock = Node.create({
+  name: 'noteBlock',
+  group: 'block',
+  content: 'block+',
+  defining: true,
+  isolating: true,
+  addAttributes() {
+    return {
+      type:  { default: 'info',  parseHTML: el => el.getAttribute('data-type'),  renderHTML: a => ({ 'data-type': a.type })  },
+      title: { default: '',      parseHTML: el => el.getAttribute('data-title'), renderHTML: a => ({ 'data-title': a.title }) },
+    };
+  },
+  parseHTML() { return [{ tag: 'div[data-node="note"]' }]; },
+  renderHTML({ node, HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-node': 'note' }), 0];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }) => {
+      const dom = document.createElement('div');
+      dom.className = `note-node note-node-${node.attrs.type}`;
+      dom.setAttribute('data-node', 'note');
+
+      const header = document.createElement('div');
+      header.className = 'note-node-header';
+      header.contentEditable = 'false';
+
+      const typeSelect = document.createElement('select');
+      typeSelect.className = 'note-type-select';
+      const typeLabels = { info: 'ℹ info', warning: '⚠ warning', tip: '💡 tip', danger: '🚨 danger' };
+      for (const [val, label] of Object.entries(typeLabels)) {
+        const opt = document.createElement('option');
+        opt.value = val; opt.textContent = label; opt.selected = node.attrs.type === val;
+        typeSelect.appendChild(opt);
+      }
+      typeSelect.addEventListener('change', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { ...node.attrs, type: typeSelect.value }));
+        dom.className = `note-node note-node-${typeSelect.value}`;
+      });
+
+      const titleInput = document.createElement('input');
+      titleInput.className = 'note-title-input';
+      titleInput.placeholder = 'タイトル（省略可）';
+      titleInput.value = node.attrs.title;
+      titleInput.addEventListener('input', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { ...node.attrs, title: titleInput.value }));
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'node-del-btn'; delBtn.textContent = '✕'; delBtn.title = '削除';
+      delBtn.addEventListener('click', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+      });
+
+      header.append(typeSelect, titleInput, delBtn);
+
+      const contentDOM = document.createElement('div');
+      contentDOM.className = 'note-node-content';
+
+      dom.append(header, contentDOM);
+      return { dom, contentDOM };
+    };
+  },
 });
 
-// ── 状態 ──────────────────────────────────────────────────────────────────
-let currentExt = 'md';
-let originalPath = '';   // 編集中の既存記事パス（新規なら空）
-let allPosts = [];       // 記事一覧キャッシュ
+// ── カスタムノード: LinkCard ──────────────────────────────────────────────────
+const LinkCardNode = Node.create({
+  name: 'linkCard',
+  group: 'block',
+  atom: true,
+  addAttributes() {
+    return { url: { default: '', parseHTML: el => el.getAttribute('data-url'), renderHTML: a => ({ 'data-url': a.url }) } };
+  },
+  parseHTML() { return [{ tag: 'div[data-node="link-card"]' }]; },
+  renderHTML({ HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-node': 'link-card', class: 'link-card-node' })];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }) => {
+      const dom = document.createElement('div');
+      dom.className = 'link-card-node';
+      dom.setAttribute('data-node', 'link-card');
+      dom.contentEditable = 'false';
 
-// ── 拡張子切り替え ─────────────────────────────────────────────────────────
-function setExt(ext) {
-  currentExt = ext;
-  document.querySelectorAll('.ext-btn').forEach(b => b.classList.toggle('active', b.dataset.ext === ext));
-  document.getElementById('imports-section').classList.toggle('visible', ext === 'mdx');
+      const hdr = document.createElement('div');
+      hdr.className = 'link-card-node-header'; hdr.textContent = '🔗 LinkCard';
+
+      const urlInput = document.createElement('input');
+      urlInput.className = 'link-card-url-input';
+      urlInput.placeholder = 'URL を入力（例: https://example.com）';
+      urlInput.value = node.attrs.url;
+      urlInput.addEventListener('change', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { url: urlInput.value }));
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'node-del-btn'; delBtn.textContent = '✕'; delBtn.title = '削除';
+      delBtn.addEventListener('click', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+      });
+
+      dom.append(hdr, urlInput, delBtn);
+      return { dom };
+    };
+  },
+});
+
+// ── カスタムノード: Details ───────────────────────────────────────────────────
+const DetailsNode = Node.create({
+  name: 'detailsBlock',
+  group: 'block',
+  content: 'block+',
+  defining: true,
+  isolating: true,
+  addAttributes() {
+    return { summary: { default: '詳細を見る', parseHTML: el => el.getAttribute('data-summary'), renderHTML: a => ({ 'data-summary': a.summary }) } };
+  },
+  parseHTML() { return [{ tag: 'div[data-node="details"]' }]; },
+  renderHTML({ node, HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-node': 'details' }), 0];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }) => {
+      const dom = document.createElement('div');
+      dom.className = 'details-node';
+      dom.setAttribute('data-node', 'details');
+
+      const header = document.createElement('div');
+      header.className = 'details-node-header';
+      header.contentEditable = 'false';
+
+      const summaryInput = document.createElement('input');
+      summaryInput.className = 'details-summary-input';
+      summaryInput.placeholder = 'summary（折りたたみのタイトル）';
+      summaryInput.value = node.attrs.summary;
+      summaryInput.addEventListener('input', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { summary: summaryInput.value }));
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'node-del-btn'; delBtn.textContent = '✕'; delBtn.title = '削除';
+      delBtn.addEventListener('click', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+      });
+
+      header.append(summaryInput, delBtn);
+
+      const contentDOM = document.createElement('div');
+      contentDOM.className = 'details-node-content';
+
+      dom.append(header, contentDOM);
+      return { dom, contentDOM };
+    };
+  },
+});
+
+// ── Editor 初期化 ─────────────────────────────────────────────────────────────
+const editor = new Editor({
+  element: document.getElementById('editor'),
+  extensions: [
+    StarterKit.configure({ strike: {}, code: {}, codeBlock: {}, blockquote: {}, horizontalRule: {} }),
+    Underline,
+    TextStyle,
+    Color,
+    Highlight.configure({ multicolor: true }),
+    Link.configure({ openOnClick: false, HTMLAttributes: { rel: 'noopener noreferrer' } }),
+    Image.configure({ allowBase64: false, inline: false }),
+    Placeholder.configure({ placeholder: 'どうも、レイと申します。\n\n本文を書いてください...' }),
+    NoteBlock,
+    LinkCardNode,
+    DetailsNode,
+  ],
+  editorProps: {
+    attributes: { class: 'tiptap' },
+  },
+  onUpdate() { updateToolbarState(); },
+  onSelectionUpdate() { updateToolbarState(); },
+});
+
+// ── Toolbar 状態更新 ──────────────────────────────────────────────────────────
+function updateToolbarState() {
+  const cmds = ['bold','italic','underline','strike','blockquote','codeBlock','bulletList','orderedList'];
+  for (const cmd of cmds) {
+    const btn = document.querySelector(`.tb-btn[data-cmd="${cmd}"]`);
+    if (btn) btn.classList.toggle('is-active', editor.isActive(cmd));
+  }
+  let level = 0;
+  for (let i = 1; i <= 3; i++) {
+    if (editor.isActive('heading', { level: i })) { level = i; break; }
+  }
+  const sel = document.getElementById('tb-heading');
+  if (sel) sel.value = String(level);
 }
 
-// ── カラー適用 ─────────────────────────────────────────────────────────────
-function applyColor(c) { quill.format('color', c || false); }
-function applyBg(c)    { quill.format('background', c || false); }
+// ── Editor コマンド（グローバル公開）────────────────────────────────────────
+window.editorCmd = function(cmd) {
+  const c = editor.chain().focus();
+  switch (cmd) {
+    case 'bold':          c.toggleBold().run(); break;
+    case 'italic':        c.toggleItalic().run(); break;
+    case 'underline':     c.toggleUnderline().run(); break;
+    case 'strike':        c.toggleStrike().run(); break;
+    case 'blockquote':    c.toggleBlockquote().run(); break;
+    case 'codeBlock':     c.toggleCodeBlock().run(); break;
+    case 'bulletList':    c.toggleBulletList().run(); break;
+    case 'orderedList':   c.toggleOrderedList().run(); break;
+    case 'horizontalRule': c.setHorizontalRule().run(); break;
+    case 'undo':          c.undo().run(); break;
+    case 'redo':          c.redo().run(); break;
+    case 'clear':         c.clearNodes().unsetAllMarks().run(); break;
+  }
+};
 
-// ── MDX コンポーネントプリセット ───────────────────────────────────────────
+window.applyHeading = function(level) {
+  const lvl = parseInt(level);
+  if (lvl === 0) editor.chain().focus().setParagraph().run();
+  else           editor.chain().focus().toggleHeading({ level: lvl }).run();
+};
+
+window.editorLink = function() {
+  const current = editor.getAttributes('link').href || '';
+  const url = prompt('URL を入力してください:', current);
+  if (url === null) return;
+  if (url === '') editor.chain().focus().unsetLink().run();
+  else            editor.chain().focus().setLink({ href: url }).run();
+};
+
+window.applyColor = function(c) {
+  if (!c) editor.chain().focus().unsetColor().run();
+  else    editor.chain().focus().setColor(c).run();
+};
+
+window.applyBg = function(c) {
+  if (!c) editor.chain().focus().unsetHighlight().run();
+  else    editor.chain().focus().setHighlight({ color: c }).run();
+};
+
+// ── ツールバーボタンにイベント設定（data-cmd 属性を持つ、link は除く）────────
+document.querySelectorAll('.tb-btn[data-cmd]').forEach(btn => {
+  const cmd = btn.dataset.cmd;
+  if (cmd === 'link') return; // link は editorLink() で処理
+  btn.addEventListener('click', () => window.editorCmd(cmd));
+});
+
+// ── MDX コンポーネント挿入 ────────────────────────────────────────────────────
 const IMPORT_MAP = {
   Note:     "import Note from '@/components/blog/Note.astro';",
   LinkCard: "import LinkCard from '@/components/blog/LinkCard.astro';",
   Details:  "import Details from '@/components/blog/Details.astro';",
 };
 
-const COMPONENT_TEMPLATES = {
-  'Note-info':    '<Note type="info" title="情報">ここに内容を書く</Note>',
-  'Note-warning': '<Note type="warning" title="注意">ここに内容を書く</Note>',
-  'Note-tip':     '<Note type="tip" title="ヒント">ここに内容を書く</Note>',
-  'Note-danger':  '<Note type="danger" title="警告">ここに内容を書く</Note>',
-  'LinkCard':     '<LinkCard url="https://example.com" />',
-  'Details':      '<Details summary="詳細を見る">ここに内容を書く</Details>',
-};
-
 function addImport(component) {
   const ta = document.getElementById('fm-imports');
   const line = IMPORT_MAP[component];
-  if (!ta.value.includes(line)) {
+  if (line && !ta.value.includes(line)) {
     ta.value = ta.value.trim() ? ta.value.trim() + '\n' + line : line;
   }
 }
+window.addImport = addImport;
 
-function insertComponent(type, variant) {
-  const key = variant ? `${type}-${variant}` : type;
-  const tpl = COMPONENT_TEMPLATES[key];
-  if (!tpl) return;
-  const range = quill.getSelection(true);
-  quill.clipboard.dangerouslyPasteHTML(range ? range.index : quill.getLength(), `<p>${tpl}</p>`);
-  addImport(type);  // import も自動追加
-}
+window.insertComponent = function(type, variant) {
+  if (type === 'Note') {
+    editor.chain().focus().insertContent({
+      type: 'noteBlock',
+      attrs: { type: variant || 'info', title: '' },
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: 'ここに内容を書く' }] }],
+    }).run();
+    addImport('Note');
+  } else if (type === 'LinkCard') {
+    editor.chain().focus().insertContent({ type: 'linkCard', attrs: { url: 'https://example.com' } }).run();
+    addImport('LinkCard');
+  } else if (type === 'Details') {
+    editor.chain().focus().insertContent({
+      type: 'detailsBlock',
+      attrs: { summary: '詳細を見る' },
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: 'ここに内容を書く' }] }],
+    }).run();
+    addImport('Details');
+  }
+};
 
-// ── 初期日時 ───────────────────────────────────────────────────────────────
+// ── 状態変数 ──────────────────────────────────────────────────────────────────
+let currentExt = 'md';
+let originalPath = '';
+let allPosts = [];
+
+// ── 拡張子切り替え ─────────────────────────────────────────────────────────────
+window.setExt = function(ext) {
+  currentExt = ext;
+  document.querySelectorAll('.ext-btn').forEach(b => b.classList.toggle('active', b.dataset.ext === ext));
+  document.getElementById('imports-section').classList.toggle('visible', ext === 'mdx');
+};
+
+// ── 初期日時 ───────────────────────────────────────────────────────────────────
 (function setDefaultDate() {
-  const now = new Date();
+  const now   = new Date();
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
   document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
 })();
 
-// ── フロントマタープレビュー文字列 ────────────────────────────────────────
+// ── Frontmatter テキスト構築（プレビュー用）──────────────────────────────────
 function buildFrontmatterText() {
   const title   = document.getElementById('fm-title').value;
   const desc    = document.getElementById('fm-desc').value;
@@ -852,27 +1271,27 @@ function buildFrontmatterText() {
   return fm;
 }
 
-// ── プレビュー ─────────────────────────────────────────────────────────────
-async function refreshPreview() {
+// ── プレビュー ─────────────────────────────────────────────────────────────────
+window.refreshPreview = async function() {
   try {
-    const res = await fetch('/api/convert', {
+    const res  = await fetch('/api/convert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ html: quill.root.innerHTML }),
+      body: JSON.stringify({ html: editor.getHTML() }),
     });
     const data = await res.json();
     document.getElementById('preview').textContent = buildFrontmatterText() + '\n\n' + data.markdown;
   } catch (e) {
     document.getElementById('preview').textContent = 'エラー: ' + e.message;
   }
-}
+};
 
-// ── 保存 ───────────────────────────────────────────────────────────────────
-async function savePost() {
-  const title   = document.getElementById('fm-title').value.trim();
-  const slug    = document.getElementById('fm-slug').value.trim();
+// ── 保存 ───────────────────────────────────────────────────────────────────────
+window.savePost = async function() {
+  const title = document.getElementById('fm-title').value.trim();
+  const slug  = document.getElementById('fm-slug').value.trim();
   if (!title) { setStatus('タイトルを入力してください', true); return; }
-  if (!slug)  { setStatus('slug を入力してください', true);   return; }
+  if (!slug)  { setStatus('slug を入力してください',   true); return; }
 
   const dateVal = document.getElementById('fm-date').value;
   const tagsRaw = document.getElementById('fm-tags').value;
@@ -881,7 +1300,7 @@ async function savePost() {
 
   setStatus('保存中...', false);
   try {
-    const res = await fetch('/api/save', {
+    const res  = await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -889,19 +1308,18 @@ async function savePost() {
         description: document.getElementById('fm-desc').value.trim(),
         slug,
         pubDate,
-        tags: tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
-        draft: document.getElementById('fm-draft').checked,
+        tags:        tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
+        draft:       document.getElementById('fm-draft').checked,
         updatedDate: updated ? updated + ':00' : '',
-        imports: document.getElementById('fm-imports').value,
-        ext: currentExt,
-        body: quill.root.innerHTML,
-        author: 'reiblast1123',
+        imports:     document.getElementById('fm-imports').value,
+        ext:         currentExt,
+        body:        editor.getHTML(),
+        author:      'reiblast1123',
         originalPath,
       }),
     });
     const data = await res.json();
     if (data.success) {
-      // 保存後は元ファイルが消えているので追跡パスを更新
       const relFromBlog = data.path.replace(/^src\/content\/blog\//, '');
       originalPath = relFromBlog;
       document.getElementById('save-path').textContent = '→ ' + data.path;
@@ -910,18 +1328,18 @@ async function savePost() {
         : (data.gitMessage ? ` | git: ${data.gitMessage}` : '');
       setStatus('保存しました ✓' + gitInfo, false);
       if (data.ogpGenerated) showOgpToast(slug);
-      await refreshPreview();
+      await window.refreshPreview();
     } else {
       setStatus('エラー: ' + (data.error || JSON.stringify(data)), true);
     }
   } catch (e) {
     setStatus('エラー: ' + e.message, true);
   }
-}
+};
 
-// ── 新規 ───────────────────────────────────────────────────────────────────
-async function newPost() {
-  if (quill.getText().trim() && !confirm('現在の内容を破棄して新規作成しますか？')) return;
+// ── 新規 ───────────────────────────────────────────────────────────────────────
+window.newPost = async function() {
+  if (editor.getText().trim() && !confirm('現在の内容を破棄して新規作成しますか？')) return;
   document.getElementById('fm-title').value   = '';
   document.getElementById('fm-desc').value    = '';
   document.getElementById('fm-slug').value    = '';
@@ -929,72 +1347,61 @@ async function newPost() {
   document.getElementById('fm-draft').checked = false;
   document.getElementById('fm-updated').value = '';
   document.getElementById('fm-imports').value = '';
-  const now = new Date();
+  const now   = new Date();
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
   document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
   originalPath = '';
   document.getElementById('save-path').textContent = '';
   document.getElementById('preview').textContent   = '← 「更新 ↻」で Markdown を確認';
   setStatus('', false);
-  setExt('md');
+  window.setExt('md');
   await loadTemplate();
-}
+};
 
 async function loadTemplate() {
   try {
     const res  = await fetch('/api/template');
     const data = await res.json();
-    quill.root.innerHTML = data.bodyHtml || '';
+    editor.commands.setContent(data.bodyHtml || '', false);
   } catch (_) {
-    quill.root.innerHTML = '';
+    editor.commands.setContent('', false);
   }
 }
 
-// ── ステータス表示 ─────────────────────────────────────────────────────────
+// ── ステータス ─────────────────────────────────────────────────────────────────
 function setStatus(msg, isError) {
   const el = document.getElementById('status');
   el.textContent = msg;
   el.className   = isError ? 'error' : 'success';
 }
 
-// ── 記事一覧ドロワー ───────────────────────────────────────────────────────
-async function openDrawer() {
+// ── 記事一覧ドロワー ───────────────────────────────────────────────────────────
+window.openDrawer = async function() {
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('drawer-search').value = '';
-  await loadPostList();
-}
-
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-}
-
-async function loadPostList() {
   try {
     const res = await fetch('/api/posts');
-    allPosts = await res.json();
+    allPosts  = await res.json();
     renderPostList(allPosts);
   } catch (e) {
     document.getElementById('post-list').innerHTML = `<div class="no-posts">エラー: ${e.message}</div>`;
   }
-}
+};
+
+window.closeDrawer = function() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+};
 
 function renderPostList(posts) {
   const container = document.getElementById('post-list');
-  if (posts.length === 0) {
-    container.innerHTML = '<div class="no-posts">記事が見つかりません</div>';
-    return;
-  }
-
-  // 年ごとにグループ化
+  if (posts.length === 0) { container.innerHTML = '<div class="no-posts">記事が見つかりません</div>'; return; }
   const groups = {};
   for (const post of posts) {
     const year = post.path.slice(0, 4);
-    if (!groups[year]) groups[year] = [];
-    groups[year].push(post);
+    (groups[year] = groups[year] || []).push(post);
   }
-
   let html = '';
   for (const year of Object.keys(groups).sort().reverse()) {
     html += `<div class="year-group">${year}</div>`;
@@ -1003,30 +1410,27 @@ function renderPostList(posts) {
       const titleEsc = escapeAttr(post.title);
       const extLabel = post.ext || '.md';
       html += `
-        <div class="post-item" id="item-${CSS.escape(post.path)}">
+        <div class="post-item">
           <div class="post-info">
             <div class="post-title">${escapeHtml(post.title)}</div>
             <div class="post-path">${escapeHtml(post.path)}</div>
           </div>
           <span class="post-ext">${extLabel}</span>
           <button class="edit-btn" onclick="editPost('${pathEsc}')">編集</button>
-          <button class="del-btn"  onclick="deletePost('${pathEsc}', '${titleEsc}')">削除</button>
+          <button class="del-btn"  onclick="deletePost('${pathEsc}','${titleEsc}')">削除</button>
         </div>`;
     }
   }
   container.innerHTML = html;
 }
 
-function filterPosts(query) {
+window.filterPosts = function(query) {
   const q = query.toLowerCase();
-  const filtered = q
-    ? allPosts.filter(p => p.title.toLowerCase().includes(q) || p.path.toLowerCase().includes(q))
-    : allPosts;
-  renderPostList(filtered);
-}
+  renderPostList(q ? allPosts.filter(p => p.title.toLowerCase().includes(q) || p.path.toLowerCase().includes(q)) : allPosts);
+};
 
-// ── 記事を読み込んで編集 ───────────────────────────────────────────────────
-async function editPost(path) {
+// ── 記事読み込み ───────────────────────────────────────────────────────────────
+window.editPost = async function(path) {
   try {
     const res  = await fetch('/api/load', {
       method: 'POST',
@@ -1045,21 +1449,22 @@ async function editPost(path) {
     document.getElementById('fm-updated').value = data.updatedDate || '';
     document.getElementById('fm-imports').value = data.imports || '';
 
-    setExt(data.ext || 'md');
-    quill.root.innerHTML = data.bodyHtml || '';
+    window.setExt(data.ext || 'md');
+    editor.commands.setContent(data.bodyHtml || '', false);
     originalPath = path;
 
     document.getElementById('save-path').textContent = '編集中: ' + path;
     document.getElementById('preview').textContent   = '← 「更新 ↻」で確認';
     setStatus('読み込みました ✓', false);
-    closeDrawer();
+    window.closeDrawer();
+    updateFmSummary();
   } catch (e) {
     alert('エラー: ' + e.message);
   }
-}
+};
 
-// ── 記事削除 ───────────────────────────────────────────────────────────────
-async function deletePost(path, title) {
+// ── 記事削除 ───────────────────────────────────────────────────────────────────
+window.deletePost = async function(path, title) {
   if (!confirm(`「${title}」を削除しますか？\n\n${path}\n\nこの操作は取り消せません。`)) return;
   try {
     const res  = await fetch('/api/delete', {
@@ -1071,64 +1476,39 @@ async function deletePost(path, title) {
     if (data.success) {
       allPosts = allPosts.filter(p => p.path !== path);
       renderPostList(allPosts);
-      // 編集中の記事を削除した場合はリセット
-      if (originalPath === path) newPost();
+      if (originalPath === path) window.newPost();
     } else {
       alert('削除エラー: ' + (data.error || ''));
     }
   } catch (e) {
     alert('エラー: ' + e.message);
   }
-}
+};
 
-// ── ユーティリティ ─────────────────────────────────────────────────────────
+// ── ユーティリティ ─────────────────────────────────────────────────────────────
 function escapeHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function escapeAttr(s) {
-  return String(s).replace(/'/g, "\\'");
-}
+function escapeAttr(s) { return String(s).replace(/'/g, "\\'"); }
 
-// ── ツイートテンプレート ────────────────────────────────────────────────────
+// ── X（Twitter）ツイートテンプレート ─────────────────────────────────────────
 function buildTweetText(title, url, hashTags, desc) {
-  return `ブログを更新しました！📖
-
-📝${title}
-
-${desc}
-
-🔗 ${url}
-
-#エンジニアブログ${hashTags}`;
+  return `ブログを更新しました！📖\n\n📝${title}\n\n${desc}\n\n🔗 ${url}\n\n#エンジニアブログ${hashTags}`;
 }
-
 function getTweetUrl() {
   const slug = document.getElementById('fm-slug').value.trim();
-  if (!slug) return null;
-  return `https://reiblast1123.com/blog/${slug}/`;
+  return slug ? `https://reiblast1123.com/blog/${slug}/` : null;
 }
-
-/** エディタ本文の冒頭1行（見出し要素を除いた最初の段落テキスト）を返す */
 function getFirstLine() {
-  for (const el of quill.root.children) {
-    if (/^H[1-6]$/.test(el.tagName)) continue; // 見出しはスキップ
-    const text = el.textContent.trim();
-    if (text) return text;
-  }
-  return '';
+  const el = document.querySelector('.tiptap p, .tiptap h1, .tiptap h2, .tiptap h3');
+  return el ? el.textContent.trim() : '';
 }
-
-function buildTweetTemplates() {
+window.buildTweetTemplates = function() {
   const title    = document.getElementById('fm-title').value.trim() || '（タイトル未入力）';
   const url      = getTweetUrl() || 'https://reiblast1123.com/blog/...';
   const tagsRaw  = document.getElementById('fm-tags').value;
-  const hashTags = tagsRaw
-    .split(',')
-    .map(t => t.trim())
-    .filter(Boolean)
-    .map(t => ' #' + t.replace(/\s+/g, ''))
-    .join('');
-  const desc = getFirstLine() || '〈一言で内容を説明〉';
+  const hashTags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).map(t => ' #' + t.replace(/\s+/g, '')).join('');
+  const desc     = getFirstLine() || '〈一言で内容を説明〉';
 
   document.getElementById('tweet-url-preview').textContent = '🔗 ' + url;
 
@@ -1138,84 +1518,58 @@ function buildTweetTemplates() {
       <div class="tweet-card-header">
         <span class="tweet-chars" id="tweet-chars-0">-- 文字</span>
       </div>
-      <textarea class="tweet-textarea" id="tweet-text-0" rows="9"
-        oninput="updateTweetChars(0)"></textarea>
-      <button class="tweet-copy-btn" id="tweet-copy-0"
-        onclick="copyTweet(0)">コピー</button>
+      <textarea class="tweet-textarea" id="tweet-text-0" rows="9" oninput="updateTweetChars(0)"></textarea>
+      <button class="tweet-copy-btn" id="tweet-copy-0" onclick="copyTweet(0)">コピー</button>
     </div>`;
-
-  // textarea.value はinnerHTMLではなくJSで設定（エスケープ問題を回避）
   document.getElementById('tweet-text-0').value = buildTweetText(title, url, hashTags, desc);
   updateTweetChars(0);
-}
+};
 
-/** X の文字数カウント（URL は長さに関わらず23文字固定扱い） */
 function tweetLength(text) {
-  const noUrl = text.replace(/https?:\/\/[^\s]+/g, '_'.repeat(23));
-  return [...noUrl].length;
+  return [...text.replace(/https?:\/\/[^\s]+/g, '_'.repeat(23))].length;
 }
-
-function updateTweetChars(i) {
+window.updateTweetChars = function(i) {
   const text = document.getElementById(`tweet-text-${i}`).value;
   const len  = tweetLength(text);
   const el   = document.getElementById(`tweet-chars-${i}`);
   el.textContent = len + ' 文字';
   el.classList.toggle('over', len > 260);
-}
-
-async function copyTweet(i) {
+};
+window.copyTweet = async function(i) {
   const text = document.getElementById(`tweet-text-${i}`).value;
   const btn  = document.getElementById(`tweet-copy-${i}`);
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (_) {
-    // HTTP 環境・旧ブラウザのフォールバック
-    const ta = document.getElementById(`tweet-text-${i}`);
-    ta.select();
-    document.execCommand('copy');
-  }
-  btn.textContent = 'コピーしました ✓';
-  btn.classList.add('copied');
-  setTimeout(() => {
-    btn.textContent = 'コピー';
-    btn.classList.remove('copied');
-  }, 2000);
-}
-
-function openTweetDrawer() {
+  try { await navigator.clipboard.writeText(text); }
+  catch (_) { document.getElementById(`tweet-text-${i}`).select(); document.execCommand('copy'); }
+  btn.textContent = 'コピーしました ✓'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+};
+window.openTweetDrawer = function() {
   buildTweetTemplates();
   document.getElementById('tweet-drawer').classList.add('open');
   document.getElementById('tweet-overlay').classList.add('open');
-}
-
-function closeTweetDrawer() {
+};
+window.closeTweetDrawer = function() {
   document.getElementById('tweet-drawer').classList.remove('open');
   document.getElementById('tweet-overlay').classList.remove('open');
-}
+};
 
-// ── OGP Toast ──────────────────────────────────────────────────────────────
+// ── OGP Toast ──────────────────────────────────────────────────────────────────
 let _ogpToastTimer = null;
 function showOgpToast(slug) {
   const toast = document.getElementById('ogp-toast');
-  const img   = document.getElementById('ogp-toast-img');
-  // キャッシュバスターで常に最新画像を表示
-  img.src = `/api/ogp-image/${slug}?t=${Date.now()}`;
+  document.getElementById('ogp-toast-img').src = `/api/ogp-image/${slug}?t=${Date.now()}`;
   toast.style.display = 'block';
   clearTimeout(_ogpToastTimer);
   _ogpToastTimer = setTimeout(closeOgpToast, 10000);
 }
-function closeOgpToast() {
-  document.getElementById('ogp-toast').style.display = 'none';
-}
+window.closeOgpToast = function() { document.getElementById('ogp-toast').style.display = 'none'; };
 
-// ── テーマ切替 ────────────────────────────────────────────────────────────
-function toggleTheme() {
+// ── テーマ切替 ─────────────────────────────────────────────────────────────────
+window.toggleTheme = function() {
   const light = document.body.classList.toggle('light');
   localStorage.setItem('theme', light ? 'light' : 'dark');
   document.getElementById('theme-btn').textContent = light ? '☀️' : '🌙';
-}
-
-// 初期化
+};
 (function() {
   if (localStorage.getItem('theme') === 'light') {
     document.body.classList.add('light');
@@ -1223,21 +1577,18 @@ function toggleTheme() {
   }
 })();
 
-// ── Frontmatter 折りたたみ ────────────────────────────────────────────────
-function toggleFm() {
+// ── Frontmatter 折りたたみ ────────────────────────────────────────────────────
+window.toggleFm = function() {
   const sec = document.getElementById('fm-section');
   const collapsed = sec.classList.toggle('collapsed');
   localStorage.setItem('fm-collapsed', collapsed ? '1' : '0');
-}
-
+};
 function updateFmSummary() {
   const title = document.getElementById('fm-title').value.trim();
   const slug  = document.getElementById('fm-slug').value.trim();
-  const parts = [title, slug ? `[${slug}]` : ''].filter(Boolean);
-  document.getElementById('fm-summary').textContent = parts.join('  ');
+  document.getElementById('fm-summary').textContent = [title, slug ? `[${slug}]` : ''].filter(Boolean).join('  ');
 }
-
-// 初期化：保存済み状態を復元
+window.updateFmSummary = updateFmSummary;
 (function() {
   if (localStorage.getItem('fm-collapsed') === '1') {
     document.getElementById('fm-section').classList.add('collapsed');
@@ -1245,29 +1596,27 @@ function updateFmSummary() {
   updateFmSummary();
 })();
 
-// ── Ctrl+S で保存 ──────────────────────────────────────────────────────────
+// ── キーボードショートカット ──────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); savePost(); }
-  if (e.key === 'Escape') { closeDrawer(); closeTweetDrawer(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); window.savePost(); }
+  if (e.key === 'Escape') { window.closeDrawer(); window.closeTweetDrawer(); }
 });
 
-// ── 公開（ブランチ作成 → コミット → プッシュ → PR 作成）─────────────────────
+// ── 公開（Branch → Push → PR）────────────────────────────────────────────────
 let _prUrl    = '';
 let _prBranch = '';
 
-async function publishPost() {
+window.publishPost = async function() {
   const slug  = document.getElementById('fm-slug').value.trim();
   const title = document.getElementById('fm-title').value.trim();
-
   if (!slug) { setStatus('slug を入力してください', true); return; }
 
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true;
-  btn.textContent = '公開中...';
+  btn.disabled = true; btn.textContent = '公開中...';
   hidePublishError();
 
   try {
-    const res = await fetch('/api/publish', {
+    const res  = await fetch('/api/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slug, title }),
@@ -1276,7 +1625,7 @@ async function publishPost() {
     if (data.success) {
       _prUrl    = data.prUrl;
       _prBranch = data.branch || '';
-      document.getElementById('pr-url-text').textContent = _prUrl;
+      document.getElementById('pr-url-text').textContent  = _prUrl;
       document.getElementById('pr-modal-title').textContent = '✅ PR を作成しました';
       document.getElementById('pr-modal-desc').textContent  = 'GitHub でマージすると本番環境に公開されます。';
       document.getElementById('pr-modal-status').textContent = '';
@@ -1291,30 +1640,23 @@ async function publishPost() {
   } catch (e) {
     showPublishError('エラー: ' + e.message);
   } finally {
-    btn.disabled = false;
-    btn.textContent = '公開する →';
+    btn.disabled = false; btn.textContent = '公開する →';
   }
-}
+};
 
-function openPrUrl() {
-  if (_prUrl) window.open(_prUrl, '_blank', 'noopener');
-}
+window.openPrUrl    = function() { if (_prUrl) window.open(_prUrl, '_blank', 'noopener'); };
+window.closePrModal = function() { document.getElementById('pr-modal').classList.remove('open'); };
 
-function closePrModal() {
-  document.getElementById('pr-modal').classList.remove('open');
-}
-
-async function confirmMerge() {
-  if (!_prBranch) { return; }
+window.confirmMerge = async function() {
+  if (!_prBranch) return;
   if (!confirm(`PR をマージして本番公開します。\nブランチ (${_prBranch}) も削除されます。\nよろしいですか？`)) return;
 
   const btn = document.getElementById('merge-btn');
-  btn.disabled = true;
-  btn.textContent = 'マージ中...';
+  btn.disabled = true; btn.textContent = 'マージ中...';
   document.getElementById('pr-modal-status').textContent = '';
 
   try {
-    const res = await fetch('/api/merge', {
+    const res  = await fetch('/api/merge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ branch: _prBranch }),
@@ -1323,21 +1665,18 @@ async function confirmMerge() {
     if (data.success) {
       document.getElementById('pr-modal-title').textContent = '🎉 マージ完了！';
       document.getElementById('pr-modal-desc').textContent  = 'Cloudflare Pages のビルドが完了すると本番に公開されます。';
-      document.getElementById('pr-modal-status').textContent = '';
       btn.textContent = 'マージ済み ✓';
       document.getElementById('pr-open-btn').style.display = 'none';
       setStatus('マージ完了 ✓', false);
     } else {
       document.getElementById('pr-modal-status').textContent = '⚠ ' + (data.error || 'マージに失敗しました');
-      btn.disabled = false;
-      btn.textContent = 'マージして公開 ✓';
+      btn.disabled = false; btn.textContent = 'マージして公開 ✓';
     }
   } catch (e) {
     document.getElementById('pr-modal-status').textContent = '⚠ エラー: ' + e.message;
-    btn.disabled = false;
-    btn.textContent = 'マージして公開 ✓';
+    btn.disabled = false; btn.textContent = 'マージして公開 ✓';
   }
-}
+};
 
 function showPublishError(msg) {
   const el = document.getElementById('publish-error');
@@ -1345,22 +1684,17 @@ function showPublishError(msg) {
   el.style.display = 'block';
   setTimeout(() => { el.style.display = 'none'; }, 8000);
 }
+function hidePublishError() { document.getElementById('publish-error').style.display = 'none'; }
 
-function hidePublishError() {
-  document.getElementById('publish-error').style.display = 'none';
-}
-
-// ── 初期ロード時にテンプレートを展開 ────────────────────────────────────────
+// ── 初期ロード ──────────────────────────────────────────────────────────────────
 loadTemplate();
 
-// ── Service Worker 登録（PWA） ───────────────────────────────────────────────
+// ── Service Worker（PWA）────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
-      .catch(() => {/* ローカル環境では失敗しても無視 */});
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
   });
 }
-
 </script>
 </body>
 </html>

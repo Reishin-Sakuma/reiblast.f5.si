@@ -58,7 +58,7 @@ npm run preview
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name=reiblast-portfolio
+npx wrangler pages deploy dist --project-name=reiblast-f5-si
 ```
 
 または

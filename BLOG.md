@@ -88,7 +88,7 @@ WantedBy=default.target
 | 文字色・背景色 | 上部のカラードット（よく使う色をプリセット済み） |
 | 記事一覧・編集・削除 | ヘッダーの「📂 記事一覧」 |
 | .md / .mdx 切り替え | 右上のトグル |
-| MDXコンポーネント挿入 | .mdx モード時に表示されるプリセットボタン |
+| MDXコンポーネント挿入 | ツールバーの 📝⚠💡🚨🔖📂 ボタン（自動で .mdx に切り替わる） |
 | 保存 | 「保存」ボタン または `Ctrl+S` |
 | Markdownプレビュー | 「更新 ↻」で右ペインに表示 |
 
@@ -96,15 +96,15 @@ WantedBy=default.target
 
 ```bash
 # 1. エディタで記事を書いて「保存」
-#    → src/content/blog/YYYY/MM/DD/<slug>/index.md に自動保存される
+#    → src/content/blog/YYYY/MM/DD/<slug>/index.md に自動保存
+#    → post/<slug> ブランチが自動作成され、コミットまで完了
 
 # 2. ビルド確認
 npm run build
 
-# 3. コミット & プッシュ → Cloudflare Pages が自動デプロイ
-git add src/content/blog/
-git commit -m "Add new blog post: 記事タイトル"
-git push origin main
+# 3. プッシュ → PR → マージ → Cloudflare Pages が自動デプロイ
+git push origin post/<slug>
+gh pr create --title "記事タイトル"
 ```
 
 ---
@@ -280,8 +280,8 @@ src/content/blog/2026/02/10/my-article/
 
 **Markdownでの参照:**
 ```markdown
-# 同じフォルダの画像を参照（ビルド後のパスを指定）
-![スクリーンショット](/images/blog/2026/02/10/my-article/screenshot.jpg)
+# 同じフォルダの画像は相対パスで参照
+![スクリーンショット](./screenshot.jpg)
 
 # アイキャッチ画像（frontmatterで指定）
 ---
@@ -452,7 +452,7 @@ npm run dev
 git add .
 git commit -m "Add new blog post: 記事タイトル
 
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 
 # 4. GitHubにプッシュ
 git push origin main
