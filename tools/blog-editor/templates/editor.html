@@ -844,6 +844,13 @@
         <button class="tb-btn" data-cmd="orderedList" title="番号付き">1.≡</button>
         <button class="tb-btn" data-cmd="horizontalRule" title="区切り線">──</button>
         <span class="tb-sep"></span>
+        <button class="tb-btn tb-component" title="Note (情報)" onclick="insertComponent('Note','info')">📝</button>
+        <button class="tb-btn tb-component" title="Note (警告)" onclick="insertComponent('Note','warning')">⚠</button>
+        <button class="tb-btn tb-component" title="Note (ヒント)" onclick="insertComponent('Note','tip')">💡</button>
+        <button class="tb-btn tb-component" title="Note (危険)" onclick="insertComponent('Note','danger')">🚨</button>
+        <button class="tb-btn tb-component" title="LinkCard" onclick="insertComponent('LinkCard')">🔖</button>
+        <button class="tb-btn tb-component" title="Details (折りたたみ)" onclick="insertComponent('Details')">📂</button>
+        <span class="tb-sep"></span>
         <button class="tb-btn" data-cmd="undo"        title="元に戻す (Ctrl+Z)">↩</button>
         <button class="tb-btn" data-cmd="redo"        title="やり直し (Ctrl+Y)">↪</button>
         <span class="tb-sep"></span>
@@ -1210,6 +1217,8 @@ function addImport(component) {
 window.addImport = addImport;
 
 window.insertComponent = function(type, variant) {
+  // コンポーネントを挿入したら自動で mdx に切り替え
+  window.setExt('mdx');
   if (type === 'Note') {
     editor.chain().focus().insertContent({
       type: 'noteBlock',
