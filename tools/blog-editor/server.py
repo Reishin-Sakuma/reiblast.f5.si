@@ -136,6 +136,11 @@ def convert_node(node) -> str:
         href = node.get("href", "")
         return f"[{inner()}]({href})"
 
+    if tag == "img":
+        src = node.get("src", "")
+        alt = node.get("alt", "")
+        return f"![{alt}]({src})"
+
     if tag == "br":
         return "\n"
 
@@ -172,6 +177,23 @@ def convert_node(node) -> str:
         return content
 
     if tag in ("div", "body", "html", "section", "article", "[document]"):
+        # TipTap カスタムブロック → MDX コンポーネントに逆変換
+        data_node = node.get("data-node", "")
+        if data_node == "note":
+            note_type = node.get("data-type", "info")
+            note_title = node.get("data-title", "")
+            content_div = node.find("div", class_="note-node-content") or node
+            inner_content = "".join(convert_node(c) for c in content_div.children).strip()
+            title_attr = f' title="{note_title}"' if note_title else ''
+            return f'<Note type="{note_type}"{title_attr}>\n{inner_content}\n</Note>\n\n'
+        if data_node == "link-card":
+            url = node.get("data-url", "")
+            return f'<LinkCard url="{url}" />\n\n'
+        if data_node == "details":
+            summary = node.get("data-summary", "詳細を見る")
+            content_div = node.find("div", class_="details-node-content") or node
+            inner_content = "".join(convert_node(c) for c in content_div.children).strip()
+            return f'<Details summary="{summary}">\n{inner_content}\n</Details>\n\n'
         return inner()
 
     # 未知のタグ → 生のHTMLとして通す（MDXコンポーネント等）
@@ -197,20 +219,64 @@ def inline_md_to_html(text: str) -> str:
     text = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", text)
     # 取り消し線
     text = re.sub(r"~~(.+?)~~", r"<s>\1</s>", text)
+    # 画像（リンクより先に処理すること）
+    text = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", r'<img src="\2" alt="\1">', text)
     # リンク
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
-    # <mark> → Quill の background-color span に変換
-    text = re.sub(
-        r'<mark style="background-color:([^"]+)">(.*?)</mark>',
-        r'<span style="background-color:\1">\2</span>',
-        text, flags=re.DOTALL,
-    )
+    # <mark> はTipTap Highlight 拡張がそのまま解釈できるので変換しない
     return text
 
 
-def markdown_to_quill_html(md: str) -> str:
-    """ブログ記事の Markdown+HTML を Quill が読み込める HTML に変換"""
+def _mdx_component_to_editor_html(mdx: str) -> str:
+    """単一の MDX コンポーネントブロックをTipTapカスタムノードHTMLに変換"""
+    s = mdx.strip()
+    # Note
+    note_m = re.match(r'<Note\s+([^>]+?)>([\s\S]*?)</Note>', s, re.DOTALL)
+    if note_m:
+        attrs_str = note_m.group(1)
+        content = note_m.group(2).strip()
+        type_m  = re.search(r'type=["\']([^"\']+)["\']', attrs_str)
+        title_m = re.search(r'title=["\']([^"\']+)["\']', attrs_str)
+        note_type  = type_m.group(1)  if type_m  else 'info'
+        note_title = html_lib.escape(title_m.group(1) if title_m else '')
+        content_html = markdown_to_editor_html(content)
+        return (f'<div data-node="note" data-type="{note_type}" data-title="{note_title}">'
+                f'<div class="note-node-content">{content_html}</div></div>')
+    # LinkCard
+    link_m = re.match(r'<LinkCard\s+url=["\']([^"\']+)["\']', s)
+    if link_m:
+        url = html_lib.escape(link_m.group(1))
+        return f'<div data-node="link-card" data-url="{url}"></div>'
+    # Details
+    details_m = re.match(r'<Details\s+summary=["\']([^"\']+)["\']>([\s\S]*?)</Details>', s, re.DOTALL)
+    if details_m:
+        summary = html_lib.escape(details_m.group(1))
+        content = details_m.group(2).strip()
+        content_html = markdown_to_editor_html(content)
+        return (f'<div data-node="details" data-summary="{summary}">'
+                f'<div class="details-node-content">{content_html}</div></div>')
+    # その他 MDX コンポーネント（RakutenAffiliate 等）→ コードブロックとして保護
+    return f'<pre><code>{html_lib.escape(s)}</code></pre>'
+
+
+def markdown_to_editor_html(md: str) -> str:
+    """ブログ記事の Markdown+MDX を TipTap が読み込める HTML に変換"""
     md = md.replace("\r\n", "\n").replace("\r", "\n")
+
+    # 複数行にまたがる MDX コンポーネントを先にプレースホルダで保護
+    _placeholders: dict[str, str] = {}
+    _counter = [0]
+
+    def _store(m):
+        key = f"\x00MDX{_counter[0]}\x00"
+        _placeholders[key] = m.group(0)
+        _counter[0] += 1
+        return key
+
+    md = re.sub(r'<Note\s[^>]*?>[\s\S]*?</Note>',    _store, md, flags=re.DOTALL)
+    md = re.sub(r'<Details\s[^>]*?>[\s\S]*?</Details>', _store, md, flags=re.DOTALL)
+    md = re.sub(r'<RakutenAffiliate\s[^/]*/?>',        _store, md, flags=re.DOTALL)
+
     raw_blocks = re.split(r"\n{2,}", md.strip())
     html_parts = []
 
@@ -219,11 +285,18 @@ def markdown_to_quill_html(md: str) -> str:
         if not block:
             continue
 
+        # プレースホルダを復元して変換
+        if block in _placeholders:
+            html_parts.append(_mdx_component_to_editor_html(_placeholders[block]))
+            continue
+
         # コードブロック
         cb_m = re.match(r"^```(\w*)\n?([\s\S]*?)```$", block, re.DOTALL)
         if cb_m:
-            code = cb_m.group(2).rstrip("\n")
-            html_parts.append(f'<pre class="ql-syntax" spellcheck="false">{code}</pre>')
+            lang = cb_m.group(1)
+            code = html_lib.escape(cb_m.group(2).rstrip("\n"))
+            lang_cls = f' class="language-{lang}"' if lang else ''
+            html_parts.append(f'<pre><code{lang_cls}>{code}</code></pre>')
             continue
 
         # 見出し
@@ -235,7 +308,7 @@ def markdown_to_quill_html(md: str) -> str:
 
         # HR
         if re.match(r"^[-*_]{3,}$", block.strip()):
-            html_parts.append("<p><br></p>")
+            html_parts.append("<hr>")
             continue
 
         lines = block.split("\n")
@@ -266,9 +339,14 @@ def markdown_to_quill_html(md: str) -> str:
             html_parts.append(f"<blockquote><p>{inner}</p></blockquote>")
             continue
 
-        # MDXコンポーネント（<LinkCard />, <Details> 等）→ コードブロックとして保護
+        # 単行 MDX コンポーネント（<LinkCard /> 等）→ カスタムノード or コードブロック
         if re.match(r'^<[A-Z][a-zA-Z]*[\s/>]', block.strip()):
-            html_parts.append(f'<pre class="ql-syntax" spellcheck="false">{html_lib.escape(block.strip())}</pre>')
+            html_parts.append(_mdx_component_to_editor_html(block.strip()))
+            continue
+
+        # export const（MDXトップレベルJS宣言）→ コードブロックとして保護
+        if block.strip().startswith("export "):
+            html_parts.append(f'<pre><code>{html_lib.escape(block.strip())}</code></pre>')
             continue
 
         # 通常段落（インラインHTMLも含む）
@@ -276,6 +354,10 @@ def markdown_to_quill_html(md: str) -> str:
         html_parts.append(f"<p>{converted}</p>")
 
     return "\n".join(html_parts)
+
+
+# 後方互換エイリアス
+markdown_to_quill_html = markdown_to_editor_html
 
 
 # ── Frontmatter ───────────────────────────────────────────────────────────
@@ -355,7 +437,7 @@ def get_template():
     _, body = parse_frontmatter(raw)
     # HTML コメント除去（テンプレートの説明コメントは不要）
     body = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
-    body_html = markdown_to_quill_html(body.strip())
+    body_html = markdown_to_editor_html(body.strip())
     return jsonify({"bodyHtml": body_html, "success": True})
 
 
@@ -553,7 +635,7 @@ def load_post():
     fm, body = parse_frontmatter(raw)
     ext = "mdx" if rel_path.endswith(".mdx") else "md"
 
-    # MDX: 先頭の import 行を分離
+    # MDX: 先頭の import / export const 行を分離（importsエリアに表示）
     imports = ""
     if ext == "mdx":
         import_lines = []
@@ -561,8 +643,10 @@ def load_post():
         rest = []
         in_imports = True
         for line in body_lines:
-            if in_imports and (line.startswith("import ") or line.strip() == ""):
-                if line.startswith("import "):
+            is_import = line.startswith("import ") or line.startswith("export ")
+            is_empty  = line.strip() == ""
+            if in_imports and (is_import or is_empty):
+                if is_import:
                     import_lines.append(line)
             else:
                 in_imports = False
@@ -570,7 +654,7 @@ def load_post():
         imports = "\n".join(import_lines)
         body = "\n".join(rest)
 
-    body_html = markdown_to_quill_html(body.strip())
+    body_html = markdown_to_editor_html(body.strip())
 
     return jsonify({
         "success": True,
