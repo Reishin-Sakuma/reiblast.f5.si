@@ -1,0 +1,1671 @@
+---
+export const prerender = true;
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>r&gt;_ Blog Editor</title>
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Blog Editor">
+  <link rel="apple-touch-icon" href="/admin/icon-192.png">
+  <meta name="robots" content="noindex, nofollow">
+  <style is:global>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --surface2: #222;
+      --border: #2d2d2d;
+      --yellow: #ffd700;
+      --yellow-dim: #cca800;
+      --text: #e0e0e0;
+      --muted: #666;
+      --green: #7cd300;
+      --red: #ff4444;
+    }
+    body.light {
+      --bg: #fafaf0;
+      --surface: #ffffff;
+      --surface2: #f0efe4;
+      --border: #ddd8c0;
+      --yellow: #FFD700;
+      --yellow-dim: #FFC200;
+      --text: #111111;
+      --muted: #888888;
+      --green: #10b981;
+      --red: #cc2200;
+    }
+    body.light header h1 { color: #111111; }
+    body.light .tb-btn { color: #555; }
+    body.light .tb-btn:hover, body.light .tb-btn.is-active { color: #b8860b; background: rgba(184,134,11,0.08); }
+    body.light #tb-heading { background: #fff; color: #555; border-color: #ddd8c0; }
+    body.light .tiptap a { color: #b8860b; }
+    body.light .fm-draft .tooltip { background: #fff; color: #333; border-color: #ddd8c0; }
+    body.light .fm-toggle-bar:hover { background: rgba(0,0,0,0.04); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--yellow);
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 16px; color: var(--yellow); font-family: 'Courier New', monospace; }
+    .header-btn {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: all 0.15s;
+    }
+    .header-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .ext-toggle { display: flex; gap: 3px; margin-left: auto; }
+    .ext-btn {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .ext-btn.active { background: var(--yellow); color: #000; border-color: var(--yellow); font-weight: bold; }
+
+    /* Main */
+    .main { display: flex; flex: 1; overflow: hidden; }
+    .left-pane { width: 55%; display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow: hidden; }
+    .right-pane { width: 45%; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Frontmatter */
+    .fm-section { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; flex-shrink: 0; }
+    .fm-toggle-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 13px; cursor: pointer; user-select: none;
+      border-bottom: 1px solid transparent; transition: border-color 0.15s;
+    }
+    .fm-toggle-bar:hover { background: rgba(255,255,255,0.03); }
+    .fm-section.collapsed .fm-toggle-bar { border-bottom-color: transparent; }
+    .fm-toggle-label { font-size: 11px; color: var(--muted); font-family: 'Courier New', monospace; }
+    .fm-toggle-summary { font-size: 11px; color: #aaa; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fm-toggle-arrow { font-size: 10px; color: var(--muted); margin-left: auto; flex-shrink: 0; transition: transform 0.2s; }
+    .fm-section.collapsed .fm-toggle-arrow { transform: rotate(180deg); }
+    .fm-body { padding: 0 13px 9px; }
+    .fm-section.collapsed .fm-body { display: none; }
+    .fm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .fm-grid .span2 { grid-column: 1 / -1; }
+    .fm-field label { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .fm-field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+    }
+    .fm-field input:focus { outline: none; border-color: var(--yellow); }
+    .fm-bottom-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
+    .fm-draft { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); flex-shrink: 0; position: relative; }
+    .fm-draft input[type="checkbox"] { accent-color: var(--yellow); }
+    .fm-draft .help-icon { font-size: 11px; color: var(--muted); cursor: default; opacity: 0.6; }
+    .fm-draft .tooltip {
+      display: none; position: absolute; bottom: calc(100% + 6px); left: 0;
+      background: #2a2a2a; border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 10px; font-size: 11px; line-height: 1.6; color: #ccc;
+      white-space: nowrap; z-index: 100; pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .fm-draft:hover .tooltip { display: block; }
+
+    /* MDX Imports */
+    #imports-section { display: none; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    #imports-section.visible { display: block; }
+    .imports-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .imports-header label { font-size: 10px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
+    .import-preset-btn {
+      padding: 2px 9px;
+      border: 1px solid #3a3a00;
+      background: #1a1a00;
+      color: var(--yellow);
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 11px;
+      transition: all 0.1s;
+    }
+    .import-preset-btn:hover { background: #2a2a00; border-color: var(--yellow); }
+    .insert-preset-btn {
+      padding: 2px 9px;
+      border: 1px solid #003a00;
+      background: #001a00;
+      color: var(--green);
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 11px;
+      transition: all 0.1s;
+    }
+    .insert-preset-btn:hover { background: #002a00; border-color: var(--green); }
+    .imports-sep { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
+    #fm-imports {
+      display: block;
+      width: 100%;
+      background: var(--bg);
+      border: none;
+      color: var(--green);
+      padding: 5px 13px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      resize: vertical;
+      min-height: 48px;
+    }
+    #fm-imports:focus { outline: none; }
+
+    /* Color presets */
+    .color-presets {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 13px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .color-presets .pl { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-right: 2px; }
+    .color-dot {
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer; flex-shrink: 0;
+      transition: transform 0.1s;
+    }
+    .color-dot:hover { transform: scale(1.3); border-color: #fff; }
+    .color-dot.clear {
+      background: none; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--muted); width: auto; padding: 0 4px;
+    }
+    .psep { width: 1px; height: 13px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
+
+    /* Editor Toolbar */
+    #editor-toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 1px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    #tb-heading {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 12px;
+      cursor: pointer;
+      height: 24px;
+    }
+    #tb-heading:focus { outline: none; border-color: var(--yellow); }
+    .tb-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: #888;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+      height: 24px;
+      min-width: 24px;
+      transition: all 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+    .tb-btn:hover { color: var(--yellow); background: rgba(255,215,0,0.08); border-color: transparent; }
+    .tb-btn.is-active { color: var(--yellow); background: rgba(255,215,0,0.12); }
+    .tb-italic { font-style: italic; }
+    .tb-underline { text-decoration: underline; }
+    .tb-strike { text-decoration: line-through; }
+    .tb-sep { width: 1px; height: 16px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+
+    /* TipTap Editor */
+    .editor-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    #editor { flex: 1; overflow: auto; background: var(--bg); }
+    .tiptap {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.85;
+      min-height: 100%;
+      padding: 18px 22px;
+      outline: none;
+    }
+    .tiptap p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+      float: left;
+      height: 0;
+    }
+    .tiptap u { text-decoration: underline; }
+    .tiptap s { text-decoration: line-through; }
+    .tiptap em { font-style: italic; }
+    .tiptap blockquote { border-left: 3px solid var(--yellow); padding-left: 12px; color: var(--muted); margin: 0.5em 0; }
+    .tiptap pre { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; margin: 0.5em 0; }
+    .tiptap pre code { color: var(--green); font-size: 13px; font-family: 'Courier New', monospace; background: none; padding: 0; }
+    .tiptap a { color: var(--yellow); }
+    .tiptap code { background: var(--surface); padding: 1px 4px; border-radius: 3px; font-size: 0.9em; font-family: 'Courier New', monospace; }
+    .tiptap h1 { font-size: 1.6em; margin: 0.6em 0 0.3em; }
+    .tiptap h2 { font-size: 1.4em; margin: 0.6em 0 0.3em; }
+    .tiptap h3 { font-size: 1.2em; margin: 0.5em 0 0.25em; }
+    .tiptap ul, .tiptap ol { padding-left: 1.5em; margin: 0.25em 0; }
+    .tiptap li { margin-bottom: 0.2em; }
+    .tiptap mark { border-radius: 3px; padding: 1px 2px; }
+    .tiptap hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+    .tiptap p { margin-bottom: 0.5em; }
+    .tiptap p:last-child { margin-bottom: 0; }
+
+    /* Custom Nodes */
+    .note-node {
+      border-left: 4px solid #111;
+      border-radius: 0 6px 6px 0;
+      margin: 1rem 0;
+      background: rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .note-node-info    { border-color: #111111; background: rgba(0,0,0,0.04); }
+    .note-node-warning { border-color: #eab308; background: rgba(234,179,8,0.08); }
+    .note-node-tip     { border-color: #22c55e; background: rgba(34,197,94,0.08); }
+    .note-node-danger  { border-color: #ef4444; background: rgba(239,68,68,0.08); }
+    .note-node-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: rgba(0,0,0,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .note-type-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .note-title-input, .details-summary-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .note-title-input:focus, .details-summary-input:focus, .link-card-url-input:focus {
+      outline: none; border-color: var(--yellow);
+    }
+    .node-del-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0 2px;
+      opacity: 0.5;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .node-del-btn:hover { opacity: 1; color: var(--red); }
+    .note-node-content { padding: 8px 12px; }
+    .note-node-content > * { margin-bottom: 0.5em; }
+
+    .link-card-node {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 1rem 0;
+      background: var(--surface);
+      position: relative;
+    }
+    .link-card-node-header {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .link-card-url-input {
+      width: calc(100% - 28px);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+    }
+    .link-card-node .node-del-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+
+    .details-node {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin: 1rem 0;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .details-node-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .details-node-header::before { content: '▶'; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+    .details-node-content { padding: 8px 12px; }
+    .details-node-content > * { margin-bottom: 0.5em; }
+
+    /* Preview */
+    .preview-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 7px 13px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .preview-header h2 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .refresh-btn { padding: 3px 9px; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .refresh-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    #preview { flex: 1; overflow: auto; padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: #7aad88; }
+
+    /* Bottom bar */
+    .bottom-bar {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 8px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .save-btn { padding: 6px 22px; background: var(--yellow); color: #000; border: none; border-radius: 4px; font-weight: bold; font-size: 13px; cursor: pointer; }
+    .save-btn:hover { background: var(--yellow-dim); }
+    .new-btn { padding: 6px 14px; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; font-size: 13px; cursor: pointer; }
+    .new-btn:hover { border-color: var(--green); color: var(--green); }
+    #save-path { font-size: 11px; font-family: 'Courier New', monospace; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #status { font-size: 12px; flex-shrink: 0; }
+    #status.success { color: var(--green); }
+    #status.error { color: var(--red); }
+
+    /* OGP Toast */
+    #ogp-toast {
+      display: none;
+      position: fixed; bottom: 60px; right: 16px; z-index: 2000;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      padding: 10px; width: 320px;
+    }
+    #ogp-toast img { width: 100%; border-radius: 4px; display: block; }
+    #ogp-toast-label {
+      font-size: 11px; color: var(--muted); margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #ogp-toast-label button {
+      background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0;
+    }
+
+    /* Article List Drawer */
+    .drawer-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+    }
+    .drawer-overlay.open { display: block; }
+    .drawer {
+      position: fixed;
+      top: 0; left: 0;
+      width: min(400px, 100vw); height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      z-index: 101;
+      display: flex; flex-direction: column;
+      transition: transform 0.25s ease;
+      transform: translateX(-100%);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+      background: #111;
+      border-bottom: 2px solid var(--yellow);
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .drawer-header h2 { font-size: 14px; color: var(--yellow); font-family: 'Courier New', monospace; }
+    .drawer-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 4px; }
+    .drawer-close:hover { color: var(--text); }
+    .drawer-search { padding: 10px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .drawer-search input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 6px 10px; border-radius: 4px;
+      font-size: 13px; font-family: 'Courier New', monospace;
+    }
+    .drawer-search input:focus { outline: none; border-color: var(--yellow); }
+    #post-list { flex: 1; overflow-y: auto; }
+    .year-group { padding: 6px 14px 2px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-top: 1px solid var(--border); margin-top: 4px; }
+    .post-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      border-bottom: 1px solid #1f1f1f;
+      transition: background 0.1s;
+    }
+    .post-item:hover { background: #1f1f1f; }
+    .post-info { flex: 1; min-width: 0; }
+    .post-title { font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .post-path { font-size: 10px; color: var(--muted); font-family: 'Courier New', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .post-ext { font-size: 10px; color: var(--yellow); font-family: 'Courier New', monospace; flex-shrink: 0; }
+    .edit-btn {
+      padding: 3px 8px; border: 1px solid var(--border); background: none;
+      color: var(--muted); border-radius: 3px; cursor: pointer; font-size: 11px; flex-shrink: 0;
+    }
+    .edit-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .del-btn {
+      padding: 3px 8px; border: 1px solid var(--border); background: none;
+      color: var(--muted); border-radius: 3px; cursor: pointer; font-size: 11px; flex-shrink: 0;
+    }
+    .del-btn:hover { border-color: var(--red); color: var(--red); }
+    .no-posts { padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
+
+    /* Tweet Drawer */
+    .tweet-drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: min(460px, 100vw); height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 101;
+      display: flex; flex-direction: column;
+      transition: transform 0.25s ease;
+      transform: translateX(100%);
+    }
+    .tweet-drawer.open { transform: translateX(0); }
+    .tweet-drawer-body {
+      flex: 1; overflow-y: auto;
+      padding: 12px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .tweet-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .tweet-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .tweet-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--yellow); font-family: 'Courier New', monospace;
+    }
+    .tweet-chars { font-size: 11px; font-family: 'Courier New', monospace; color: var(--muted); }
+    .tweet-chars.over { color: var(--red); }
+    .tweet-textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.7;
+      resize: vertical;
+      min-height: 120px;
+    }
+    .tweet-textarea:focus { outline: none; border-color: var(--yellow); }
+    .tweet-copy-btn {
+      margin-top: 7px;
+      width: 100%;
+      padding: 7px;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tweet-copy-btn:hover { background: var(--yellow-dim); }
+    .tweet-copy-btn.copied { background: var(--green); }
+    .tweet-info-bar {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .tweet-info-bar p { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .tweet-url-preview {
+      font-size: 11px; font-family: 'Courier New', monospace;
+      color: var(--yellow); word-break: break-all; margin-bottom: 6px;
+    }
+    .tweet-regen-btn {
+      padding: 4px 12px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .tweet-regen-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+
+    /* Publish button */
+    .publish-btn {
+      padding: 6px 16px;
+      background: none;
+      border: 1px solid var(--green);
+      color: var(--green);
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .publish-btn:hover { background: var(--green); color: #000; }
+    .publish-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* PR Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 28px;
+      width: 420px;
+      max-width: 90vw;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .modal-box h2 { font-size: 15px; color: var(--yellow); margin-bottom: 14px; font-family: 'Courier New', monospace; }
+    .modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+    .pr-url-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      color: var(--yellow);
+      word-break: break-all;
+      margin-bottom: 16px;
+    }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .modal-open-btn {
+      padding: 7px 18px;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .modal-open-btn:hover { background: var(--yellow-dim); }
+    .modal-merge-btn {
+      padding: 7px 18px;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .modal-merge-btn:hover { opacity: 0.85; }
+    .modal-merge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #pr-modal-status { font-size: 12px; color: var(--muted); margin-top: 8px; min-height: 18px; }
+    .modal-close-btn {
+      padding: 7px 18px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover { border-color: var(--text); color: var(--text); }
+
+    /* Publish error toast */
+    #publish-error {
+      display: none;
+      position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+      z-index: 2001;
+      background: #2a0000;
+      border: 1px solid var(--red);
+      color: var(--red);
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 13px;
+      max-width: 80vw;
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      header { padding: 7px 10px; gap: 6px; flex-wrap: wrap; }
+      header h1 { font-size: 13px; }
+      .header-btn { padding: 5px 8px; font-size: 11px; }
+      .ext-toggle { margin-left: 0; }
+      .ext-btn { padding: 5px 8px; font-size: 11px; }
+      .right-pane { display: none; }
+      .left-pane { width: 100%; border-right: none; }
+      .fm-grid { grid-template-columns: 1fr; }
+      .fm-grid .span2 { grid-column: 1; }
+      .fm-bottom-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .fm-field[style] { flex: unset !important; width: 100% !important; margin-left: 0 !important; }
+      #save-path { display: none; }
+      .bottom-bar { gap: 6px; }
+      .save-btn { padding: 6px 16px; }
+      .publish-btn { padding: 6px 10px; font-size: 12px; }
+      #ogp-toast { width: calc(100vw - 32px); right: 16px; }
+      .modal-actions { flex-wrap: wrap; }
+      .modal-actions button { flex: 1 1 auto; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>r&gt;_ Blog Editor</h1>
+  <button class="header-btn" onclick="openDrawer()">📂 記事一覧</button>
+  <button class="header-btn" onclick="openTweetDrawer()">🐦 ポスト</button>
+  <button class="header-btn" id="theme-btn" onclick="toggleTheme()" title="ライト/ダークモード切替">🌙</button>
+  <div class="ext-toggle">
+    <button class="ext-btn active" data-ext="md"  onclick="setExt('md')">index.md</button>
+    <button class="ext-btn"        data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="left-pane">
+
+    <div class="fm-section" id="fm-section">
+      <div class="fm-toggle-bar" onclick="toggleFm()">
+        <span class="fm-toggle-label">frontmatter</span>
+        <span class="fm-toggle-summary" id="fm-summary"></span>
+        <span class="fm-toggle-arrow">▲</span>
+      </div>
+      <div class="fm-body">
+        <div class="fm-grid">
+          <div class="fm-field span2">
+            <label>タイトル</label>
+            <input type="text" id="fm-title" placeholder='24歳から見た「○○の世界」とは' oninput="updateFmSummary()">
+          </div>
+          <div class="fm-field span2">
+            <label>説明文 (description)</label>
+            <input type="text" id="fm-desc" placeholder="記事の説明文">
+          </div>
+          <div class="fm-field">
+            <label>slug</label>
+            <input type="text" id="fm-slug" placeholder="24sai-kara-mita-xxx" oninput="updateFmSummary()">
+          </div>
+          <div class="fm-field">
+            <label>pubDate</label>
+            <input type="datetime-local" id="fm-date">
+          </div>
+          <div class="fm-field span2">
+            <label>タグ（カンマ区切り）</label>
+            <input type="text" id="fm-tags" placeholder="技術, 日記, インフラ">
+          </div>
+        </div>
+        <div class="fm-bottom-row">
+          <div class="fm-draft">
+            <input type="checkbox" id="fm-draft">
+            <label for="fm-draft">下書き (draft)</label>
+            <span class="help-icon">?</span>
+            <div class="tooltip">
+              チェックあり → ビルドから除外（URL なし・一覧非表示）<br>
+              チェックなし → 公開される<br>
+              <br>
+              💡 ブランチに push したいけどまだ公開しない、というときに使う
+            </div>
+          </div>
+          <div class="fm-field" style="flex:0 0 195px; margin-left:auto;">
+            <label>updatedDate（任意）</label>
+            <input type="datetime-local" id="fm-updated">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="imports-section">
+      <div class="imports-header">
+        <label>imports</label>
+        <button class="import-preset-btn" onclick="addImport('Note')">+ Note</button>
+        <button class="import-preset-btn" onclick="addImport('LinkCard')">+ LinkCard</button>
+        <button class="import-preset-btn" onclick="addImport('Details')">+ Details</button>
+        <div class="imports-sep"></div>
+        <label>挿入:</label>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','info')">Note(info)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','warning')">Note(warn)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','tip')">Note(tip)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Note','danger')">Note(!)</button>
+        <button class="insert-preset-btn" onclick="insertComponent('LinkCard')">LinkCard</button>
+        <button class="insert-preset-btn" onclick="insertComponent('Details')">Details</button>
+      </div>
+      <textarea id="fm-imports" rows="2"
+        placeholder="import Note from '@/components/blog/Note.astro';&#10;import LinkCard from '@/components/blog/LinkCard.astro';"></textarea>
+    </div>
+
+    <div class="color-presets">
+      <span class="pl">文字色</span>
+      <div class="color-dot" style="background:#ff0000" title="赤 #ff0000"    onclick="applyColor('#ff0000')"></div>
+      <div class="color-dot" style="background:#0000ff" title="青 #0000ff"    onclick="applyColor('#0000ff')"></div>
+      <div class="color-dot" style="background:#8f20ff" title="紫 #8f20ff"    onclick="applyColor('#8f20ff')"></div>
+      <div class="color-dot" style="background:#ff7f00" title="オレンジ #ff7f00" onclick="applyColor('#ff7f00')"></div>
+      <div class="color-dot" style="background:#ffd700" title="黄 #ffd700"    onclick="applyColor('#ffd700')"></div>
+      <div class="color-dot" style="background:#ff007d" title="ピンク #ff007d" onclick="applyColor('#ff007d')"></div>
+      <div class="color-dot" style="background:#7cd300" title="黄緑 #7cd300"  onclick="applyColor('#7cd300')"></div>
+      <div class="color-dot" style="background:#fff"    title="白 #ffffff"    onclick="applyColor('#ffffff')"></div>
+      <div class="color-dot clear" title="色なし" onclick="applyColor(false)">✕</div>
+      <div class="psep"></div>
+      <span class="pl">背景</span>
+      <div class="color-dot" style="background:#ffcc00"           title="黄ハイライト" onclick="applyBg('#ffcc00')"></div>
+      <div class="color-dot" style="background:#7cd300;opacity:.6" title="緑ハイライト" onclick="applyBg('#7cd300')"></div>
+      <div class="color-dot clear" title="背景なし" onclick="applyBg(false)">✕</div>
+    </div>
+
+    <div class="editor-wrap">
+      <div id="editor-toolbar">
+        <select id="tb-heading" title="見出し" onchange="applyHeading(this.value)">
+          <option value="0">本文</option>
+          <option value="1">H1</option>
+          <option value="2">H2</option>
+          <option value="3">H3</option>
+        </select>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="bold"        title="太字 (Ctrl+B)"><strong>B</strong></button>
+        <button class="tb-btn tb-italic" data-cmd="italic"      title="斜体 (Ctrl+I)">I</button>
+        <button class="tb-btn tb-underline" data-cmd="underline"   title="下線 (Ctrl+U)">U</button>
+        <button class="tb-btn tb-strike" data-cmd="strike"      title="取り消し線">S</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="link"        title="リンク" onclick="editorLink()">🔗</button>
+        <button class="tb-btn" data-cmd="blockquote"  title="引用">❝</button>
+        <button class="tb-btn" data-cmd="codeBlock"   title="コードブロック" style="font-family:monospace">&lt;/&gt;</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="bulletList"  title="箇条書き">•≡</button>
+        <button class="tb-btn" data-cmd="orderedList" title="番号付き">1.≡</button>
+        <button class="tb-btn" data-cmd="horizontalRule" title="区切り線">──</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn tb-component" title="Note (情報)" onclick="insertComponent('Note','info')">📝</button>
+        <button class="tb-btn tb-component" title="Note (警告)" onclick="insertComponent('Note','warning')">⚠</button>
+        <button class="tb-btn tb-component" title="Note (ヒント)" onclick="insertComponent('Note','tip')">💡</button>
+        <button class="tb-btn tb-component" title="Note (危険)" onclick="insertComponent('Note','danger')">🚨</button>
+        <button class="tb-btn tb-component" title="LinkCard" onclick="insertComponent('LinkCard')">🔖</button>
+        <button class="tb-btn tb-component" title="Details (折りたたみ)" onclick="insertComponent('Details')">📂</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="undo"        title="元に戻す (Ctrl+Z)">↩</button>
+        <button class="tb-btn" data-cmd="redo"        title="やり直し (Ctrl+Y)">↪</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" data-cmd="clear"       title="書式をクリア">✕</button>
+      </div>
+      <div id="editor"></div>
+    </div>
+
+  </div>
+
+  <div class="right-pane">
+    <div class="preview-header">
+      <h2>Markdown プレビュー</h2>
+      <button class="refresh-btn" onclick="refreshPreview()">更新 ↻</button>
+    </div>
+    <pre id="preview">← 「更新 ↻」で Markdown を確認</pre>
+  </div>
+
+</div>
+
+<div id="ogp-toast">
+  <div id="ogp-toast-label">
+    <span>OGP プレビュー</span>
+    <button onclick="closeOgpToast()">✕</button>
+  </div>
+  <img id="ogp-toast-img" src="" alt="OGP preview">
+</div>
+
+<div class="bottom-bar">
+  <button class="save-btn" onclick="savePost()">保存</button>
+  <button class="new-btn" onclick="newPost()">＋ 新規</button>
+  <span id="save-path"></span>
+  <span id="status"></span>
+  <button class="publish-btn" id="publish-btn" onclick="publishPost()">公開する →</button>
+</div>
+
+<div class="modal-overlay" id="pr-modal">
+  <div class="modal-box">
+    <h2 id="pr-modal-title">✅ PR を作成しました</h2>
+    <p id="pr-modal-desc">GitHub でマージすると本番環境に公開されます。</p>
+    <div class="pr-url-box" id="pr-url-text"></div>
+    <div class="modal-actions">
+      <button class="modal-close-btn" onclick="closePrModal()">閉じる</button>
+      <button class="modal-open-btn" id="pr-open-btn" onclick="openPrUrl()">PR を開く ↗</button>
+      <button class="modal-merge-btn" id="merge-btn" onclick="confirmMerge()">マージして公開 ✓</button>
+    </div>
+    <div id="pr-modal-status"></div>
+  </div>
+</div>
+
+<div id="publish-error"></div>
+
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>📂 記事一覧</h2>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-search">
+    <input type="text" id="drawer-search" placeholder="タイトル検索..." oninput="filterPosts(this.value)">
+  </div>
+  <div id="post-list"><div class="no-posts">読み込み中...</div></div>
+</div>
+
+<div class="drawer-overlay" id="tweet-overlay" onclick="closeTweetDrawer()"></div>
+<div class="tweet-drawer" id="tweet-drawer">
+  <div class="drawer-header">
+    <h2>🐦 ポスト用テンプレート</h2>
+    <button class="drawer-close" onclick="closeTweetDrawer()">✕</button>
+  </div>
+  <div class="tweet-info-bar">
+    <p>記事タイトル・日付・slugを入力してから開くと自動入力されます。</p>
+    <div class="tweet-url-preview" id="tweet-url-preview">🔗 -</div>
+    <button class="tweet-regen-btn" onclick="buildTweetTemplates()">↻ 再生成</button>
+  </div>
+  <div class="tweet-drawer-body" id="tweet-drawer-body"></div>
+</div>
+
+<script type="module" is:inline>
+import { Editor, Node, mergeAttributes } from 'https://esm.sh/@tiptap/core@2.11.5';
+import StarterKit              from 'https://esm.sh/@tiptap/starter-kit@2.11.5';
+import Underline               from 'https://esm.sh/@tiptap/extension-underline@2.11.5';
+import TextStyle               from 'https://esm.sh/@tiptap/extension-text-style@2.11.5';
+import { Color }               from 'https://esm.sh/@tiptap/extension-color@2.11.5';
+import Highlight               from 'https://esm.sh/@tiptap/extension-highlight@2.11.5';
+import Link                    from 'https://esm.sh/@tiptap/extension-link@2.11.5';
+import Placeholder             from 'https://esm.sh/@tiptap/extension-placeholder@2.11.5';
+import Image                   from 'https://esm.sh/@tiptap/extension-image@2.11.5';
+
+const API_BASE = '/api/admin';
+
+// Note node
+const NoteBlock = Node.create({
+  name: 'noteBlock',
+  group: 'block',
+  content: 'block+',
+  defining: true,
+  isolating: true,
+  addAttributes() {
+    return {
+      type:  { default: 'info',  parseHTML: el => el.getAttribute('data-type'),  renderHTML: a => ({ 'data-type': a.type })  },
+      title: { default: '',      parseHTML: el => el.getAttribute('data-title'), renderHTML: a => ({ 'data-title': a.title }) },
+    };
+  },
+  parseHTML() { return [{ tag: 'div[data-node="note"]' }]; },
+  renderHTML({ node, HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-node': 'note' }), 0];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }) => {
+      const dom = document.createElement('div');
+      dom.className = `note-node note-node-${node.attrs.type}`;
+      dom.setAttribute('data-node', 'note');
+
+      const header = document.createElement('div');
+      header.className = 'note-node-header';
+      header.contentEditable = 'false';
+
+      const typeSelect = document.createElement('select');
+      typeSelect.className = 'note-type-select';
+      const typeLabels = { info: 'ℹ info', warning: '⚠ warning', tip: '💡 tip', danger: '🚨 danger' };
+      for (const [val, label] of Object.entries(typeLabels)) {
+        const opt = document.createElement('option');
+        opt.value = val; opt.textContent = label; opt.selected = node.attrs.type === val;
+        typeSelect.appendChild(opt);
+      }
+      typeSelect.addEventListener('change', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { ...node.attrs, type: typeSelect.value }));
+        dom.className = `note-node note-node-${typeSelect.value}`;
+      });
+
+      const titleInput = document.createElement('input');
+      titleInput.className = 'note-title-input';
+      titleInput.placeholder = 'タイトル（省略可）';
+      titleInput.value = node.attrs.title;
+      titleInput.addEventListener('input', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { ...node.attrs, title: titleInput.value }));
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'node-del-btn'; delBtn.textContent = '✕'; delBtn.title = '削除';
+      delBtn.addEventListener('click', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+      });
+
+      header.append(typeSelect, titleInput, delBtn);
+
+      const contentDOM = document.createElement('div');
+      contentDOM.className = 'note-node-content';
+
+      dom.append(header, contentDOM);
+      return { dom, contentDOM };
+    };
+  },
+});
+
+// LinkCard node
+const LinkCardNode = Node.create({
+  name: 'linkCard',
+  group: 'block',
+  atom: true,
+  addAttributes() {
+    return { url: { default: '', parseHTML: el => el.getAttribute('data-url'), renderHTML: a => ({ 'data-url': a.url }) } };
+  },
+  parseHTML() { return [{ tag: 'div[data-node="link-card"]' }]; },
+  renderHTML({ HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-node': 'link-card', class: 'link-card-node' })];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }) => {
+      const dom = document.createElement('div');
+      dom.className = 'link-card-node';
+      dom.setAttribute('data-node', 'link-card');
+      dom.contentEditable = 'false';
+
+      const hdr = document.createElement('div');
+      hdr.className = 'link-card-node-header'; hdr.textContent = '🔗 LinkCard';
+
+      const urlInput = document.createElement('input');
+      urlInput.className = 'link-card-url-input';
+      urlInput.placeholder = 'URL を入力（例: https://example.com）';
+      urlInput.value = node.attrs.url;
+      urlInput.addEventListener('change', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { url: urlInput.value }));
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'node-del-btn'; delBtn.textContent = '✕'; delBtn.title = '削除';
+      delBtn.addEventListener('click', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+      });
+
+      dom.append(hdr, urlInput, delBtn);
+      return { dom };
+    };
+  },
+});
+
+// Details node
+const DetailsNode = Node.create({
+  name: 'detailsBlock',
+  group: 'block',
+  content: 'block+',
+  defining: true,
+  isolating: true,
+  addAttributes() {
+    return { summary: { default: '詳細を見る', parseHTML: el => el.getAttribute('data-summary'), renderHTML: a => ({ 'data-summary': a.summary }) } };
+  },
+  parseHTML() { return [{ tag: 'div[data-node="details"]' }]; },
+  renderHTML({ node, HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-node': 'details' }), 0];
+  },
+  addNodeView() {
+    return ({ node, getPos, editor }) => {
+      const dom = document.createElement('div');
+      dom.className = 'details-node';
+      dom.setAttribute('data-node', 'details');
+
+      const header = document.createElement('div');
+      header.className = 'details-node-header';
+      header.contentEditable = 'false';
+
+      const summaryInput = document.createElement('input');
+      summaryInput.className = 'details-summary-input';
+      summaryInput.placeholder = 'summary（折りたたみのタイトル）';
+      summaryInput.value = node.attrs.summary;
+      summaryInput.addEventListener('input', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.setNodeMarkup(pos, undefined, { ...node.attrs, summary: summaryInput.value }));
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'node-del-btn'; delBtn.textContent = '✕'; delBtn.title = '削除';
+      delBtn.addEventListener('click', () => {
+        const pos = typeof getPos === 'function' ? getPos() : null;
+        if (pos !== null) editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+      });
+
+      header.append(summaryInput, delBtn);
+
+      const contentDOM = document.createElement('div');
+      contentDOM.className = 'details-node-content';
+
+      dom.append(header, contentDOM);
+      return { dom, contentDOM };
+    };
+  },
+});
+
+const editor = new Editor({
+  element: document.getElementById('editor'),
+  extensions: [
+    StarterKit.configure({ strike: {}, code: {}, codeBlock: {}, blockquote: {}, horizontalRule: {} }),
+    Underline,
+    TextStyle,
+    Color,
+    Highlight.configure({ multicolor: true }),
+    Link.configure({ openOnClick: false, HTMLAttributes: { rel: 'noopener noreferrer' } }),
+    Image.configure({ allowBase64: false, inline: false }),
+    Placeholder.configure({ placeholder: 'どうも、レイと申します。\n\n本文を書いてください...' }),
+    NoteBlock,
+    LinkCardNode,
+    DetailsNode,
+  ],
+  editorProps: { attributes: { class: 'tiptap' } },
+  onUpdate() { updateToolbarState(); },
+  onSelectionUpdate() { updateToolbarState(); },
+});
+
+function updateToolbarState() {
+  const cmds = ['bold','italic','underline','strike','blockquote','codeBlock','bulletList','orderedList'];
+  for (const cmd of cmds) {
+    const btn = document.querySelector(`.tb-btn[data-cmd="${cmd}"]`);
+    if (btn) btn.classList.toggle('is-active', editor.isActive(cmd));
+  }
+  let level = 0;
+  for (let i = 1; i <= 3; i++) {
+    if (editor.isActive('heading', { level: i })) { level = i; break; }
+  }
+  const sel = document.getElementById('tb-heading');
+  if (sel) sel.value = String(level);
+}
+
+window.editorCmd = function(cmd) {
+  const c = editor.chain().focus();
+  switch (cmd) {
+    case 'bold':          c.toggleBold().run(); break;
+    case 'italic':        c.toggleItalic().run(); break;
+    case 'underline':     c.toggleUnderline().run(); break;
+    case 'strike':        c.toggleStrike().run(); break;
+    case 'blockquote':    c.toggleBlockquote().run(); break;
+    case 'codeBlock':     c.toggleCodeBlock().run(); break;
+    case 'bulletList':    c.toggleBulletList().run(); break;
+    case 'orderedList':   c.toggleOrderedList().run(); break;
+    case 'horizontalRule': c.setHorizontalRule().run(); break;
+    case 'undo':          c.undo().run(); break;
+    case 'redo':          c.redo().run(); break;
+    case 'clear':         c.clearNodes().unsetAllMarks().run(); break;
+  }
+};
+
+window.applyHeading = function(level) {
+  const lvl = parseInt(level);
+  if (lvl === 0) editor.chain().focus().setParagraph().run();
+  else           editor.chain().focus().toggleHeading({ level: lvl }).run();
+};
+
+window.editorLink = function() {
+  const current = editor.getAttributes('link').href || '';
+  const url = prompt('URL を入力してください:', current);
+  if (url === null) return;
+  if (url === '') editor.chain().focus().unsetLink().run();
+  else            editor.chain().focus().setLink({ href: url }).run();
+};
+
+window.applyColor = function(c) {
+  if (!c) editor.chain().focus().unsetColor().run();
+  else    editor.chain().focus().setColor(c).run();
+};
+
+window.applyBg = function(c) {
+  if (!c) editor.chain().focus().unsetHighlight().run();
+  else    editor.chain().focus().setHighlight({ color: c }).run();
+};
+
+document.querySelectorAll('.tb-btn[data-cmd]').forEach(btn => {
+  const cmd = btn.dataset.cmd;
+  if (cmd === 'link') return;
+  btn.addEventListener('click', () => window.editorCmd(cmd));
+});
+
+const IMPORT_MAP = {
+  Note:     "import Note from '@/components/blog/Note.astro';",
+  LinkCard: "import LinkCard from '@/components/blog/LinkCard.astro';",
+  Details:  "import Details from '@/components/blog/Details.astro';",
+};
+
+function addImport(component) {
+  const ta = document.getElementById('fm-imports');
+  const line = IMPORT_MAP[component];
+  if (line && !ta.value.includes(line)) {
+    ta.value = ta.value.trim() ? ta.value.trim() + '\n' + line : line;
+  }
+}
+window.addImport = addImport;
+
+window.insertComponent = function(type, variant) {
+  window.setExt('mdx');
+  if (type === 'Note') {
+    editor.chain().focus().insertContent({
+      type: 'noteBlock',
+      attrs: { type: variant || 'info', title: '' },
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: 'ここに内容を書く' }] }],
+    }).run();
+    addImport('Note');
+  } else if (type === 'LinkCard') {
+    editor.chain().focus().insertContent({ type: 'linkCard', attrs: { url: 'https://example.com' } }).run();
+    addImport('LinkCard');
+  } else if (type === 'Details') {
+    editor.chain().focus().insertContent({
+      type: 'detailsBlock',
+      attrs: { summary: '詳細を見る' },
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: 'ここに内容を書く' }] }],
+    }).run();
+    addImport('Details');
+  }
+};
+
+let currentExt = 'md';
+let originalPath = '';
+let allPosts = [];
+
+window.setExt = function(ext) {
+  currentExt = ext;
+  document.querySelectorAll('.ext-btn').forEach(b => b.classList.toggle('active', b.dataset.ext === ext));
+  document.getElementById('imports-section').classList.toggle('visible', ext === 'mdx');
+};
+
+(function setDefaultDate() {
+  const now   = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
+})();
+
+function buildFrontmatterText() {
+  const title   = document.getElementById('fm-title').value;
+  const desc    = document.getElementById('fm-desc').value;
+  const slug    = document.getElementById('fm-slug').value;
+  const dateVal = document.getElementById('fm-date').value;
+  const tagsRaw = document.getElementById('fm-tags').value;
+  const draft   = document.getElementById('fm-draft').checked;
+  const updated = document.getElementById('fm-updated').value;
+  const tags    = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  const tagsStr = '[' + tags.map(t => `"${t}"`).join(', ') + ']';
+  const pubDate = dateVal ? dateVal + ':00' : '';
+  let fm = `---\ntitle: "${title}"\ndescription: "${desc}"\npubDate: ${pubDate}\nslug: ${slug}\nauthor: reiblast1123\ntags: ${tagsStr}\ndraft: ${draft}`;
+  if (updated) fm += `\nupdatedDate: ${updated}:00`;
+  fm += '\n---';
+  if (currentExt === 'mdx') {
+    const imports = document.getElementById('fm-imports').value.trim();
+    if (imports) fm += '\n\n' + imports;
+  }
+  return fm;
+}
+
+window.refreshPreview = async function() {
+  try {
+    const res  = await fetch(`${API_BASE}/convert`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ html: editor.getHTML() }),
+    });
+    const data = await res.json();
+    document.getElementById('preview').textContent = buildFrontmatterText() + '\n\n' + data.markdown;
+  } catch (e) {
+    document.getElementById('preview').textContent = 'エラー: ' + e.message;
+  }
+};
+
+window.savePost = async function() {
+  const title = document.getElementById('fm-title').value.trim();
+  const slug  = document.getElementById('fm-slug').value.trim();
+  if (!title) { setStatus('タイトルを入力してください', true); return; }
+  if (!slug)  { setStatus('slug を入力してください',   true); return; }
+
+  const dateVal = document.getElementById('fm-date').value;
+  const tagsRaw = document.getElementById('fm-tags').value;
+  const pubDate = dateVal ? dateVal + ':00' : new Date().toISOString().slice(0, 19);
+  const updated = document.getElementById('fm-updated').value;
+
+  setStatus('保存中...', false);
+  try {
+    const res  = await fetch(`${API_BASE}/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        description: document.getElementById('fm-desc').value.trim(),
+        slug,
+        pubDate,
+        tags:        tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
+        draft:       document.getElementById('fm-draft').checked,
+        updatedDate: updated ? updated + ':00' : '',
+        imports:     document.getElementById('fm-imports').value,
+        ext:         currentExt,
+        body:        editor.getHTML(),
+        author:      'reiblast1123',
+        originalPath,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      const relFromBlog = data.path.replace(/^src\/content\/blog\//, '');
+      originalPath = relFromBlog;
+      document.getElementById('save-path').textContent = '→ ' + data.path;
+      const gitInfo = data.gitCommitted
+        ? ` | git: ${data.gitBranch} (${data.gitMessage})`
+        : (data.gitMessage ? ` | git: ${data.gitMessage}` : '');
+      setStatus('保存しました ✓' + gitInfo, false);
+      if (data.ogpGenerated) showOgpToast(slug);
+      await window.refreshPreview();
+    } else {
+      setStatus('エラー: ' + (data.error || JSON.stringify(data)), true);
+    }
+  } catch (e) {
+    setStatus('エラー: ' + e.message, true);
+  }
+};
+
+window.newPost = async function() {
+  if (editor.getText().trim() && !confirm('現在の内容を破棄して新規作成しますか？')) return;
+  document.getElementById('fm-title').value   = '';
+  document.getElementById('fm-desc').value    = '';
+  document.getElementById('fm-slug').value    = '';
+  document.getElementById('fm-tags').value    = '';
+  document.getElementById('fm-draft').checked = false;
+  document.getElementById('fm-updated').value = '';
+  document.getElementById('fm-imports').value = '';
+  const now   = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  document.getElementById('fm-date').value = local.toISOString().slice(0, 16);
+  originalPath = '';
+  document.getElementById('save-path').textContent = '';
+  document.getElementById('preview').textContent   = '← 「更新 ↻」で Markdown を確認';
+  setStatus('', false);
+  window.setExt('md');
+  await loadTemplate();
+};
+
+async function loadTemplate() {
+  try {
+    const res  = await fetch(`${API_BASE}/template`);
+    const data = await res.json();
+    editor.commands.setContent(data.bodyHtml || '', false);
+  } catch (_) {
+    editor.commands.setContent('', false);
+  }
+}
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className   = isError ? 'error' : 'success';
+}
+
+window.openDrawer = async function() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer-search').value = '';
+  try {
+    const res = await fetch(`${API_BASE}/posts`);
+    allPosts  = await res.json();
+    renderPostList(allPosts);
+  } catch (e) {
+    document.getElementById('post-list').innerHTML = `<div class="no-posts">エラー: ${e.message}</div>`;
+  }
+};
+
+window.closeDrawer = function() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+};
+
+function renderPostList(posts) {
+  const container = document.getElementById('post-list');
+  if (posts.length === 0) { container.innerHTML = '<div class="no-posts">記事が見つかりません</div>'; return; }
+  const groups = {};
+  for (const post of posts) {
+    const year = post.path.slice(0, 4);
+    (groups[year] = groups[year] || []).push(post);
+  }
+  let html = '';
+  for (const year of Object.keys(groups).sort().reverse()) {
+    html += `<div class="year-group">${year}</div>`;
+    for (const post of groups[year]) {
+      const pathEsc  = escapeAttr(post.path);
+      const titleEsc = escapeAttr(post.title);
+      const extLabel = post.ext || '.md';
+      html += `
+        <div class="post-item">
+          <div class="post-info">
+            <div class="post-title">${escapeHtml(post.title)}</div>
+            <div class="post-path">${escapeHtml(post.path)}</div>
+          </div>
+          <span class="post-ext">${extLabel}</span>
+          <button class="edit-btn" onclick="editPost('${pathEsc}')">編集</button>
+          <button class="del-btn"  onclick="deletePost('${pathEsc}','${titleEsc}')">削除</button>
+        </div>`;
+    }
+  }
+  container.innerHTML = html;
+}
+
+window.filterPosts = function(query) {
+  const q = query.toLowerCase();
+  renderPostList(q ? allPosts.filter(p => p.title.toLowerCase().includes(q) || p.path.toLowerCase().includes(q)) : allPosts);
+};
+
+window.editPost = async function(path) {
+  try {
+    const res  = await fetch(`${API_BASE}/load`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    });
+    const data = await res.json();
+    if (!data.success) { alert('読み込みエラー: ' + data.error); return; }
+
+    document.getElementById('fm-title').value   = data.title;
+    document.getElementById('fm-desc').value    = data.description;
+    document.getElementById('fm-slug').value    = data.slug;
+    document.getElementById('fm-date').value    = data.pubDate;
+    document.getElementById('fm-tags').value    = (data.tags || []).join(', ');
+    document.getElementById('fm-draft').checked = data.draft;
+    document.getElementById('fm-updated').value = data.updatedDate || '';
+    document.getElementById('fm-imports').value = data.imports || '';
+
+    window.setExt(data.ext || 'md');
+    editor.commands.setContent(data.bodyHtml || '', false);
+    originalPath = path;
+
+    document.getElementById('save-path').textContent = '編集中: ' + path;
+    document.getElementById('preview').textContent   = '← 「更新 ↻」で確認';
+    setStatus('読み込みました ✓', false);
+    window.closeDrawer();
+    updateFmSummary();
+  } catch (e) {
+    alert('エラー: ' + e.message);
+  }
+};
+
+window.deletePost = async function(path, title) {
+  if (!confirm(`「${title}」を削除しますか？\n\n${path}\n\nこの操作は取り消せません。`)) return;
+  try {
+    const res  = await fetch(`${API_BASE}/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      allPosts = allPosts.filter(p => p.path !== path);
+      renderPostList(allPosts);
+      if (originalPath === path) window.newPost();
+    } else {
+      alert('削除エラー: ' + (data.error || ''));
+    }
+  } catch (e) {
+    alert('エラー: ' + e.message);
+  }
+};
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escapeAttr(s) { return String(s).replace(/'/g, "\\'"); }
+
+function buildTweetText(title, url, hashTags, desc) {
+  return `ブログを更新しました！📖\n\n📝${title}\n\n${desc}\n\n🔗 ${url}\n\n#エンジニアブログ${hashTags}`;
+}
+function getTweetUrl() {
+  const slug = document.getElementById('fm-slug').value.trim();
+  return slug ? `https://reiblast1123.com/blog/${slug}/` : null;
+}
+function getFirstLine() {
+  const el = document.querySelector('.tiptap p, .tiptap h1, .tiptap h2, .tiptap h3');
+  return el ? el.textContent.trim() : '';
+}
+window.buildTweetTemplates = function() {
+  const title    = document.getElementById('fm-title').value.trim() || '（タイトル未入力）';
+  const url      = getTweetUrl() || 'https://reiblast1123.com/blog/...';
+  const tagsRaw  = document.getElementById('fm-tags').value;
+  const hashTags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).map(t => ' #' + t.replace(/\s+/g, '')).join('');
+  const desc     = getFirstLine() || '〈一言で内容を説明〉';
+
+  document.getElementById('tweet-url-preview').textContent = '🔗 ' + url;
+
+  const body = document.getElementById('tweet-drawer-body');
+  body.innerHTML = `
+    <div class="tweet-card">
+      <div class="tweet-card-header">
+        <span class="tweet-chars" id="tweet-chars-0">-- 文字</span>
+      </div>
+      <textarea class="tweet-textarea" id="tweet-text-0" rows="9" oninput="updateTweetChars(0)"></textarea>
+      <button class="tweet-copy-btn" id="tweet-copy-0" onclick="copyTweet(0)">コピー</button>
+    </div>`;
+  document.getElementById('tweet-text-0').value = buildTweetText(title, url, hashTags, desc);
+  updateTweetChars(0);
+};
+
+function tweetLength(text) {
+  return [...text.replace(/https?:\/\/[^\s]+/g, '_'.repeat(23))].length;
+}
+window.updateTweetChars = function(i) {
+  const text = document.getElementById(`tweet-text-${i}`).value;
+  const len  = tweetLength(text);
+  const el   = document.getElementById(`tweet-chars-${i}`);
+  el.textContent = len + ' 文字';
+  el.classList.toggle('over', len > 260);
+};
+window.copyTweet = async function(i) {
+  const text = document.getElementById(`tweet-text-${i}`).value;
+  const btn  = document.getElementById(`tweet-copy-${i}`);
+  try { await navigator.clipboard.writeText(text); }
+  catch (_) { document.getElementById(`tweet-text-${i}`).select(); document.execCommand('copy'); }
+  btn.textContent = 'コピーしました ✓'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+};
+window.openTweetDrawer = function() {
+  buildTweetTemplates();
+  document.getElementById('tweet-drawer').classList.add('open');
+  document.getElementById('tweet-overlay').classList.add('open');
+};
+window.closeTweetDrawer = function() {
+  document.getElementById('tweet-drawer').classList.remove('open');
+  document.getElementById('tweet-overlay').classList.remove('open');
+};
+
+let _ogpToastTimer = null;
+function showOgpToast(slug) {
+  const toast = document.getElementById('ogp-toast');
+  document.getElementById('ogp-toast-img').src = `${API_BASE}/ogp-image/${slug}?t=${Date.now()}`;
+  toast.style.display = 'block';
+  clearTimeout(_ogpToastTimer);
+  _ogpToastTimer = setTimeout(closeOgpToast, 10000);
+}
+window.closeOgpToast = function() { document.getElementById('ogp-toast').style.display = 'none'; };
+
+window.toggleTheme = function() {
+  const light = document.body.classList.toggle('light');
+  localStorage.setItem('theme', light ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = light ? '☀️' : '🌙';
+};
+(function() {
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '☀️';
+  }
+})();
+
+window.toggleFm = function() {
+  const sec = document.getElementById('fm-section');
+  const collapsed = sec.classList.toggle('collapsed');
+  localStorage.setItem('fm-collapsed', collapsed ? '1' : '0');
+};
+function updateFmSummary() {
+  const title = document.getElementById('fm-title').value.trim();
+  const slug  = document.getElementById('fm-slug').value.trim();
+  document.getElementById('fm-summary').textContent = [title, slug ? `[${slug}]` : ''].filter(Boolean).join('  ');
+}
+window.updateFmSummary = updateFmSummary;
+(function() {
+  if (localStorage.getItem('fm-collapsed') === '1') {
+    document.getElementById('fm-section').classList.add('collapsed');
+  }
+  updateFmSummary();
+})();
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); window.savePost(); }
+  if (e.key === 'Escape') { window.closeDrawer(); window.closeTweetDrawer(); }
+});
+
+let _prUrl    = '';
+let _prBranch = '';
+
+window.publishPost = async function() {
+  const slug  = document.getElementById('fm-slug').value.trim();
+  const title = document.getElementById('fm-title').value.trim();
+  if (!slug) { setStatus('slug を入力してください', true); return; }
+
+  const btn = document.getElementById('publish-btn');
+  btn.disabled = true; btn.textContent = '公開中...';
+  hidePublishError();
+
+  try {
+    const res  = await fetch(`${API_BASE}/publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, title }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      _prUrl    = data.prUrl;
+      _prBranch = data.branch || '';
+      document.getElementById('pr-url-text').textContent  = _prUrl;
+      document.getElementById('pr-modal-title').textContent = '✅ PR を作成しました';
+      document.getElementById('pr-modal-desc').textContent  = 'GitHub でマージすると本番環境に公開されます。';
+      document.getElementById('pr-modal-status').textContent = '';
+      document.getElementById('merge-btn').disabled = false;
+      document.getElementById('merge-btn').textContent = 'マージして公開 ✓';
+      document.getElementById('pr-open-btn').style.display = '';
+      document.getElementById('pr-modal').classList.add('open');
+      setStatus('PR 作成完了 ✓', false);
+    } else {
+      showPublishError(data.error || 'エラーが発生しました');
+    }
+  } catch (e) {
+    showPublishError('エラー: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '公開する →';
+  }
+};
+
+window.openPrUrl    = function() { if (_prUrl) window.open(_prUrl, '_blank', 'noopener'); };
+window.closePrModal = function() { document.getElementById('pr-modal').classList.remove('open'); };
+
+window.confirmMerge = async function() {
+  if (!_prBranch) return;
+  if (!confirm(`PR をマージして本番公開します。\nブランチ (${_prBranch}) も削除されます。\nよろしいですか？`)) return;
+
+  const btn = document.getElementById('merge-btn');
+  btn.disabled = true; btn.textContent = 'マージ中...';
+  document.getElementById('pr-modal-status').textContent = '';
+
+  try {
+    const res  = await fetch(`${API_BASE}/merge`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branch: _prBranch }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('pr-modal-title').textContent = '🎉 マージ完了！';
+      document.getElementById('pr-modal-desc').textContent  = 'Cloudflare Pages のビルドが完了すると本番に公開されます。';
+      btn.textContent = 'マージ済み ✓';
+      document.getElementById('pr-open-btn').style.display = 'none';
+      setStatus('マージ完了 ✓', false);
+    } else {
+      document.getElementById('pr-modal-status').textContent = '⚠ ' + (data.error || 'マージに失敗しました');
+      btn.disabled = false; btn.textContent = 'マージして公開 ✓';
+    }
+  } catch (e) {
+    document.getElementById('pr-modal-status').textContent = '⚠ エラー: ' + e.message;
+    btn.disabled = false; btn.textContent = 'マージして公開 ✓';
+  }
+};
+
+function showPublishError(msg) {
+  const el = document.getElementById('publish-error');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 8000);
+}
+function hidePublishError() { document.getElementById('publish-error').style.display = 'none'; }
+
+loadTemplate();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }).catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
