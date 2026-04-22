@@ -459,6 +459,8 @@ const comingSoonProjects = [
         <p>&copy; 2026 reiblast1123. All rights reserved.</p>
         <nav class="footer-nav" aria-label="フッターリンク">
           <a href="/privacy/">プライバシーポリシー</a>
+          <span class="footer-sep" aria-hidden="true">・</span>
+          <a href="/admin/" rel="nofollow">ログイン</a>
         </nav>
       </div>
     </footer>
@@ -1575,6 +1577,12 @@ const comingSoonProjects = [
     .footer-nav a:hover {
       color: var(--primary);
       text-decoration: underline;
+    }
+
+    .footer-sep {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin: 0 0.4rem;
     }
 
     /* アニメーション無効化（ユーザー設定優先） */

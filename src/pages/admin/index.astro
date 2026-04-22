@@ -80,6 +80,8 @@ export const prerender = true;
       transition: all 0.15s;
     }
     .header-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .header-btn-logout { text-decoration: none; display: inline-block; }
+    .header-btn-logout:hover { border-color: #ff6b6b; color: #ff6b6b; }
     .ext-toggle { display: flex; gap: 3px; margin-left: auto; }
     .ext-btn {
       padding: 4px 12px;
@@ -727,6 +729,7 @@ export const prerender = true;
     <button class="ext-btn active" data-ext="md"  onclick="setExt('md')">index.md</button>
     <button class="ext-btn"        data-ext="mdx" onclick="setExt('mdx')">index.mdx</button>
   </div>
+  <a class="header-btn header-btn-logout" href="/cdn-cgi/access/logout" title="Cloudflare Access からログアウト">🚪 ログアウト</a>
 </header>
 
 <div class="main">
