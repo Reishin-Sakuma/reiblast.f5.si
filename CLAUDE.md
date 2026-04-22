@@ -109,7 +109,7 @@ npx wrangler pages deploy dist --project-name=reiblast-f5-si --branch=main
 
 - **プロジェクト名**: `reiblast-f5-si`
 - **本番URL**: https://reiblast-f5-si.pages.dev
-- **カスタムドメイン**: https://reiblast.f5.si ✅ 設定済み（2026-02-10）
+- **カスタムドメイン**: https://reiblast1123.com ✅ 設定済み
 - **デプロイ方式**: GitHub連携による自動デプロイ ✅
 - **ビルドコマンド**: `npm run build`
 - **出力ディレクトリ**: `dist/`
@@ -234,7 +234,7 @@ draft: false
 
 本番サイト上の `/admin/` で動作する WYSIWYG エディタ。
 
-- **URL**: https://reiblast.f5.si/admin/（Cloudflare Access 経由でログイン必須）
+- **URL**: https://reiblast1123.com/admin/（Cloudflare Access 経由でログイン必須）
 - **認証**: Cloudflare Access（GitHub OAuth）
 - **実装**: Astro ページ + Cloudflare Pages Functions
   - UI: `src/pages/admin/index.astro`
@@ -260,7 +260,7 @@ draft: false
 
 #### Access アプリ設定
 
-- Application domain: `reiblast.f5.si/admin/*` と `reiblast.f5.si/api/admin/*` の2つを保護
+- Application domain: `reiblast1123.com/admin/*` と `reiblast1123.com/api/admin/*` の2つを保護
 - Identity provider: GitHub OAuth
 - Policy: 自分の GitHub email のみ allow
 - Session duration: 24 時間
