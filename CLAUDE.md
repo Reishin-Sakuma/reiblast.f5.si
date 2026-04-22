@@ -109,7 +109,7 @@ npx wrangler pages deploy dist --project-name=reiblast-f5-si --branch=main
 
 - **プロジェクト名**: `reiblast-f5-si`
 - **本番URL**: https://reiblast-f5-si.pages.dev
-- **カスタムドメイン**: https://reiblast.f5.si ✅ 設定済み（2026-02-10）
+- **カスタムドメイン**: https://reiblast1123.com ✅ 設定済み
 - **デプロイ方式**: GitHub連携による自動デプロイ ✅
 - **ビルドコマンド**: `npm run build`
 - **出力ディレクトリ**: `dist/`
@@ -230,7 +230,51 @@ draft: false
 
 ## blog-editor（WYSIWYG エディタ）
 
-`tools/blog-editor/` に Flask + TipTap ベースのローカル WYSIWYG エディタがあります。
+### Cloudflare Pages 版（本番）
+
+本番サイト上の `/admin/` で動作する WYSIWYG エディタ。
+
+- **URL**: https://reiblast1123.com/admin/（Cloudflare Access 経由でログイン必須）
+- **認証**: Cloudflare Access（GitHub OAuth）
+- **実装**: Astro ページ + Cloudflare Pages Functions
+  - UI: `src/pages/admin/index.astro`
+  - API: `functions/api/admin/*.ts`
+  - PWA アセット: `public/admin/{manifest.json,sw.js,icon-*.png}`
+- **git 操作**: GitHub REST API（`GITHUB_TOKEN` で認証）
+- **OGP 生成**: `post/**` への push で `.github/workflows/generate-ogp.yml` が自動実行
+
+#### 必要な環境変数（Cloudflare Pages > Settings > Environment variables）
+
+| 名前 | 値 | 用途 |
+|---|---|---|
+| `GITHUB_TOKEN` | GitHub PAT（`repo` scope） | git 操作全般（Encrypted） |
+| `ACCESS_AUD` | Access アプリの Application Audience (AUD) Tag | JWT 検証 |
+| `ACCESS_TEAM_DOMAIN` | `<team>.cloudflareaccess.com` | JWKS 取得 |
+| `ALLOWED_EMAILS` | カンマ区切り email（任意） | 追加のメール許可リスト |
+| `GITHUB_OWNER` | `Reishin-Sakuma`（省略可） | リポジトリオーナー |
+| `GITHUB_REPO` | `reiblast.f5.si`（省略可） | リポジトリ名 |
+| `GITHUB_DEFAULT_BRANCH` | `master`（省略可） | ベースブランチ |
+
+`ACCESS_AUD` または `ACCESS_TEAM_DOMAIN` が未設定の場合はミドルウェアが
+認証をスキップする（`wrangler pages dev` ローカル開発用）。
+
+#### Access アプリ設定
+
+- Application domain: `reiblast1123.com/admin/*` と `reiblast1123.com/api/admin/*` の2つを保護
+- Identity provider: GitHub OAuth
+- Policy: 自分の GitHub email のみ allow
+- Session duration: 24 時間
+
+#### ローカル開発
+
+```bash
+npx wrangler pages dev -- npm run dev
+# → http://localhost:8788/admin/  （Access 無効なのでそのままアクセス可能）
+```
+
+### ローカル版（tools/blog-editor/）
+
+レガシーのローカル専用 Flask エディタ。Pages 版への移行後は保守モード。
 
 - **アクセス**: http://localhost:5000（VS Code Remote SSH ポートフォワード）
 - **エディタ**: TipTap 2.11.5（esm.sh CDN）

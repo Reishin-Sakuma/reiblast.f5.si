@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "ogp": "node scripts/generate-ogp.js",
-    "ogp:all": "node scripts/generate-ogp.js --all"
+    "ogp:all": "node scripts/generate-ogp.js --all",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
@@ -22,12 +24,15 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.17.1",
+    "linkedom": "^0.18.12",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
+    "@vitest/ui": "^4.1.4",
     "glob": "^11.0.0",
-    "to-ico": "^1.1.5"
+    "to-ico": "^1.1.5",
+    "vitest": "^4.1.4"
   }
 }

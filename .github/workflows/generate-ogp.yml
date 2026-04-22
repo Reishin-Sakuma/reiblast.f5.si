@@ -1,0 +1,116 @@
+name: Generate OGP Images
+
+on:
+  push:
+    branches:
+      - 'post/**'
+    paths:
+      - 'src/content/blog/**/index.md'
+      - 'src/content/blog/**/index.mdx'
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: '特定slug（空なら変更検出）'
+        required: false
+      all:
+        description: '全記事を再生成'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ogp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Noto CJK fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+
+      - run: npm ci
+
+      - name: Detect slugs to regenerate
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.all }}" == "true" ]]; then
+            echo "mode=all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.slug }}" ]]; then
+            echo "mode=slugs" >> "$GITHUB_OUTPUT"
+            {
+              echo "slugs<<EOF"
+              echo "${{ inputs.slug }}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          before="${{ github.event.before }}"
+          after="${{ github.event.after }}"
+          if [[ -z "$before" || "$before" =~ ^0+$ ]]; then
+            before=$(git merge-base origin/master HEAD)
+          fi
+
+          changed=$(git diff --name-only --diff-filter=AM "$before" "$after" \
+            | grep -E '^src/content/blog/.*/index\.(md|mdx)$' || true)
+
+          if [[ -z "$changed" ]]; then
+            echo "mode=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          slugs=$(echo "$changed" | awk -F/ '{print $(NF-1)}' | sort -u)
+          echo "mode=slugs" >> "$GITHUB_OUTPUT"
+          {
+            echo "slugs<<EOF"
+            echo "$slugs"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate OGP
+        if: steps.detect.outputs.mode != 'none'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ steps.detect.outputs.mode }}" == "all" ]]; then
+            node scripts/generate-ogp.js --all
+          else
+            while IFS= read -r slug; do
+              [[ -z "$slug" ]] && continue
+              echo "→ $slug"
+              node scripts/generate-ogp.js "$slug"
+            done <<< "${{ steps.detect.outputs.slugs }}"
+          fi
+
+      - name: Commit & push
+        if: steps.detect.outputs.mode != 'none'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z $(git status --porcelain src/content/blog/) ]]; then
+            echo "No OGP changes"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/blog/
+          git commit -m "chore: regenerate OGP images [skip ci]"
+          git push
